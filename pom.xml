@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2009-2010 the original author or authors.
+  See the notice.md file distributed with this work for additional
+  information regarding copyright ownership.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.github.stomp</groupId>
+  <artifactId>stomp-benchmark</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>${project.artifactId}</name>
+
+  <properties>
+
+    <!-- dependency versions -->
+    <scala-version>2.8.0</scala-version>
+    <maven-scala-plugin-version>2.14</maven-scala-plugin-version>
+
+  </properties>
+
+  <dependencies>
+
+    <!-- Scala Support -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <scope>compile</scope>
+      <version>${scala-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-compiler</artifactId>
+      <version>${scala-version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    
+  </dependencies>
+
+  <build>
+  
+    <defaultGoal>install</defaultGoal>
+    <sourceDirectory>src/main/scala</sourceDirectory>
+    <testSourceDirectory>src/test/scala</testSourceDirectory>
+
+    <resources>
+      <resource>
+        <directory>target/schema</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+      
+    <plugins>
+
+      <plugin>
+        <groupId>org.scala-tools</groupId>
+        <artifactId>maven-scala-plugin</artifactId>
+        <version>${maven-scala-plugin-version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <jvmArgs>
+            <jvmArg>-Xmx1024m</jvmArg>
+            <jvmArg>-Xss8m</jvmArg>
+          </jvmArgs>
+          <args>
+            <arg>-deprecation</arg>
+          </args>
+          <scalaVersion>${scala-version}</scalaVersion>
+        </configuration>
+      </plugin>
+      
+    </plugins>
+  </build>
+
+      
+</project>
