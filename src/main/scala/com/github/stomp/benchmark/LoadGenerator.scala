@@ -25,6 +25,13 @@ import scala.collection.mutable.ListBuffer
 
 case class SampleSet(producer_samples:Option[List[Long]], consumer_samples:Option[List[Long]])
 
+//object LoadGenerator {
+//  def main(args:Array[String]) = {
+//    val g = new LoadGenerator()
+//    g.run
+//  }
+//}
+
 /**
  * Simulates load on the a stomp broker.
  */
@@ -99,6 +106,7 @@ class LoadGenerator {
 
   def drain = {
     if( destination_type=="queue" || durable==true ) {
+      print("draining")
       consumer_counter.set(0)
       var consumer_threads = List[ConsumerThread]()
       for (i <- 0 until destination_count) {
@@ -109,14 +117,16 @@ class LoadGenerator {
 
       // Keep sleeping until we stop draining messages.
       try {
-        Thread.sleep(500);
+        Thread.sleep(1000);
         while( consumer_counter.getAndSet(0)!= 0 ) {
+          print(".")
           Thread.sleep(500);
         }
       } finally {
         for( thread <- consumer_threads ) {
           thread.shutdown
         }
+        println(".")
       }
     }
   }
@@ -141,11 +151,13 @@ class LoadGenerator {
 
     var remaining = count
     while( remaining > 0 ) {
+      print(".")
       Thread.sleep(sample_interval)
       producer_samples.foreach( _ += producer_counter.getAndSet(0) )
       consumer_samples.foreach( _ += consumer_counter.getAndSet(0) )
       remaining-=1
     }
+    println(".")
 
     Thread.currentThread.setPriority(Thread.NORM_PRIORITY)
 

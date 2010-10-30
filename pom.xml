@@ -33,6 +33,8 @@
     <!-- dependency versions -->
     <scala-version>2.8.0</scala-version>
     <maven-scala-plugin-version>2.14</maven-scala-plugin-version>
+    <karaf-version>2.1.0</karaf-version>
+    <slf4j-version>1.6.0</slf4j-version>
 
   </properties>
 
@@ -51,6 +53,17 @@
       <version>${scala-version}</version>
       <scope>compile</scope>
       <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.console</artifactId>
+      <version>${karaf-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>${slf4j-version}</version>
     </dependency>
     
   </dependencies>

@@ -19,12 +19,50 @@ package com.github.stomp.benchmark
 
 import scala.collection.mutable.HashMap
 
-object Benchmark {
+import org.osgi.service.command.CommandSession
+import java.io.{PrintStream, FileOutputStream, File}
+import org.apache.felix.gogo.commands.basic.DefaultActionPreparator
+import collection.JavaConversions
+import java.lang.{String, Class}
+import org.apache.felix.gogo.commands.{CommandException, Action, Option => option, Argument => argument, Command => command}
 
+object Benchmark {
+  def main(args: Array[String]):Unit = {
+    val session = new CommandSession {
+      def getKeyboard = System.in
+      def getConsole = System.out
+      def put(p1: String, p2: AnyRef) = {}
+      def get(p1: String) = null
+      def format(p1: AnyRef, p2: Int) = throw new UnsupportedOperationException
+      def execute(p1: CharSequence) = throw new UnsupportedOperationException
+      def convert(p1: Class[_], p2: AnyRef) = throw new UnsupportedOperationException
+      def close = {}
+    }
+
+    val action = new Benchmark()
+    val p = new DefaultActionPreparator
+    try {
+      p.prepare(action, session, JavaConversions.asList(args.toList))
+      action.execute(session)
+    } catch {
+      case x:CommandException=>
+        println(x.getMessage)
+        System.exit(-1);
+    }
+  }
+}
+
+@command(scope="stomp", name = "benchmark", description = "The Stomp benchmarking tool")
+class Benchmark extends Action {
+
+  @option(name = "--host", description = "server host name")
   var host = "127.0.0.1"
+  @option(name = "--port", description = "server port")
   var port = 61613
+  @option(name = "--sample-count", description = "number of samples to take")
   var sample_count = 5
-  var samples = HashMap[String, SampleSet]()
+  @argument(index=0, name = "out", description = "The file to store benchmark results in")
+  var out:File = new File("benchmark.js")
 
   var benchmark_producer_throughput = false
   var benchmark_queue_loading = false
@@ -33,9 +71,40 @@ object Benchmark {
   var benchmark_peristence = false
   var benchmark_queues = true
 
-  private def mlabel(size:Int) = if((size%1024)==0) (size/1024)+"k" else size+"b"
-  private def plabel(persistent:Boolean) = if(persistent) "p" else ""
-  private def slabel(sync_send:Boolean) = if(sync_send) "" else "a"
+  var samples = HashMap[String, SampleSet]()
+
+
+  def json_format(value:Option[List[Long]]):String = {
+    value.map { json_format _ }.getOrElse("null")
+  }
+
+  def json_format(value:List[Long]):String = {
+    "[ "+value.mkString(",")+" ]"
+  }
+
+  def execute(session: CommandSession): AnyRef = {
+    val os = new PrintStream(new FileOutputStream(out))
+    println("===================================================================")
+    println("Benchmarking Stomp Server at: %s:%d".format(host, port))
+    println("===================================================================")
+
+    run_benchmarks
+
+    os.println("{")
+    os.println(samples.map { case (name, sample)=>
+      """|  "%s": {
+         |    "produce" : %s
+         |    "consume" : %s
+         |  }""".stripMargin.format(name, json_format(sample.producer_samples), json_format(sample.consumer_samples))
+    }.mkString(",\n"))
+    os.println("}")
+
+    os.close
+    println("===================================================================")
+    println("Stored: "+out)
+    println("===================================================================")
+    null
+  }
 
   protected def create_generator = new LoadGenerator
 
@@ -44,26 +113,28 @@ object Benchmark {
     generator.sample_interval = 1000
     generator.host = host
     generator.port = port
-    generator.destination_name = name
     init_func(generator)
-    println("===================================================================")
-    println("Benchmarking case: "+name)
-    println("===================================================================")
+
+    generator.destination_name = if( generator.destination_type == "queue" )
+       "BENCHMARK_QUEUE"
+    else
+       "BENCHMARK_TOPIC"
+
+    print("case  : "+name)
     val sample_set = generator.collect_samples(sample_count)
-    println("result: "+sample_set)
+    sample_set.producer_samples.foreach(x=> println("producer samples: "+json_format(x)) )
+    sample_set.consumer_samples.foreach(x=> println("consumer samples: "+json_format(x)) )
     samples += name -> sample_set
     if( drain) {
-      println("draining...")
       generator.drain
     }
   }
 
-  def main(args:Array[String]):Unit = {
-    // TODO: parse args to change options.
-    run
-  }
+  private def mlabel(size:Int) = if((size%1024)==0) (size/1024)+"k" else size+"b"
+  private def plabel(persistent:Boolean) = if(persistent) "p" else ""
+  private def slabel(sync_send:Boolean) = if(sync_send) "" else "a"
 
-  def run = {
+  def run_benchmarks = {
 
     val persistence_values = if (benchmark_peristence) {
       List(false, true)
