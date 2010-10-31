@@ -13,3 +13,4 @@ target
 .settings
 eclipse-classes
 project/boot
+lib_managed
