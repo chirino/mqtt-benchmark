@@ -60,16 +60,16 @@ class Benchmark extends Action {
   @option(name = "--port", description = "server port")
   var port = 61613
   @option(name = "--sample-count", description = "number of samples to take")
-  var sample_count = 5
+  var sample_count = 8
   @argument(index=0, name = "out", description = "The file to store benchmark results in")
-  var out:File = new File("benchmark.js")
+  var out:File = new File("benchmark.json")
 
+  var benchmark_topics = true
+  var benchmark_queues = true
+  var benchmark_peristence = true
   var benchmark_producer_throughput = false
   var benchmark_queue_loading = false
   var benchmark_durable_subs = false
-  var benchmark_topics = false
-  var benchmark_peristence = false
-  var benchmark_queues = true
 
   var samples = HashMap[String, SampleSet]()
 
@@ -92,10 +92,8 @@ class Benchmark extends Action {
 
     os.println("{")
     os.println(samples.map { case (name, sample)=>
-      """|  "%s": {
-         |    "produce" : %s
-         |    "consume" : %s
-         |  }""".stripMargin.format(name, json_format(sample.producer_samples), json_format(sample.consumer_samples))
+      """|  "p_%s": %s,
+         |  "c_%s": %s""".stripMargin.format(name, json_format(sample.producer_samples), name, json_format(sample.consumer_samples))
     }.mkString(",\n"))
     os.println("}")
 

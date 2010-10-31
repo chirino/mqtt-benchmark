@@ -1,0 +1,301 @@
+<!--
+  Copyright (C) 2009-2010 the original author or authors.
+  See the notice.md file distributed with this work for additional
+  information regarding copyright ownership.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+  <!-- Author: Hiram Chirino <hiram@hiramchirino.com> -->
+  <head>
+    <script type='text/javascript' src='http://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+    
+      //
+      // Update the following array to add more
+      // stomp servers to the comparison 
+      //
+      var broker_names = ['apollo'];
+      
+      function add_col(table, label, data) {
+        var col = table.getNumberOfColumns();
+        table.addColumn('number', label);
+
+        for(i=0 ; i < data.length; i++ ) {
+          if( table.getNumberOfRows() <= i) {
+            table.addRow();
+            // fill in unset values..
+            for(j=0 ; j < table.getNumberOfColumns()-1; j++ ) {
+              table.setValue(i, j, 0);
+            }
+          }
+          table.setValue(i, col, data[i]);
+        }
+        // fill in unset values..
+        for(i=data.length ; i < table.getNumberOfRows(); i++ ) {
+          table.setValue(i, col, 0);
+        }
+      }
+      var broker_samples = {};
+      
+      function line_chart(div, scenario) {
+        var data = new google.visualization.DataTable();
+        for(broker in broker_samples) {
+          if( broker_samples[broker][scenario] !=null ) {
+            add_col(data, broker, broker_samples[broker][scenario]);
+          }
+        }
+        var chart_title = ""
+        if( scenario.charAt(0) == 'p' ) {
+          chart_title = "Producer msg/sec"
+        } else if( scenario.charAt(0) == 'c' ) {
+          chart_title = "Consumer msg/sec"
+        }
+        var chart = new google.visualization.LineChart(div);
+        chart.draw(data, {title: chart_title, tooltipWidth:300, tooltipHeight:120, legend:'none' });
+      }
+      
+      google.load('visualization', '1', {'packages':['linechart']});
+      google.load("jquery", "1.4.3");
+      google.setOnLoadCallback(function() {
+        var scenarios = new Object();
+        for(i = 0; i < broker_names.length; i++) {
+          var name = broker_names[i];
+          $.ajax({ url: name+'.json', async:false, success: function(json) {
+            broker_samples[name] = $.parseJSON( json );
+            for( scenario in broker_samples[name] ) {
+              scenarios[scenario] = true;
+            }
+          }});
+        }
+
+        for( scenario in scenarios ) {
+          var div = document.getElementById(scenario);
+          if( div!=null ) {
+            try {
+              line_chart(div, scenario);
+            } catch(e) {
+              alert("Could not display chart for "+scenario+" due to "+e)
+            }
+          }
+        }
+      });
+    </script>
+    
+    <style type='text/css'>
+      body { font-family:Verdana; font-size:12px; color:#666666; }
+      #header {
+        margin: 0; padding: 2em; text-align:center; background: #baccd8;
+        border-radius: 8px; -webkit-border-radius: 8px;  -moz-border-radius: 8px;
+      }
+      #header h1 {
+        margin: 0; padding: 0; font-size: 180%; line-height: 1em; color: #333;
+      }
+      #wrap {
+        margin: 0 auto; padding: 2em;
+      }
+      #content {
+        width: 80em;
+        padding: 2em 0;
+      }      
+      th.block { background: #baccd8; height:2em;
+        border-radius: 8px; -webkit-border-radius: 8px;  -moz-border-radius: 8px;
+        }
+      .r90 { 
+        width:2em; height:auto;
+        
+        -webkit-transform: rotate(-90deg); -moz-transform:rotate(-90deg);
+        filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+      }
+      table.charts { float:left;}
+      .chart { width: 200px; height: 150px; }
+      .chart-section { clear:both; margin-top: 1em; padding-left:2em; }
+      .overview { padding: 0 2em; }
+      .clear { clear:both; }
+    </style>
+  </head>
+  <body>
+    <div id='wrap'>
+      <div id='header'>
+        <h1>Stomp Server Performance Comparisons</h1>
+      </div>
+      <div class="overview">
+        <h2>Partitioned Load Scenarios</h2>
+        <p>
+          These scenarios sample performance as partitioned load is applied.  
+          Each destination only has 1 and only 1 producer and consumer attached.
+        </p><p>
+          The graphs below display the results of all the following scenario combinations:
+          <ul>
+            <li><strong>Queue</strong>: The point to point messaging domain</li>
+            <li><strong>Topic</strong>: The publish subscribe messaging domain</li>
+            <li><strong>Persistent</strong>: Messages are sent persistent and with a receipt request to achieve guaranteed delivery.</li>
+            <li><strong>Non Persistent</strong>: Messages are sent non-persistent and without a receipt request</li>
+            <li><strong>20 b Message</strong>: Messages payloads are 20 bytes in size</li>
+            <li><strong>1 k Message</strong>: Messages payloads are 1 kilobytes in size</li>
+            <li><strong>256 k Message</strong>: Messages payloads are 256 kilobytes in size</li>
+            <li><strong>1x1x1</strong>: 1 producer, 1 destination, 1 consumer</li>
+            <li><strong>5x5x5</strong>: 5 producers, 5 destinations, 5 consumers</li>
+            <li><strong>10x10x10</strong>: 10 producers, 10 destinations, 10 consumers</li>
+          </ul>
+        </p>
+      </div>
+
+      <div id='content' >
+        <table class="charts">
+          <tr><th>&nbsp;</th><th class="block">Non Persistent</th><th class="block">Persistent</th></tr>
+          <tr><th class="block"><div class="r90">Queue</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
+              <tr><th class="block"><div class="r90">1x1x1</div></th><td>
+                <div id='p_20b_1a_1queue_1' class="chart"></div>
+                <div id='c_20b_1a_1queue_1' class="chart"></div>
+              </td><td>
+                <div id='p_1k_1a_1queue_1' class="chart"></div>
+                <div id='c_1k_1a_1queue_1' class="chart"></div>
+              </td><td>
+                <div id='p_256k_1a_1queue_1' class="chart"></div>
+                <div id='c_256k_1a_1queue_1' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5x5x5</div></th><td>
+                <div id='p_20b_5a_5queue_5' class="chart"></div>
+                <div id='c_20b_5a_5queue_5' class="chart"></div>
+              </td><td>
+                <div id='p_1k_5a_5queue_5' class="chart"></div>
+                <div id='c_1k_5a_5queue_5' class="chart"></div>
+              </td><td>
+                <div id='p_256k_5a_5queue_5' class="chart"></div>
+                <div id='c_256k_5a_5queue_5' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10x10x10</div></th><td>
+                <div id='p_20b_10a_10queue_10' class="chart"></div>
+                <div id='c_20b_10a_10queue_10' class="chart"></div>
+              </td><td>
+                <div id='p_1k_10a_10queue_10' class="chart"></div>
+                <div id='c_1k_10a_10queue_10' class="chart"></div>
+              </td><td>
+                <div id='p_256k_10a_10queue_10' class="chart"></div>
+                <div id='c_256k_10a_10queue_10' class="chart"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
+              <tr><th class="block"><div class="r90">1x1x1</div></th><td>
+                <div id='p_20b_1p_1queue_1' class="chart"></div>
+                <div id='c_20b_1p_1queue_1' class="chart"></div>
+              </td><td>
+                <div id='p_1k_1p_1queue_1' class="chart"></div>
+                <div id='c_1k_1p_1queue_1' class="chart"></div>
+              </td><td>
+                <div id='p_256k_1p_1queue_1' class="chart"></div>
+                <div id='c_256k_1p_1queue_1' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5x5x5</div></th><td>
+                <div id='p_20b_5p_5queue_5' class="chart"></div>
+                <div id='c_20b_5p_5queue_5' class="chart"></div>
+              </td><td>
+                <div id='p_1k_5p_5queue_5' class="chart"></div>
+                <div id='c_1k_5p_5queue_5' class="chart"></div>
+              </td><td>
+                <div id='p_256k_5p_5queue_5' class="chart"></div>
+                <div id='c_256k_5p_5queue_5' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10x10x10</div></th><td>
+                <div id='p_20b_10p_10queue_10' class="chart"></div>
+                <div id='c_20b_10p_10queue_10' class="chart"></div>
+              </td><td>
+                <div id='p_1k_10p_10queue_10' class="chart"></div>
+                <div id='c_1k_10p_10queue_10' class="chart"></div>
+              </td><td>
+                <div id='p_256k_10p_10queue_10' class="chart"></div>
+                <div id='c_256k_10p_10queue_10' class="chart"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+          <tr><th class="block"><div class="r90">Topic</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
+              <tr><th class="block"><div class="r90">1x1x1</div></th><td>
+                <div id='p_20b_1a_1topic_1' class="chart"></div>
+                <div id='c_20b_1a_1topic_1' class="chart"></div>
+              </td><td>
+                <div id='p_1k_1a_1topic_1' class="chart"></div>
+                <div id='c_1k_1a_1topic_1' class="chart"></div>
+              </td><td>
+                <div id='p_256k_1a_1topic_1' class="chart"></div>
+                <div id='c_256k_1a_1topic_1' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5x5x5</div></th><td>
+                <div id='p_20b_5a_5topic_5' class="chart"></div>
+                <div id='c_20b_5a_5topic_5' class="chart"></div>
+              </td><td>
+                <div id='p_1k_5a_5topic_5' class="chart"></div>
+                <div id='c_1k_5a_5topic_5' class="chart"></div>
+              </td><td>
+                <div id='p_256k_5a_5topic_5' class="chart"></div>
+                <div id='c_256k_5a_5topic_5' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10x10x10</div></th><td>
+                <div id='p_20b_10a_10topic_10' class="chart"></div>
+                <div id='c_20b_10a_10topic_10' class="chart"></div>
+              </td><td>
+                <div id='p_1k_10a_10topic_10' class="chart"></div>
+                <div id='c_1k_10a_10topic_10' class="chart"></div>
+              </td><td>
+                <div id='p_256k_10a_10topic_10' class="chart"></div>
+                <div id='c_256k_10a_10topic_10' class="chart"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
+              <tr><th class="block"><div class="r90">1x1x1</div></th><td>
+                <div id='p_20b_1p_1topic_1' class="chart"></div>
+                <div id='c_20b_1p_1topic_1' class="chart"></div>
+              </td><td>
+                <div id='p_1k_1p_1topic_1' class="chart"></div>
+                <div id='c_1k_1p_1topic_1' class="chart"></div>
+              </td><td>
+                <div id='p_256k_1p_1topic_1' class="chart"></div>
+                <div id='c_256k_1p_1topic_1' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5x5x5</div></th><td>
+                <div id='p_20b_5p_5topic_5' class="chart"></div>
+                <div id='c_20b_5p_5topic_5' class="chart"></div>
+              </td><td>
+                <div id='p_1k_5p_5topic_5' class="chart"></div>
+                <div id='c_1k_5p_5topic_5' class="chart"></div>
+              </td><td>
+                <div id='p_256k_5p_5topic_5' class="chart"></div>
+                <div id='c_256k_5p_5topic_5' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10x10x10</div></th><td>
+                <div id='p_20b_10p_10topic_10' class="chart"></div>
+                <div id='c_20b_10p_10topic_10' class="chart"></div>
+              </td><td>
+                <div id='p_1k_10p_10topic_10' class="chart"></div>
+                <div id='c_1k_10p_10topic_10' class="chart"></div>
+              </td><td>
+                <div id='p_256k_10p_10topic_10' class="chart"></div>
+                <div id='c_256k_10p_10topic_10' class="chart"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+        <div class="clear">
+      </div>
+    </div>
+  </body>
+</html>
+
