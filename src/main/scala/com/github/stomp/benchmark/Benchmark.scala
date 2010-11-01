@@ -62,6 +62,9 @@ class Benchmark extends Action {
   var port = 61613
   @option(name = "--sample-count", description = "number of samples to take")
   var sample_count = 8
+  @option(name = "--warm-up-count", description = "number of warm up samples to ignore")
+  var warm_up_count = 3
+
   @argument(index=0, name = "name", description = "name of server being benchmarked", required=true)
   var out:String = _
 
@@ -121,9 +124,15 @@ class Benchmark extends Action {
        "BENCHMARK_TOPIC"
 
     print("case  : "+name)
+
+    for( i <- 0 until warm_up_count ) {
+      Thread.sleep(generator.sample_interval)
+      print(".")
+    }
     val sample_set = generator.collect_samples(sample_count)
     sample_set.producer_samples.foreach(x=> println("producer samples: "+json_format(x)) )
     sample_set.consumer_samples.foreach(x=> println("consumer samples: "+json_format(x)) )
+
     samples += name -> sample_set
     if( drain) {
       generator.drain

@@ -105,6 +105,7 @@ class LoadGenerator {
   }
 
   def drain = {
+    done.set(false)
     if( destination_type=="queue" || durable==true ) {
       print("draining")
       consumer_counter.set(0)
@@ -116,22 +117,30 @@ class LoadGenerator {
       }
 
       // Keep sleeping until we stop draining messages.
+      var drained = 0L
       try {
         Thread.sleep(1000);
-        while( consumer_counter.getAndSet(0)!= 0 ) {
+
+        def done() = {
+          val c = consumer_counter.getAndSet(0)
+          drained += c
+          c == 0
+        }
+        while( !done ) {
           print(".")
           Thread.sleep(500);
         }
       } finally {
+        done.set(true)
         for( thread <- consumer_threads ) {
           thread.shutdown
         }
-        println(".")
+        println(". (drained %d)".format(drained))
       }
     }
   }
 
-  def collect_samples(count:Int):SampleSet = with_load {
+  def collect_samples(sample_count:Int):SampleSet = with_load {
 
     producer_counter.set(0)
     consumer_counter.set(0)
@@ -149,7 +158,7 @@ class LoadGenerator {
 
     Thread.currentThread.setPriority(Thread.MAX_PRIORITY)
 
-    var remaining = count
+    var remaining = sample_count
     while( remaining > 0 ) {
       print(".")
       Thread.sleep(sample_interval)
