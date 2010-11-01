@@ -42,8 +42,9 @@ object Benchmark {
     val action = new Benchmark()
     val p = new DefaultActionPreparator
     try {
-      p.prepare(action, session, JavaConversions.asList(args.toList))
-      action.execute(session)
+      if( p.prepare(action, session, JavaConversions.asList(args.toList)) ) {
+        action.execute(session)
+      }
     } catch {
       case x:CommandException=>
         println(x.getMessage)
@@ -61,8 +62,8 @@ class Benchmark extends Action {
   var port = 61613
   @option(name = "--sample-count", description = "number of samples to take")
   var sample_count = 8
-  @argument(index=0, name = "out", description = "The file to store benchmark results in")
-  var out:File = new File("benchmark.json")
+  @argument(index=0, name = "name", description = "name of server being benchmarked", required=true)
+  var out:String = _
 
   var benchmark_topics = true
   var benchmark_queues = true
@@ -83,7 +84,8 @@ class Benchmark extends Action {
   }
 
   def execute(session: CommandSession): AnyRef = {
-    val os = new PrintStream(new FileOutputStream(out))
+    val file = new File(out+".json")
+    val os = new PrintStream(new FileOutputStream(file))
     println("===================================================================")
     println("Benchmarking Stomp Server at: %s:%d".format(host, port))
     println("===================================================================")
@@ -99,7 +101,7 @@ class Benchmark extends Action {
 
     os.close
     println("===================================================================")
-    println("Stored: "+out)
+    println("Stored: "+file)
     println("===================================================================")
     null
   }
