@@ -25,7 +25,7 @@
       // Update the following array to add more
       // stomp servers to the comparison 
       //
-      var broker_names = ['apollo'];
+      var broker_names = ['activemq-5.4.1', 'apollo-1.0-SNAPSHOT'];
       
       function add_col(table, label, data) {
         var col = table.getNumberOfColumns();
@@ -71,8 +71,12 @@
         var scenarios = new Object();
         for(i = 0; i < broker_names.length; i++) {
           var name = broker_names[i];
-          $.ajax({ url: name+'.json', async:false, success: function(json) {
-            broker_samples[name] = $.parseJSON( json );
+          $.ajax({ url: name+'.json', async:false, success: function(data) {
+            if( typeof data == 'string' ) {
+              broker_samples[name] = $.parseJSON( data );
+            } else {
+              broker_samples[name] = data;
+            }
             for( scenario in broker_samples[name] ) {
               scenarios[scenario] = true;
             }
