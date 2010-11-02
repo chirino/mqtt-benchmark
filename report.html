@@ -27,7 +27,7 @@
       //
       var broker_names = ['activemq-5.4.1', 'apollo-1.0-SNAPSHOT'];
       
-      function add_col(table, label, data) {
+      function add_col(table, label, data) { 
         var col = table.getNumberOfColumns();
         table.addColumn('number', label);
 
@@ -51,8 +51,11 @@
       function line_chart(div, scenario) {
         var data = new google.visualization.DataTable();
         for(broker in broker_samples) {
-          if( broker_samples[broker][scenario] !=null ) {
-            add_col(data, broker, broker_samples[broker][scenario]);
+          try {
+            if( broker_samples[broker][scenario] !=null ) {
+              add_col(data, broker, broker_samples[broker][scenario]);
+            }
+          } catch(ignore){
           }
         }
         var chart_title = ""
@@ -98,6 +101,7 @@
     
     <style type='text/css'>
       body { font-family:Verdana; font-size:12px; color:#666666; }
+      td { font-size:12px; }
       #header {
         margin: 0; padding: 2em; text-align:center; background: #baccd8;
         border-radius: 8px; -webkit-border-radius: 8px;  -moz-border-radius: 8px;
@@ -108,24 +112,25 @@
       #wrap {
         margin: 0 auto; padding: 2em;
       }
-      #content {
-        width: 80em;
-        padding: 2em 0;
-      }      
-      th.block { background: #baccd8; height:2em;
+      #content { padding: 2em;  }      
+      .block { background: #baccd8; height:2em;
         border-radius: 8px; -webkit-border-radius: 8px;  -moz-border-radius: 8px;
         }
       .r90 { 
-        width:2em; height:auto;
+        width:2em; height:auto; white-space:nowrap;
         
         -webkit-transform: rotate(-90deg); -moz-transform:rotate(-90deg);
         filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
       }
-      table.charts { float:left;}
+      table.padded { width: 10px; }
+      .padded td { padding: 20px; }
+      .charts { padding-left: 30px; }
       .chart { width: 200px; height: 150px; }
       .chart-section { clear:both; margin-top: 1em; padding-left:2em; }
       .overview { padding: 0 2em; }
       .clear { clear:both; }
+      .chart-medium { width: 300px; height: 150px; }
+      h2 { margin-top:30px;}
     </style>
   </head>
   <body>
@@ -133,8 +138,70 @@
       <div id='header'>
         <h1>Stomp Server Performance Comparisons</h1>
       </div>
-      <div class="overview">
-        <h2>Partitioned Load Scenarios</h2>
+      <div id='content'>
+        <h2>Table of Contents</h2>
+        <ol>
+          <li><a href="#throughput_to_topic">Throughput to an Unsubscribed Topic</a></li>
+          <li><a href="#queue_load_unload">Queue Load/Unload</a></li>
+          <li><a href="#partitioned_load">Partitioned Load Scenarios</a></li>
+          <li><a href="#fan_in_out_load">Fan In/Out Load Scenarios</a></li>
+        </ol>
+        
+        <h2 id="throughput_to_topic">Overview</h2>
+        <p>
+          This report was generated using the <a href="http://github.com/chirino/stomp-benchmark">stomp-benchmark tool</a>.  It 
+          provides a comparative benchmark of messaging servers that implement the <a href="http://stomp.github.com/stomp-specification-1-0.html"/>Stomp 1.0</a> 
+          specification.  It covers a wide variety of common usage scenarios. 
+        </p>
+        <div style="padding:1em;">
+          <span class="block" style="padding:1em;"><strong>NOTE:</strong> Click on a data point in the graph to figure out which data points apply to which message server.</span>
+        </div>
+        <h2 id="throughput_to_topic">Throughput to an Unsubscribed Topic</h2>
+        <p>
+          A single producer sending non-persistent messages to a topic that does not have an consumers attached.
+        </p>
+        <table class="charts padded">
+          <tr>
+            <td>
+              <h3>With a 20 b Playload</h3>
+              <div id='p_20b_1a_1topic_0' class="chart-medium"></div>
+            </td><td>
+              <h3>With a 1 k Playload</h3>
+              <div id='p_1k_1a_1topic_0' class="chart-medium"></div>
+            </td><td>
+              <h3>With a 256 k Playload</h3>
+              <div id='p_256k_1a_1topic_0' class="chart-medium"></div>
+            </td>
+          </tr>
+        </table>
+
+        <h2 id="queue_load_unload">Queue Load/Unload</h2>
+        <table class="charts padded">
+          <tr>
+            <td>
+              <h3>Non Persistent Load</h3>
+              <p>
+                A producer sending non-persistent messages with 20 byte payloads to a queue without any attached consumers.
+              </p>
+              <div id='p_20b_1a_1queue_0' class="chart-medium"></div>
+            </td><td>
+              <h3>Persistent Load</h3>
+              <p>
+                A producer sending persistent messages with 20 byte payloads to a queue without any attached consumers.  Each
+                send requests a receipt to achieve guaranteed delivery.
+              </p>
+              <div id='p_20b_1p_1queue_0' class="chart-medium"></div>
+            </td><td>
+              <h3>Unload</h3>
+              <p>
+                A consumer receiving the messages previously sent to the queue but without any attached producers.
+              </p>
+              <div id='c_20b_0_1queue_1' class="chart-medium"></div>
+            </td>
+          </tr>
+        </table>
+        
+        <h2 id="partitioned_load">Partitioned Load Scenarios</h2>
         <p>
           These scenarios sample performance as partitioned load is applied.  
           Each destination only has 1 and only 1 producer and consumer attached.
@@ -153,9 +220,7 @@
             <li><strong>10x10x10</strong>: 10 producers, 10 destinations, 10 consumers</li>
           </ul>
         </p>
-      </div>
-
-      <div id='content' >
+        
         <table class="charts">
           <tr><th>&nbsp;</th><th class="block">Non Persistent</th><th class="block">Persistent</th></tr>
           <tr><th class="block"><div class="r90">Queue</div></th><td>
@@ -297,7 +362,163 @@
             </table>
           </td></tr>
         </table>
-        <div class="clear">
+        
+        <h2 id="fan_in_out_load">Fan In/Out Load Scenarios</h2>
+        <p>
+          These scenarios multiple consumers and producers communicate via one shared destination.  All messages sent have 
+          a 20 byte payload.
+        </p><p>
+          The graphs below display the results of all the following scenario combinations:
+          <ul>
+            <li><strong>Queue</strong>: The point to point messaging domain</li>
+            <li><strong>Topic</strong>: The publish subscribe messaging domain</li>
+            <li><strong>Persistent</strong>: Messages are sent persistent and with a receipt request to achieve guaranteed delivery.</li>
+            <li><strong>Non Persistent</strong>: Messages are sent non-persistent and without a receipt request</li>
+          </ul>
+        </p>
+        
+        <table class="charts">
+          <tr><th>&nbsp;</th><th class="block">Non Persistent</th><th class="block">Persistent</th></tr>
+          <tr><th class="block"><div class="r90">Queue</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <div id='p_20b_1a_1queue_1' class="chart"></div>
+                <div id='c_20b_1a_1queue_1' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1queue_1' class="chart"></div>
+                <div id='c_20b_5a_1queue_1' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1queue_1' class="chart"></div>
+                <div id='c_20b_10a_1queue_1' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <div id='p_20b_1a_1queue_5' class="chart"></div>
+                <div id='c_20b_1a_1queue_5' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1queue_5' class="chart"></div>
+                <div id='c_20b_5a_1queue_5' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1queue_5' class="chart"></div>
+                <div id='c_20b_10a_1queue_5' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <div id='p_20b_1a_1queue_10' class="chart"></div>
+                <div id='c_20b_1a_1queue_10' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1queue_10' class="chart"></div>
+                <div id='c_20b_5a_1queue_10' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1queue_10' class="chart"></div>
+                <div id='c_20b_10a_1queue_10' class="chart"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <div id='p_20b_1p_1queue_1' class="chart"></div>
+                <div id='c_20b_1p_1queue_1' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1queue_1' class="chart"></div>
+                <div id='c_20b_5p_1queue_1' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1queue_1' class="chart"></div>
+                <div id='c_20b_10p_1queue_1' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <div id='p_20b_1p_1queue_5' class="chart"></div>
+                <div id='c_20b_1p_1queue_5' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1queue_5' class="chart"></div>
+                <div id='c_20b_5p_1queue_5' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1queue_5' class="chart"></div>
+                <div id='c_20b_10p_1queue_5' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <div id='p_20b_1p_1queue_10' class="chart"></div>
+                <div id='c_20b_1p_1queue_10' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1queue_10' class="chart"></div>
+                <div id='c_20b_5p_1queue_10' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1queue_10' class="chart"></div>
+                <div id='c_20b_10p_1queue_10' class="chart"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+          <tr><th class="block"><div class="r90">Topic</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <div id='p_20b_1a_1topic_1' class="chart"></div>
+                <div id='c_20b_1a_1topic_1' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1topic_1' class="chart"></div>
+                <div id='c_20b_5a_1topic_1' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1topic_1' class="chart"></div>
+                <div id='c_20b_10a_1topic_1' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <div id='p_20b_1a_1topic_5' class="chart"></div>
+                <div id='c_20b_1a_1topic_5' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1topic_5' class="chart"></div>
+                <div id='c_20b_5a_1topic_5' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1topic_5' class="chart"></div>
+                <div id='c_20b_10a_1topic_5' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <div id='p_20b_1a_1topic_10' class="chart"></div>
+                <div id='c_20b_1a_1topic_10' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1topic_10' class="chart"></div>
+                <div id='c_20b_5a_1topic_10' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1topic_10' class="chart"></div>
+                <div id='c_20b_10a_1topic_10' class="chart"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <div id='p_20b_1p_1topic_1' class="chart"></div>
+                <div id='c_20b_1p_1topic_1' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1topic_1' class="chart"></div>
+                <div id='c_20b_5p_1topic_1' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1topic_1' class="chart"></div>
+                <div id='c_20b_10p_1topic_1' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <div id='p_20b_1p_1topic_5' class="chart"></div>
+                <div id='c_20b_1p_1topic_5' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1topic_5' class="chart"></div>
+                <div id='c_20b_5p_1topic_5' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1topic_5' class="chart"></div>
+                <div id='c_20b_10p_1topic_5' class="chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <div id='p_20b_1p_1topic_10' class="chart"></div>
+                <div id='c_20b_1p_1topic_10' class="chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1topic_10' class="chart"></div>
+                <div id='c_20b_5p_1topic_10' class="chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1topic_10' class="chart"></div>
+                <div id='c_20b_10p_1topic_10' class="chart"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+                
       </div>
     </div>
   </body>

@@ -68,12 +68,23 @@ class Benchmark extends Action {
   @argument(index=0, name = "name", description = "name of server being benchmarked", required=true)
   var out:String = _
 
-  var benchmark_topics = true
-  var benchmark_queues = true
-  var benchmark_peristence = true
-  var benchmark_producer_throughput = false
-  var benchmark_queue_loading = false
-  var benchmark_durable_subs = false
+  @option(name = "--enable-topics", description = "enable benchmarking the topic cases")
+  var enable_topics = true
+  @option(name = "--enable-queues", description = "enable benchmarking the queue cases")
+  var enable_queues = true
+  @option(name = "--enable-peristence", description = "enable benchmarking the peristent cases")
+  var enable_peristence = true
+
+  @option(name = "--scenario-producer-throughput", description = "")
+  var scenario_producer_throughput = true
+  @option(name = "--scenario-queue-loading", description = "")
+  var scenario_queue_loading = true
+  @option(name = "--scenario-partitioned", description = "")
+  var scenario_partitioned = true
+  @option(name = "--scenario-fan-in-out", description = "")
+  var scenario_fan_in_out = true
+  @option(name = "--scenario-durable-subs", description = "")
+  var scenario_durable_subs = false
 
   var samples = HashMap[String, SampleSet]()
 
@@ -111,7 +122,7 @@ class Benchmark extends Action {
 
   protected def create_generator = new LoadGenerator
 
-  private def benchmark(name:String, drain:Boolean=true)(init_func: (LoadGenerator)=>Unit ) = {
+  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count)(init_func: (LoadGenerator)=>Unit ) = {
     val generator = create_generator
     generator.sample_interval = 1000
     generator.host = host
@@ -129,7 +140,7 @@ class Benchmark extends Action {
         Thread.sleep(generator.sample_interval)
         print(".")
       }
-      generator.collect_samples(sample_count)
+      generator.collect_samples(sc)
     }
 
     sample_set.producer_samples.foreach(x=> println("producer samples: "+json_format(x)) )
@@ -148,18 +159,24 @@ class Benchmark extends Action {
   def run_benchmarks = {
 
 
-    val persistence_values = if (benchmark_peristence) {
+    val persistence_values = if (enable_peristence) {
       List(false, true)
     } else {
       List(false)
     }
 
-
-
-    if( benchmark_topics && benchmark_producer_throughput ) {
+    var destination_types = List[String]()
+    if( enable_queues ) {
+      destination_types ::= "queue"
+    }
+    if( enable_topics ) {
+      destination_types ::= "topic"
+    }
+    
+    if( enable_topics && scenario_producer_throughput ) {
       // Benchmark for figuring out the max producer throughput
       for( size <- List(20, 1024, 1024 * 256) ) {
-        val name = "%s_1_1topic_0".format(mlabel(size))
+        val name = "%s_1a_1topic_0".format(mlabel(size))
         benchmark(name) { g=>
           g.message_size = size
           g.producers = 1
@@ -172,31 +189,47 @@ class Benchmark extends Action {
       }
     }
 
-    val parallel_sizes = List(20, 1024, 1024 * 256)
-    val parallel_load = List(1, 5, 10)
-    var parallel_destination_types = List[String]()
-    if( benchmark_queues ) {
-      parallel_destination_types ::= "queue"
-    }
-    if( benchmark_topics ) {
-      parallel_destination_types ::= "topic"
-    }
-
     // Benchmark for the queue parallel load use cases
-    for( persistent <- persistence_values; destination_type <- parallel_destination_types ; size <- parallel_sizes  ; load <-parallel_load ) {
-      val name = "%s_%d%s%s_%d%s_%d".format(mlabel(size), load, plabel(persistent), slabel(persistent), load, destination_type, load)
-      benchmark(name) { g=>
-        g.message_size = size
-        g.producers = load
-        g.persistent = persistent
-        g.sync_send = persistent
-        g.destination_count = load
-        g.destination_type = destination_type
-        g.consumers = load
+    if( scenario_partitioned ) {
+
+      val message_sizes = List(20, 1024, 1024 * 256)
+      val destinations = List(1, 5, 10)
+
+      for( persistent <- persistence_values; destination_type <- destination_types ; size <- message_sizes  ; load <- destinations ) {
+        val name = "%s_%d%s%s_%d%s_%d".format(mlabel(size), load, plabel(persistent), slabel(persistent), load, destination_type, load)
+        benchmark(name) { g=>
+          g.message_size = size
+          g.producers = load
+          g.persistent = persistent
+          g.sync_send = persistent
+          g.destination_count = load
+          g.destination_type = destination_type
+          g.consumers = load
+        }
       }
     }
 
-    if( benchmark_topics && benchmark_durable_subs) {
+    if( scenario_fan_in_out  ) {
+      val client_count = List(1, 5, 10)
+      val message_sizes = List(20)
+      
+      for( persistent <- persistence_values; destination_type <- destination_types ; size <- message_sizes  ; consumers <- client_count; producers <- client_count ) {
+        if( !(consumers == 1 && producers == 1) ) {
+          val name = "%s_%d%s%s_1%s_%d".format(mlabel(size), producers, plabel(persistent), slabel(persistent), destination_type, consumers)
+          benchmark(name) { g=>
+            g.message_size = size
+            g.producers = producers
+            g.persistent = persistent
+            g.sync_send = persistent
+            g.destination_count = consumers
+            g.destination_type = destination_type
+            g.consumers = consumers
+          }
+        }
+      }
+    }
+
+    if( enable_topics && scenario_durable_subs) {
       // Benchmark for durable subscriptions on topics
       for( persistent <- persistence_values ; size <- List(1024)  ; load <- List(5, 20) ) {
         val name = "%s_1%s%s_1topic_%dd".format(mlabel(size), plabel(persistent), slabel(persistent), load)
@@ -213,27 +246,27 @@ class Benchmark extends Action {
       }
     }
 
-    if( benchmark_peristence && benchmark_queue_loading ) {
-      for( sync_send <- List(false, true)) {
+    if( enable_peristence && scenario_queue_loading ) {
+      for( persistent <- List(false, true)) {
         val size = 20
 
-        // Benchmark persistent queue loading
-        val name = "%s_1%s%s_1queue_0".format(mlabel(size), plabel(true), slabel(sync_send))
-        benchmark(name, false) { g=>
+        // Benchmark queue loading
+        val name = "%s_1%s%s_1queue_0".format(mlabel(size), plabel(persistent), slabel(persistent))
+        benchmark(name, false, 30) { g=>
           g.message_size = 20
           g.producers = 1
-          g.sync_send = sync_send
-          g.persistent = true
+          g.sync_send = persistent
+          g.persistent = persistent
           g.destination_count = 1
           g.destination_type = "queue"
           g.consumers = 0
           g.destination_name = "load_me_up"
         }
 
-        // Benchmark persistent queue un-loading
-        if(sync_send) {
-          val name = "%s_1queue_1".format(mlabel(size))
-          benchmark(name) { g=>
+        // Benchmark unloading
+        if(persistent) {
+          val name = "%s_0_1queue_1".format(mlabel(size))
+          benchmark(name, true, 30) { g=>
             g.producers = 0
             g.destination_count = 1
             g.destination_type = "queue"
