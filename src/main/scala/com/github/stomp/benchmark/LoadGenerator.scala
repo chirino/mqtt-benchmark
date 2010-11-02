@@ -56,7 +56,7 @@ class LoadGenerator {
   var port = 61613
   var buffer_size = 64*1204
   var message_size = 1024
-  var enable_content_length=true
+  var content_length=true
   var persistent = false
   var sync_send = false
   var headers = List[String]()
@@ -140,11 +140,10 @@ class LoadGenerator {
     }
   }
 
-  def collect_samples(sample_count:Int):SampleSet = with_load {
+  def collect_samples(sample_count:Int):SampleSet = {
 
     producer_counter.set(0)
     consumer_counter.set(0)
-
     val producer_samples = if( producers > 0 ) {
       Some(ListBuffer[Long]())
     } else {
@@ -157,7 +156,6 @@ class LoadGenerator {
     }
 
     Thread.currentThread.setPriority(Thread.MAX_PRIORITY)
-
     var remaining = sample_count
     while( remaining > 0 ) {
       print(".")
@@ -167,7 +165,6 @@ class LoadGenerator {
       remaining-=1
     }
     println(".")
-
     Thread.currentThread.setPriority(Thread.NORM_PRIORITY)
 
     SampleSet(producer_samples.map(_.toList), consumer_samples.map(_.toList))
@@ -286,7 +283,7 @@ class LoadGenerator {
                { if(persistent) "persistent:true\n" else "" } +
                { if(sync_send) "receipt:xxx\n" else "" } +
                { headers.foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
-               { if(enable_content_length) "content-length:"+message_size+"\n" else "" } +
+               { if(content_length) "content-length:"+message_size+"\n" else "" } +
               "\n"+message(name)).getBytes("UTF-8")
 
 
@@ -458,8 +455,8 @@ message-id:""", msgId,"""
     "producers             = "+producers+"\n"+
     "message_size          = "+message_size+"\n"+
     "persistent            = "+persistent+"\n"+
-    "enable_sync_send      = "+sync_send+"\n"+
-    "enable_content_length = "+enable_content_length+"\n"+
+    "sync_send             = "+sync_send+"\n"+
+    "content_length        = "+content_length+"\n"+
     "producer_sleep        = "+producer_sleep+"\n"+
     "headers               = "+headers+"\n"+
     "\n"+
