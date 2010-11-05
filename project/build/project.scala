@@ -1,6 +1,6 @@
 import sbt._
 
-class HudsonGenProject(info: ProjectInfo) extends DefaultProject(info) {
+class BenchmarkProject(info: ProjectInfo) extends DefaultProject(info) {
 
   lazy val jansi_repo = MavenRepository("jansi","http://jansi.fusesource.org/repo/release")
   lazy val smx_repo = MavenRepository("smx","http://svn.apache.org/repos/asf/servicemix/m2-repo")

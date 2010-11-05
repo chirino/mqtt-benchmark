@@ -68,11 +68,11 @@ class Benchmark extends Action {
   @argument(index=0, name = "name", description = "name of server being benchmarked", required=true)
   var out:String = _
 
-  @option(name = "--enable-topics", description = "enable benchmarking the topic cases")
+  @option(name = "--enable-topics", description = "enable benchmarking the topic scenarios")
   var enable_topics = true
-  @option(name = "--enable-queues", description = "enable benchmarking the queue cases")
+  @option(name = "--enable-queues", description = "enable benchmarking the queue scenarios")
   var enable_queues = true
-  @option(name = "--enable-peristence", description = "enable benchmarking the peristent cases")
+  @option(name = "--enable-peristence", description = "enable benchmarking the peristent scenarios")
   var enable_peristence = true
 
   @option(name = "--scenario-producer-throughput", description = "")
@@ -120,27 +120,27 @@ class Benchmark extends Action {
     null
   }
 
-  protected def create_generator = new LoadGenerator
+  protected def create_scenario = new Scenario
 
-  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count)(init_func: (LoadGenerator)=>Unit ) = {
-    val generator = create_generator
-    generator.sample_interval = 1000
-    generator.host = host
-    generator.port = port
-    init_func(generator)
+  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count)(init_func: (Scenario)=>Unit ) = {
+    val scenario = create_scenario
+    scenario.sample_interval = 1000
+    scenario.host = host
+    scenario.port = port
+    init_func(scenario)
 
-    generator.destination_name = if( generator.destination_type == "queue" )
+    scenario.destination_name = if( scenario.destination_type == "queue" )
        "loadq"
     else
        "loadt"
 
-    print("case  : "+name)
-    val sample_set = generator.with_load {
+    print("scenario  : "+name)
+    val sample_set = scenario.with_load {
       for( i <- 0 until warm_up_count ) {
-        Thread.sleep(generator.sample_interval)
+        Thread.sleep(scenario.sample_interval)
         print(".")
       }
-      generator.collect_samples(sc)
+      scenario.collect_samples(sc)
     }
 
     sample_set.producer_samples.foreach(x=> println("producer samples: "+json_format(x)) )
@@ -148,7 +148,7 @@ class Benchmark extends Action {
 
     samples += name -> sample_set
     if( drain) {
-      generator.drain
+      scenario.drain
     }
   }
 
@@ -189,7 +189,7 @@ class Benchmark extends Action {
       }
     }
 
-    // Benchmark for the queue parallel load use cases
+    // Benchmark for the queue parallel load scenario
     if( scenario_partitioned ) {
 
       val message_sizes = List(20, 1024, 1024 * 256)

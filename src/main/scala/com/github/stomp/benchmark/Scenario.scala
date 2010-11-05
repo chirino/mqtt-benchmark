@@ -35,7 +35,7 @@ case class SampleSet(producer_samples:Option[List[Long]], consumer_samples:Optio
 /**
  * Simulates load on the a stomp broker.
  */
-class LoadGenerator {
+class Scenario {
 
   object Constants {
     val MESSAGE_ID:Array[Byte] = "message-id"
