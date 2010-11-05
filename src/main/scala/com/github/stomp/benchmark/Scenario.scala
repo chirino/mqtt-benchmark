@@ -51,7 +51,7 @@ class Scenario {
   var consumer_sleep = 0
   var producers = 1
   var consumers = 1
-  var sample_interval = 5 * 1000
+  var sample_interval = 1000
   var host = "127.0.0.1"
   var port = 61613
   var buffer_size = 64*1204
@@ -382,10 +382,10 @@ message-id:""", msgId,"""
   }
 
   def run() = {
-
-    println("=======================")
-    println("Press ENTER to shutdown")
-    println("=======================")
+    print(toString)
+    println("--------------------------------------")
+    println("     Running: Press ENTER to stop")
+    println("--------------------------------------")
     println("")
 
     with_load {
@@ -396,7 +396,7 @@ message-id:""", msgId,"""
 
           def printRate(name: String, periodCount:Long, totalCount:Long, nanos: Long) = {
             val rate_per_second: java.lang.Float = ((1.0f * periodCount / nanos) * NANOS_PER_SECOND)
-            println("%s rate: %,.3f per second, total: %,d".format(name, rate_per_second, totalCount))
+            println("%s total: %,d, rate: %,.3f per second".format(name, totalCount, rate_per_second))
           }
 
           try {
@@ -434,38 +434,34 @@ message-id:""", msgId,"""
       sampleThread.join
     }
 
-    println("=======================")
-    println("Shutdown")
-    println("=======================")
-
   }
 
   override def toString() = {
     "--------------------------------------\n"+
-    "StompLoadClient Properties\n"+
+    "Scenario Settings\n"+
     "--------------------------------------\n"+
-    "host                  = "+host+"\n"+
-    "port                  = "+port+"\n"+
-    "destination_type      = "+destination_type+"\n"+
-    "destination_count     = "+destination_count+"\n" +
-    "destination_name      = "+destination_name+"\n" +
-    "sample_interval       = "+sample_interval+"\n" +
-    "\n"+
-    "--- Producer Properties ---\n"+
-    "producers             = "+producers+"\n"+
-    "message_size          = "+message_size+"\n"+
-    "persistent            = "+persistent+"\n"+
-    "sync_send             = "+sync_send+"\n"+
-    "content_length        = "+content_length+"\n"+
-    "producer_sleep        = "+producer_sleep+"\n"+
-    "headers               = "+headers+"\n"+
-    "\n"+
-    "--- Consumer Properties ---\n"+
-    "consumers             = "+consumers+"\n"+
-    "consumer_sleep        = "+consumer_sleep+"\n"+
-    "ack                   = "+ack+"\n"+
-    "selector              = "+selector+"\n"+
-    "durable               = "+durable+"\n"+
+    "  host                  = "+host+"\n"+
+    "  port                  = "+port+"\n"+
+    "  destination_type      = "+destination_type+"\n"+
+    "  destination_count     = "+destination_count+"\n" +
+    "  destination_name      = "+destination_name+"\n" +
+    "  sample_interval (ms)  = "+sample_interval+"\n" +
+    "  \n"+
+    "  --- Producer Properties ---\n"+
+    "  producers             = "+producers+"\n"+
+    "  message_size          = "+message_size+"\n"+
+    "  persistent            = "+persistent+"\n"+
+    "  sync_send             = "+sync_send+"\n"+
+    "  content_length        = "+content_length+"\n"+
+    "  producer_sleep (ms)   = "+producer_sleep+"\n"+
+    "  headers               = "+headers+"\n"+
+    "  \n"+
+    "  --- Consumer Properties ---\n"+
+    "  consumers             = "+consumers+"\n"+
+    "  consumer_sleep (ms)   = "+consumer_sleep+"\n"+
+    "  ack                   = "+ack+"\n"+
+    "  selector              = "+selector+"\n"+
+    "  durable               = "+durable+"\n"+
     ""
 
   }
