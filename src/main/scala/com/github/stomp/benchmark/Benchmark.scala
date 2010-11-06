@@ -221,7 +221,7 @@ class Benchmark extends Action {
             g.producers = producers
             g.persistent = persistent
             g.sync_send = persistent
-            g.destination_count = consumers
+            g.destination_count = 1
             g.destination_type = destination_type
             g.consumers = consumers
           }
