@@ -72,7 +72,14 @@ class Scenario {
   val consumer_counter = new AtomicLong()
   val done = new AtomicBoolean()
 
-  def destination(i:Int) = "/"+destination_type+"/"+destination_name+"-"+(i%destination_count)
+  var queue_prefix = "/queue/"
+  var topic_prefix = "/topic/"
+
+  def destination(i:Int) = destination_type match {
+    case "queue" => queue_prefix+destination_name+"-"+(i%destination_count)
+    case "topic" => topic_prefix+destination_name+"-"+(i%destination_count)
+    case _ => throw new Exception("Unsuported destination type: "+destination_type)
+  }
 
   def with_load[T](func: =>T ):T = {
     done.set(false)
@@ -443,6 +450,8 @@ message-id:""", msgId,"""
     "  host                  = "+host+"\n"+
     "  port                  = "+port+"\n"+
     "  destination_type      = "+destination_type+"\n"+
+    "  queue_prefix          = "+queue_prefix+"\n"+
+    "  topic_prefix          = "+topic_prefix+"\n"+
     "  destination_count     = "+destination_count+"\n" +
     "  destination_name      = "+destination_name+"\n" +
     "  sample_interval (ms)  = "+sample_interval+"\n" +

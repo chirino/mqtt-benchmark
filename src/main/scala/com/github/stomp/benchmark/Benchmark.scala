@@ -86,6 +86,11 @@ class Benchmark extends Action {
   @option(name = "--scenario-durable-subs", description = "")
   var scenario_durable_subs = false
 
+  @option(name = "--queue-prefix", description = "What prefix should use used for queue destiantion names.")
+  var queue_prefix = "/queue/"
+  @option(name = "--topic-prefix", description = "What prefix should use used for topic destiantion names.")
+  var topic_prefix = "/topic/"
+
   var samples = HashMap[String, SampleSet]()
 
 
@@ -127,6 +132,8 @@ class Benchmark extends Action {
     scenario.sample_interval = 1000
     scenario.host = host
     scenario.port = port
+    scenario.queue_prefix = queue_prefix
+    scenario.topic_prefix = topic_prefix
     init_func(scenario)
 
     scenario.destination_name = if( scenario.destination_type == "queue" )
