@@ -47,6 +47,9 @@ class Scenario {
 
   implicit def toByteBuffer(value: String) = value.getBytes("UTF-8")
 
+  var login:String = _
+  var passcode:String = _
+
   var producer_sleep = 0
   var consumer_sleep = 0
   var producers = 1
@@ -244,6 +247,11 @@ class Scenario {
 
   }
 
+  private def o[T](value:T):Option[T] = value match {
+    case null => None
+    case x => Some(x)
+  }
+
   class ClientSupport extends Thread {
 
     var client:StompClient=new StompClient()
@@ -251,10 +259,11 @@ class Scenario {
     def connect(proc: =>Unit ) = {
       try {
         client.open(host, port)
-        client.write("""CONNECT
-
-""")
-        client.receive("CONNECTED")
+        client.write("CONNECT\n%s%s\n".format(
+          o(login).map("login:%s\n".format(_)).getOrElse(""),
+          o(passcode).map("passcode:%s\n".format(_)).getOrElse("")
+        ))
+        client.receive ("CONNECTED")
         proc
       } catch {
         case e: Throwable =>

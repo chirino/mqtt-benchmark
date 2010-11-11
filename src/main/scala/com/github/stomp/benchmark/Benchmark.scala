@@ -60,8 +60,16 @@ class Benchmark extends Action {
   var host = "127.0.0.1"
   @option(name = "--port", description = "server port")
   var port = 61613
+
+  @option(name = "--login", description = "login name to connect with")
+  var login:String = null
+  @option(name = "--passcode", description = "passcode to connect with")
+  var passcode:String = null
+
   @option(name = "--sample-count", description = "number of samples to take")
   var sample_count = 8
+  @option(name = "--sample-interval", description = "number of milli seconds that data is collected.")
+  var sample_interval = 1000
   @option(name = "--warm-up-count", description = "number of warm up samples to ignore")
   var warm_up_count = 3
 
@@ -86,9 +94,9 @@ class Benchmark extends Action {
   @option(name = "--scenario-durable-subs", description = "")
   var scenario_durable_subs = false
 
-  @option(name = "--queue-prefix", description = "What prefix should use used for queue destiantion names.")
+  @option(name = "--queue-prefix", description = "prefix used for queue destiantion names.")
   var queue_prefix = "/queue/"
-  @option(name = "--topic-prefix", description = "What prefix should use used for topic destiantion names.")
+  @option(name = "--topic-prefix", description = "prefix used for topic destiantion names.")
   var topic_prefix = "/topic/"
 
   var samples = HashMap[String, SampleSet]()
@@ -129,9 +137,11 @@ class Benchmark extends Action {
 
   private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count)(init_func: (Scenario)=>Unit ) = {
     val scenario = create_scenario
-    scenario.sample_interval = 1000
+    scenario.sample_interval = sample_interval
     scenario.host = host
     scenario.port = port
+    scenario.login = login
+    scenario.passcode = passcode
     scenario.queue_prefix = queue_prefix
     scenario.topic_prefix = topic_prefix
     init_func(scenario)
