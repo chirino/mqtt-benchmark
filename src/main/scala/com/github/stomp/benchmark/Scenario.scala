@@ -23,15 +23,6 @@ import java.net._
 import java.io._
 import scala.collection.mutable.ListBuffer
 
-case class SampleSet(producer_samples:Option[List[Long]], consumer_samples:Option[List[Long]])
-
-//object LoadGenerator {
-//  def main(args:Array[String]) = {
-//    val g = new LoadGenerator()
-//    g.run
-//  }
-//}
-
 /**
  * Simulates load on the a stomp broker.
  */
@@ -150,7 +141,7 @@ class Scenario {
     }
   }
 
-  def collect_samples(sample_count:Int):SampleSet = {
+  def collect_samples(sample_count:Int) = {
 
     producer_counter.set(0)
     consumer_counter.set(0)
@@ -177,7 +168,10 @@ class Scenario {
     println(".")
     Thread.currentThread.setPriority(Thread.NORM_PRIORITY)
 
-    SampleSet(producer_samples.map(_.toList), consumer_samples.map(_.toList))
+    var rc = Map[String, List[Long]]()
+    producer_samples.foreach(samples=> rc += "p"-> samples.toList)
+    consumer_samples.foreach(samples=> rc += "c"-> samples.toList)
+    rc
   }
 
   /**

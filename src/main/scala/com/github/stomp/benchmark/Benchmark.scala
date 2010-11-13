@@ -99,7 +99,7 @@ class Benchmark extends Action {
   @option(name = "--topic-prefix", description = "prefix used for topic destiantion names.")
   var topic_prefix = "/topic/"
 
-  var samples = HashMap[String, SampleSet]()
+  var samples = HashMap[String, List[Long]]()
 
 
   def json_format(value:Option[List[Long]]):String = {
@@ -121,8 +121,7 @@ class Benchmark extends Action {
 
     os.println("{")
     os.println(samples.map { case (name, sample)=>
-      """|  "p_%s": %s,
-         |  "c_%s": %s""".stripMargin.format(name, json_format(sample.producer_samples), name, json_format(sample.consumer_samples))
+      """  "%s": %s""".format(name, json_format(sample))
     }.mkString(",\n"))
     os.println("}")
 
@@ -160,10 +159,7 @@ class Benchmark extends Action {
       scenario.collect_samples(sc)
     }
 
-    sample_set.producer_samples.foreach(x=> println("producer samples: "+json_format(x)) )
-    sample_set.consumer_samples.foreach(x=> println("consumer samples: "+json_format(x)) )
-
-    samples += name -> sample_set
+    samples ++= sample_set.map(x=> (x._1+"_"+name, x._2))
     if( drain) {
       scenario.drain
     }
