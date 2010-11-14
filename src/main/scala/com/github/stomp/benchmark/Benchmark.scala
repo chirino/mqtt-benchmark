@@ -111,14 +111,14 @@ class Benchmark extends Action {
   }
 
   def execute(session: CommandSession): AnyRef = {
-    val file = new File(out+".json")
-    val os = new PrintStream(new FileOutputStream(file))
     println("===================================================================")
     println("Benchmarking Stomp Server at: %s:%d".format(host, port))
     println("===================================================================")
 
     run_benchmarks
 
+    val file = new File(out+".json")
+    val os = new PrintStream(new FileOutputStream(file))
     os.println("{")
     os.println(samples.map { case (name, sample)=>
       """  "%s": %s""".format(name, json_format(sample))
@@ -164,7 +164,7 @@ class Benchmark extends Action {
       }
     }
 
-    print("scenario  : %s".format(names.mkString(" and ")))
+    print("scenario  : %s ".format(names.mkString(" and ")))
 
     def with_load[T](s:List[Scenario])(proc: => T):T = {
       s.headOption match {
@@ -204,7 +204,7 @@ class Benchmark extends Action {
     Thread.currentThread.setPriority(Thread.NORM_PRIORITY)
 
     if( drain) {
-      scenarios.foreach( _.drain )
+      scenarios.headOption.foreach( _.drain )
     }
   }
 
@@ -228,6 +228,27 @@ class Benchmark extends Action {
     if( enable_topics ) {
       destination_types ::= "topic"
     }
+
+    for( dt <- destination_types) {
+      multi_benchmark(List("20b_1a_1%s_1fast".format(dt), "20b_0_1%s_1slow".format(dt))) {
+        case List(fast:Scenario, slow:Scenario) =>
+          fast.message_size = 20
+          fast.producers = 1
+          fast.persistent = false
+          fast.sync_send = false
+          fast.destination_count = 1
+          fast.destination_type = dt
+          fast.consumers = 1
+//          slow.consumer_sleep = 1 // He can only process 1000 /sec
+
+          slow.producers = 0
+          slow.destination_count = 1
+          slow.destination_type = dt
+          slow.consumer_sleep = 100 // He can only process 10 /sec
+          slow.consumers = 1
+      }
+    }
+
     
     if( enable_topics && scenario_producer_throughput ) {
       // Benchmark for figuring out the max producer throughput
