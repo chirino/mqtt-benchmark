@@ -44,7 +44,9 @@ class Scenario {
   var producer_sleep = 0
   var consumer_sleep = 0
   var producers = 1
+  var producers_per_sample = 0
   var consumers = 1
+  var consumers_per_sample = 0
   var sample_interval = 1000
   var host = "127.0.0.1"
   var port = 61613
@@ -64,11 +66,14 @@ class Scenario {
 
   val producer_counter = new AtomicLong()
   val consumer_counter = new AtomicLong()
+  val error_counter = new AtomicLong()
   val done = new AtomicBoolean()
 
   var queue_prefix = "/queue/"
   var topic_prefix = "/topic/"
   var name = "custom"
+
+  var client_stack_size = 1024*100;
 
   private def destination(i:Int) = destination_type match {
     case "queue" => queue_prefix+destination_name+"-"+(i%destination_count)
@@ -84,6 +89,9 @@ class Scenario {
     }
   }
 
+  var producer_threads = List[ProducerThread]()
+  var consumer_threads = List[ConsumerThread]()
+
   def with_load[T](func: =>T ):T = {
     done.set(false)
     var producer_threads = List[ProducerThread]()
@@ -93,7 +101,6 @@ class Scenario {
       thread.start()
     }
 
-    var consumer_threads = List[ConsumerThread]()
     for (i <- 0 until consumers) {
       val thread = new ConsumerThread(i)
       consumer_threads ::= thread
@@ -108,9 +115,11 @@ class Scenario {
       for( thread <- consumer_threads ) {
         thread.shutdown
       }
+      consumer_threads = List()
       for( thread <- producer_threads ) {
         thread.shutdown
       }
+      producer_threads = List()
     }
   }
 
@@ -152,10 +161,13 @@ class Scenario {
 
   var producer_samples:Option[ListBuffer[Long]] = None
   var consumer_samples:Option[ListBuffer[Long]] = None
+  var error_samples = ListBuffer[Long]()
 
   def collection_start: Unit = {
     producer_counter.set(0)
     consumer_counter.set(0)
+    error_counter.set(0)
+
     producer_samples = if (producers > 0) {
       Some(ListBuffer[Long]())
     } else {
@@ -169,14 +181,39 @@ class Scenario {
   }
 
   def collection_sample: Unit = {
+
     producer_samples.foreach(_ += producer_counter.getAndSet(0))
     consumer_samples.foreach(_ += consumer_counter.getAndSet(0))
+    error_samples += error_counter.getAndSet(0)
+
+    // we might need to increment number the producers..
+    for (i <- 0 until producers_per_sample) {
+      val thread = new ProducerThread(producer_threads.length)
+      producer_threads ::= thread
+      thread.start()
+    }
+
+    // we might need to increment number the consumers..
+    for (i <- 0 until consumers_per_sample) {
+      val thread = new ConsumerThread(consumer_threads.length)
+      consumer_threads ::= thread
+      thread.start()
+    }
+
   }
 
   def collection_end: Map[String, scala.List[Long]] = {
     var rc = Map[String, List[Long]]()
-    producer_samples.foreach(samples => rc += "p_"+name -> samples.toList)
-    consumer_samples.foreach(samples => rc += "c_"+name -> samples.toList)
+    producer_samples.foreach{ samples =>
+      rc += "p_"+name -> samples.toList
+      samples.clear
+    }
+    consumer_samples.foreach{ samples =>
+      rc += "c_"+name -> samples.toList
+      samples.clear
+    }
+    rc += "e_"+name -> error_samples.toList
+    error_samples.clear
     rc
   }
 
@@ -253,7 +290,7 @@ class Scenario {
     case x => Some(x)
   }
 
-  class ClientSupport extends Thread {
+  class ClientSupport extends Thread(Thread.currentThread.getThreadGroup, null, "client", client_stack_size) {
 
     var client:StompClient=new StompClient()
 
@@ -270,6 +307,7 @@ class Scenario {
         case e: Throwable =>
           if(!done.get) {
             println("failure occured: "+e)
+            error_counter.incrementAndGet
             try {
               Thread.sleep(1000)
             } catch {
@@ -408,32 +446,38 @@ message-id:""", msgId,"""
     with_load {
 
       // start a sampling thread...
-      val sampleThread = new Thread() {
+      val sample_thread = new Thread() {
         override def run() = {
 
-          def printRate(name: String, periodCount:Long, totalCount:Long, nanos: Long) = {
+          def print_rate(name: String, periodCount:Long, totalCount:Long, nanos: Long) = {
             val rate_per_second: java.lang.Float = ((1.0f * periodCount / nanos) * NANOS_PER_SECOND)
             println("%s total: %,d, rate: %,.3f per second".format(name, totalCount, rate_per_second))
           }
 
           try {
-            var totalProducerCount = 0L
-            var totalConsumerCount = 0L
-            producer_counter.set(0)
-            consumer_counter.set(0)
-            var start = System.nanoTime()
+            var start = System.nanoTime
+            var total_producer_count = 0L
+            var total_consumer_count = 0L
+            var total_error_count = 0L
+            collection_start
             while( !done.get ) {
               Thread.sleep(sample_interval)
-              val end = System.nanoTime()
-              if( producers > 0 ) {
-                val count = producer_counter.getAndSet(0)
-                totalProducerCount += count
-                printRate("Producer", count, totalProducerCount, end - start)
+              val end = System.nanoTime
+              collection_sample
+              val samples = collection_end
+              samples.get("p_custom").foreach { case List(count:Long) =>
+                total_producer_count += count
+                print_rate("Producer", count, total_producer_count, end - start)
               }
-              if( consumers > 0 ) {
-                val count = consumer_counter.getAndSet(0)
-                totalConsumerCount += count
-                printRate("Consumer", count, totalConsumerCount, end - start)
+              samples.get("c_custom").foreach { case List(count:Long) =>
+                total_consumer_count += count
+                print_rate("Consumer", count, total_producer_count, end - start)
+              }
+              samples.get("e_custom").foreach { case List(count:Long) =>
+                if( count!= 0 ) {
+                  total_error_count += count
+                  print_rate("Error", count, total_error_count, end - start)
+                }
               }
               start = end
             }
@@ -442,13 +486,13 @@ message-id:""", msgId,"""
           }
         }
       }
-      sampleThread.start()
+      sample_thread.start()
 
       System.in.read()
       done.set(true)
 
-      sampleThread.interrupt
-      sampleThread.join
+      sample_thread.interrupt
+      sample_thread.join
     }
 
   }
