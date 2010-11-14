@@ -134,34 +134,77 @@ class Benchmark extends Action {
 
   protected def create_scenario = new Scenario
 
-  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count)(init_func: (Scenario)=>Unit ) = {
-    val scenario = create_scenario
-    scenario.sample_interval = sample_interval
-    scenario.host = host
-    scenario.port = port
-    scenario.login = login
-    scenario.passcode = passcode
-    scenario.queue_prefix = queue_prefix
-    scenario.topic_prefix = topic_prefix
-    init_func(scenario)
+  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count)(init_func: (Scenario)=>Unit ):Unit = {
+    multi_benchmark(List(name), drain, sc) { scenarios =>
+      init_func(scenarios.head)
+    }
+  }
 
-    scenario.destination_name = if( scenario.destination_type == "queue" )
-       "loadq"
-    else
-       "loadt"
-
-    print("scenario  : "+name)
-    val sample_set = scenario.with_load {
-      for( i <- 0 until warm_up_count ) {
-        Thread.sleep(scenario.sample_interval)
-        print(".")
-      }
-      scenario.collect_samples(sc)
+  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count)(init_func: (List[Scenario])=>Unit ):Unit = {
+    val scenarios:List[Scenario] = names.map { name=>
+      val scenario = create_scenario
+      scenario.name = name
+      scenario.sample_interval = sample_interval
+      scenario.host = host
+      scenario.port = port
+      scenario.login = login
+      scenario.passcode = passcode
+      scenario.queue_prefix = queue_prefix
+      scenario.topic_prefix = topic_prefix
+      scenario
     }
 
-    samples ++= sample_set.map(x=> (x._1+"_"+name, x._2))
+    init_func(scenarios)
+
+    scenarios.foreach{ scenario=>
+      scenario.destination_name = if( scenario.destination_type == "queue" ) {
+       "loadq"
+      } else {
+       "loadt"
+      }
+    }
+
+    print("scenario  : %s".format(names.mkString(" and ")))
+
+    def with_load[T](s:List[Scenario])(proc: => T):T = {
+      s.headOption match {
+        case Some(senario) =>
+          senario.with_load {
+            with_load(s.drop(1)) {
+              proc
+            }
+          }
+        case None =>
+          proc
+      }
+    }
+
+    Thread.currentThread.setPriority(Thread.MAX_PRIORITY)
+    val sample_set = with_load(scenarios) {
+      for( i <- 0 until warm_up_count ) {
+        Thread.sleep(sample_interval)
+        print(".")
+      }
+      scenarios.foreach(_.collection_start)
+
+      var remaining = sc
+      while( remaining > 0 ) {
+        print(".")
+        Thread.sleep(sample_interval)
+        scenarios.foreach(_.collection_sample)
+        remaining-=1
+      }
+      println(".")
+      scenarios.foreach{ scenario=>
+        val collected = scenario.collection_end
+        collected.foreach(x=> println("%s samples: %s".format(x._1, json_format(x._2)) ))
+        samples ++= collected
+      }
+    }
+    Thread.currentThread.setPriority(Thread.NORM_PRIORITY)
+
     if( drain) {
-      scenario.drain
+      scenarios.foreach( _.drain )
     }
   }
 

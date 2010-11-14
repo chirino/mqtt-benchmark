@@ -68,6 +68,7 @@ class Scenario {
 
   var queue_prefix = "/queue/"
   var topic_prefix = "/topic/"
+  var name = "custom"
 
   def destination(i:Int) = destination_type match {
     case "queue" => queue_prefix+destination_name+"-"+(i%destination_count)
@@ -141,38 +142,36 @@ class Scenario {
     }
   }
 
-  def collect_samples(sample_count:Int) = {
+  var producer_samples:Option[ListBuffer[Long]] = None
+  var consumer_samples:Option[ListBuffer[Long]] = None
 
+  def collection_start: Unit = {
     producer_counter.set(0)
     consumer_counter.set(0)
-    val producer_samples = if( producers > 0 ) {
+    producer_samples = if (producers > 0) {
       Some(ListBuffer[Long]())
     } else {
       None
     }
-    val consumer_samples = if( consumers > 0 ) {
+    consumer_samples = if (consumers > 0) {
       Some(ListBuffer[Long]())
     } else {
       None
     }
+  }
 
-    Thread.currentThread.setPriority(Thread.MAX_PRIORITY)
-    var remaining = sample_count
-    while( remaining > 0 ) {
-      print(".")
-      Thread.sleep(sample_interval)
-      producer_samples.foreach( _ += producer_counter.getAndSet(0) )
-      consumer_samples.foreach( _ += consumer_counter.getAndSet(0) )
-      remaining-=1
-    }
-    println(".")
-    Thread.currentThread.setPriority(Thread.NORM_PRIORITY)
+  def collection_sample: Unit = {
+    producer_samples.foreach(_ += producer_counter.getAndSet(0))
+    consumer_samples.foreach(_ += consumer_counter.getAndSet(0))
+  }
 
+  def collection_end: Map[String, scala.List[Long]] = {
     var rc = Map[String, List[Long]]()
-    producer_samples.foreach(samples=> rc += "p"-> samples.toList)
-    consumer_samples.foreach(samples=> rc += "c"-> samples.toList)
+    producer_samples.foreach(samples => rc += "p_"+name -> samples.toList)
+    consumer_samples.foreach(samples => rc += "c_"+name -> samples.toList)
     rc
   }
+
 
   /**
    * A simple stomp client used for testing purposes
