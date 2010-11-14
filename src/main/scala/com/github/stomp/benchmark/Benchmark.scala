@@ -83,16 +83,20 @@ class Benchmark extends Action {
   @option(name = "--enable-peristence", description = "enable benchmarking the peristent scenarios")
   var enable_peristence = true
 
-  @option(name = "--scenario-producer-throughput", description = "")
+  @option(name = "--scenario-producer-throughput", description = "enable the producer throughput scenarios")
   var scenario_producer_throughput = true
-  @option(name = "--scenario-queue-loading", description = "")
+  @option(name = "--scenario-queue-loading", description = "enable the queue load/unload scenarios")
   var scenario_queue_loading = true
-  @option(name = "--scenario-partitioned", description = "")
+  @option(name = "--scenario-partitioned", description = "enable the partitioned load scenarios")
   var scenario_partitioned = true
-  @option(name = "--scenario-fan-in-out", description = "")
+  @option(name = "--scenario-fan-in-out", description = "enable the fan in/fan out scenarios")
   var scenario_fan_in_out = true
-  @option(name = "--scenario-durable-subs", description = "")
+  @option(name = "--scenario-durable-subs", description = "enable the durable subscription scenarios")
   var scenario_durable_subs = false
+  @option(name = "--scenario-selector", description = "enable the selector based scenarios")
+  var scenario_selector = true
+  @option(name = "--scenario-slow-consumer", description = "enable the slow consumer scenarios")
+  var scenario_slow_consumer = true
 
   @option(name = "--queue-prefix", description = "prefix used for queue destiantion names.")
   var queue_prefix = "/queue/"
@@ -229,27 +233,57 @@ class Benchmark extends Action {
       destination_types ::= "topic"
     }
 
-    for( dt <- destination_types) {
-      multi_benchmark(List("20b_1a_1%s_1fast".format(dt), "20b_0_1%s_1slow".format(dt))) {
-        case List(fast:Scenario, slow:Scenario) =>
-          fast.message_size = 20
-          fast.producers = 1
-          fast.persistent = false
-          fast.sync_send = false
-          fast.destination_count = 1
-          fast.destination_type = dt
-          fast.consumers = 1
-//          slow.consumer_sleep = 1 // He can only process 1000 /sec
+    // Setup a scenario /w fast and slow consumers
+    if(scenario_slow_consumer) {
+      for( dt <- destination_types) {
+        multi_benchmark(List("20b_1a_1%s_1fast".format(dt), "20b_0_1%s_1slow".format(dt))) {
+          case List(fast:Scenario, slow:Scenario) =>
+            fast.message_size = 20
+            fast.producers = 1
+            fast.persistent = false
+            fast.sync_send = false
+            fast.destination_count = 1
+            fast.destination_type = dt
+            fast.consumers = 1
 
-          slow.producers = 0
-          slow.destination_count = 1
-          slow.destination_type = dt
-          slow.consumer_sleep = 100 // He can only process 10 /sec
-          slow.consumers = 1
+            slow.producers = 0
+            slow.destination_count = 1
+            slow.destination_type = dt
+            slow.consumer_sleep = 100 // He can only process 10 /sec
+            slow.consumers = 1
+        }
       }
     }
 
-    
+    // Setup selecting consumers on 1 destination.
+    if( scenario_selector ) {
+      for( dt <- destination_types) {
+        multi_benchmark(List("20b_color_2a_1%s_0".format(dt), "20b_0_1%s_1_red".format(dt), "20b_0_1%s_1_blue".format(dt))) {
+          case List(producer:Scenario, red:Scenario, blue:Scenario) =>
+            producer.message_size = 20
+            producer.producers = 2
+            producer.headers = Array(Array("color:red"), Array("color:blue"))
+            producer.persistent = false
+            producer.sync_send = false
+            producer.destination_count = 1
+            producer.destination_type = dt
+            producer.consumers = 0
+
+            red.producers = 0
+            red.destination_count = 1
+            red.destination_type = dt
+            red.selector = "color='red'"
+            red.consumers = 1
+
+            blue.producers = 0
+            blue.destination_count = 1
+            blue.destination_type = dt
+            blue.selector = "color='blue'"
+            blue.consumers = 1
+        }
+      }
+    }
+
     if( enable_topics && scenario_producer_throughput ) {
       // Benchmark for figuring out the max producer throughput
       for( size <- List(20, 1024, 1024 * 256) ) {

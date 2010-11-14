@@ -53,7 +53,7 @@ class Scenario {
   var content_length=true
   var persistent = false
   var sync_send = false
-  var headers = List[String]()
+  var headers = Array[Array[String]]()
   var ack = "auto"
   var selector:String = null
   var durable = false
@@ -70,10 +70,18 @@ class Scenario {
   var topic_prefix = "/topic/"
   var name = "custom"
 
-  def destination(i:Int) = destination_type match {
+  private def destination(i:Int) = destination_type match {
     case "queue" => queue_prefix+destination_name+"-"+(i%destination_count)
     case "topic" => topic_prefix+destination_name+"-"+(i%destination_count)
     case _ => throw new Exception("Unsuported destination type: "+destination_type)
+  }
+
+  private def headers_for(i:Int) = {
+    if ( headers.isEmpty ) {
+      Array[String]()
+    } else {
+      headers(i%headers.size)
+    }
   }
 
   def with_load[T](func: =>T ):T = {
@@ -291,7 +299,7 @@ class Scenario {
               "destination:"+destination(id)+"\n"+
                { if(persistent) "persistent:true\n" else "" } +
                { if(sync_send) "receipt:xxx\n" else "" } +
-               { headers.foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
+               { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
                { if(content_length) "content-length:"+message_size+"\n" else "" } +
               "\n"+message(name)).getBytes("UTF-8")
 
