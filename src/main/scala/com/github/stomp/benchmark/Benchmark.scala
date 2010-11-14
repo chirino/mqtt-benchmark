@@ -83,6 +83,8 @@ class Benchmark extends Action {
   @option(name = "--enable-peristence", description = "enable benchmarking the peristent scenarios")
   var enable_peristence = true
 
+  @option(name = "--scenario-connection-load-rate", description = "enable the connection load scenarios if set to > 0")
+  var scenario_connection_load_rate = 0
   @option(name = "--scenario-producer-throughput", description = "enable the producer throughput scenarios")
   var scenario_producer_throughput = true
   @option(name = "--scenario-queue-loading", description = "enable the queue load/unload scenarios")
@@ -102,6 +104,9 @@ class Benchmark extends Action {
   var queue_prefix = "/queue/"
   @option(name = "--topic-prefix", description = "prefix used for topic destiantion names.")
   var topic_prefix = "/topic/"
+
+  @option(name = "--client-stack-size", description = "The stack size to allocate for each client thread.")
+  var client_stack_size = 1024*500
 
   var samples = HashMap[String, List[Long]]()
 
@@ -150,6 +155,7 @@ class Benchmark extends Action {
       scenario.name = name
       scenario.sample_interval = sample_interval
       scenario.host = host
+      scenario.client_stack_size=client_stack_size
       scenario.port = port
       scenario.login = login
       scenario.passcode = passcode
@@ -201,7 +207,11 @@ class Benchmark extends Action {
       println(".")
       scenarios.foreach{ scenario=>
         val collected = scenario.collection_end
-        collected.foreach(x=> println("%s samples: %s".format(x._1, json_format(x._2)) ))
+        collected.foreach{ x=>
+          if( !x._1.startsWith("e_") || x._2.find( _ != 0 ).isDefined ) {
+            println("%s samples: %s".format(x._1, json_format(x._2)) )
+          }
+        }
         samples ++= collected
       }
     }
@@ -231,6 +241,20 @@ class Benchmark extends Action {
     }
     if( enable_topics ) {
       destination_types ::= "topic"
+    }
+
+    if(scenario_connection_load_rate > 0 ) {
+      benchmark("20b_Xa_1queue_1", true, 1000) { scenario=>
+        scenario.message_size = 20
+        scenario.producers = 0
+        scenario.producers_per_sample = scenario_connection_load_rate
+        scenario.producer_sleep = 1000*5
+        scenario.persistent = false
+        scenario.sync_send = false
+        scenario.destination_count = 1
+        scenario.destination_type = "queue"
+        scenario.consumers = 1
+      }
     }
 
     // Setup a scenario /w fast and slow consumers

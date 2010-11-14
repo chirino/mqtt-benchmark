@@ -73,7 +73,7 @@ class Scenario {
   var topic_prefix = "/topic/"
   var name = "custom"
 
-  var client_stack_size = 1024*100;
+  var client_stack_size = 1024*500;
 
   private def destination(i:Int) = destination_type match {
     case "queue" => queue_prefix+destination_name+"-"+(i%destination_count)
@@ -168,12 +168,12 @@ class Scenario {
     consumer_counter.set(0)
     error_counter.set(0)
 
-    producer_samples = if (producers > 0) {
+    producer_samples = if (producers > 0 || producers_per_sample>0 ) {
       Some(ListBuffer[Long]())
     } else {
       None
     }
-    consumer_samples = if (consumers > 0) {
+    consumer_samples = if (consumers > 0 || consumers_per_sample>0 ) {
       Some(ListBuffer[Long]())
     } else {
       None
