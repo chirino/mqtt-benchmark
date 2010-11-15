@@ -87,8 +87,6 @@ class Scenario {
   var topic_prefix = "/topic/"
   var name = "custom"
 
-  var client_stack_size = 1024*500;
-
   private def destination(i:Int) = destination_type match {
     case "queue" => queue_prefix+destination_name+"-"+(i%destination_count)
     case "topic" => topic_prefix+destination_name+"-"+(i%destination_count)

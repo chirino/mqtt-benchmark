@@ -56,6 +56,9 @@ object Benchmark {
 @command(scope="stomp", name = "benchmark", description = "The Stomp benchmarking tool")
 class Benchmark extends Action {
 
+  @option(name = "--broker_name", description = "The name of the broker being benchmarked.")
+  var broker_name:String = _
+
   @option(name = "--host", description = "server host name")
   var host = "127.0.0.1"
   @option(name = "--port", description = "server port")
@@ -67,7 +70,7 @@ class Benchmark extends Action {
   var passcode:String = null
 
   @option(name = "--sample-count", description = "number of samples to take")
-  var sample_count = 3
+  var sample_count = 15
   @option(name = "--sample-interval", description = "number of milli seconds that data is collected.")
   var sample_interval = 1000
   @option(name = "--warm-up-count", description = "number of warm up samples to ignore")
@@ -109,9 +112,6 @@ class Benchmark extends Action {
   @option(name = "--topic-prefix", description = "prefix used for topic destiantion names.")
   var topic_prefix = "/topic/"
 
-  @option(name = "--client-stack-size", description = "The stack size to allocate for each client thread.")
-  var client_stack_size = 1024*500
-
   var samples = HashMap[String, List[Long]]()
 
 
@@ -124,8 +124,12 @@ class Benchmark extends Action {
   }
 
   def execute(session: CommandSession): AnyRef = {
+    if( broker_name == null ) {
+      broker_name = out
+    }
+
     println("===================================================================")
-    println("Benchmarking Stomp Server at: %s:%d".format(host, port))
+    println("Benchmarking %s at: %s:%d".format(broker_name, host, port))
     println("===================================================================")
 
     run_benchmarks
@@ -133,6 +137,15 @@ class Benchmark extends Action {
     val file = new File(out+".json")
     val os = new PrintStream(new FileOutputStream(file))
     os.println("{")
+    os.println("""  "benchmark_settings": {""")
+    os.println("""    "broker_name": "%s",""".format(broker_name))
+    os.println("""    "host": "%s",""".format(host))
+    os.println("""    "port": %d,""".format(port))
+    os.println("""    "sample_count": %d,""".format(sample_count))
+    os.println("""    "sample_interval": %d,""".format(sample_interval))
+    os.println("""    "warm_up_count": %d,""".format(warm_up_count))
+    os.println("""    "scenario_connection_scale_rate": %d""".format(scenario_connection_scale_rate))
+    os.println("""  },""")
     os.println(samples.map { case (name, sample)=>
       """  "%s": %s""".format(name, json_format(sample))
     }.mkString(",\n"))
@@ -159,7 +172,6 @@ class Benchmark extends Action {
       scenario.name = name
       scenario.sample_interval = sample_interval
       scenario.host = host
-      scenario.client_stack_size=client_stack_size
       scenario.port = port
       scenario.login = login
       scenario.passcode = passcode
