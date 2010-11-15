@@ -56,6 +56,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.fusesource.hawtdispatch</groupId>
+      <artifactId>hawtdispatch-scala</artifactId>
+      <version>1.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.console</artifactId>
       <version>${karaf-version}</version>

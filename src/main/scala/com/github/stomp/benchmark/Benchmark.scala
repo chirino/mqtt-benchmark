@@ -67,7 +67,7 @@ class Benchmark extends Action {
   var passcode:String = null
 
   @option(name = "--sample-count", description = "number of samples to take")
-  var sample_count = 8
+  var sample_count = 3
   @option(name = "--sample-interval", description = "number of milli seconds that data is collected.")
   var sample_interval = 1000
   @option(name = "--warm-up-count", description = "number of warm up samples to ignore")
@@ -83,8 +83,12 @@ class Benchmark extends Action {
   @option(name = "--enable-peristence", description = "enable benchmarking the peristent scenarios")
   var enable_peristence = true
 
-  @option(name = "--scenario-connection-load-rate", description = "enable the connection load scenarios if set to > 0")
-  var scenario_connection_load_rate = 0
+  @option(name = "--scenario-connection-scale", description = "enable the connection scale scenarios")
+  var scenario_connection_scale = false
+
+  @option(name = "--scenario-connection-scale-rate", description = "enable the connection scale scenarios if set to > 0")
+  var scenario_connection_scale_rate = 50
+
   @option(name = "--scenario-producer-throughput", description = "enable the producer throughput scenarios")
   var scenario_producer_throughput = true
   @option(name = "--scenario-queue-loading", description = "enable the queue load/unload scenarios")
@@ -96,9 +100,9 @@ class Benchmark extends Action {
   @option(name = "--scenario-durable-subs", description = "enable the durable subscription scenarios")
   var scenario_durable_subs = false
   @option(name = "--scenario-selector", description = "enable the selector based scenarios")
-  var scenario_selector = true
+  var scenario_selector = false
   @option(name = "--scenario-slow-consumer", description = "enable the slow consumer scenarios")
-  var scenario_slow_consumer = true
+  var scenario_slow_consumer = false
 
   @option(name = "--queue-prefix", description = "prefix used for queue destiantion names.")
   var queue_prefix = "/queue/"
@@ -143,13 +147,13 @@ class Benchmark extends Action {
 
   protected def create_scenario = new Scenario
 
-  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count)(init_func: (Scenario)=>Unit ):Unit = {
-    multi_benchmark(List(name), drain, sc) { scenarios =>
+  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null)(init_func: (Scenario)=>Unit ):Unit = {
+    multi_benchmark(List(name), drain, sc, is_done) { scenarios =>
       init_func(scenarios.head)
     }
   }
 
-  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count)(init_func: (List[Scenario])=>Unit ):Unit = {
+  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null)(init_func: (List[Scenario])=>Unit ):Unit = {
     val scenarios:List[Scenario] = names.map { name=>
       val scenario = create_scenario
       scenario.name = name
@@ -197,13 +201,24 @@ class Benchmark extends Action {
       }
       scenarios.foreach(_.collection_start)
 
-      var remaining = sc
-      while( remaining > 0 ) {
-        print(".")
-        Thread.sleep(sample_interval)
-        scenarios.foreach(_.collection_sample)
-        remaining-=1
+      if( is_done!=null ) {
+        while( !is_done(scenarios) ) {
+          print(".")
+          Thread.sleep(sample_interval)
+          scenarios.foreach(_.collection_sample)
+        }
+
+      } else {
+        var remaining = sc
+        while( remaining > 0 ) {
+          print(".")
+          Thread.sleep(sample_interval)
+          scenarios.foreach(_.collection_sample)
+          remaining-=1
+        }
       }
+
+
       println(".")
       scenarios.foreach{ scenario=>
         val collected = scenario.collection_end
@@ -243,11 +258,19 @@ class Benchmark extends Action {
       destination_types ::= "topic"
     }
 
-    if(scenario_connection_load_rate > 0 ) {
-      benchmark("20b_Xa_1queue_1", true, 1000) { scenario=>
+    if(scenario_connection_scale ) {
+
+      /** this test keeps going until we start getting a substancial amount of errors */
+      def is_done(scenarios:List[Scenario]):Boolean = {
+        var errors = 0L
+        scenarios.foreach( _.error_samples.lastOption.foreach(x=> errors+=x))
+        return errors >= scenario_connection_scale_rate
+      }
+
+      benchmark("20b_Xa_1queue_1", true, 0, is_done) { scenario=>
         scenario.message_size = 20
         scenario.producers = 0
-        scenario.producers_per_sample = scenario_connection_load_rate
+        scenario.producers_per_sample = scenario_connection_scale_rate
         scenario.producer_sleep = 1000*5
         scenario.persistent = false
         scenario.sync_send = false
