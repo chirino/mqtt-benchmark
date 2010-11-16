@@ -59,12 +59,13 @@ class Scenario {
   var consumer_sleep = 0
   var producers = 1
   var producers_per_sample = 0
+  var producers_disconnect = false
   var consumers = 1
   var consumers_per_sample = 0
   var sample_interval = 1000
   var host = "127.0.0.1"
   var port = 61613
-  var buffer_size = 64*1204
+  var buffer_size = 32*1024
   var message_size = 1024
   var content_length=true
   var persistent = false
@@ -277,11 +278,15 @@ class Scenario {
         val source: DispatchSource = createSource(channel, SelectionKey.OP_CONNECT, queue)
         source.setEventHandler(^{
           try {
-            if (channel.finishConnect) {
+            if (channel!=null && channel.finishConnect) {
               source.release
               read_source = createSource(channel, SelectionKey.OP_READ, queue)
               write_source = createSource(channel, SelectionKey.OP_WRITE, queue)
-              write_source.setEventHandler(^{ write_source.suspend; flush })
+              write_source.setEventHandler(^{
+                if(write_source!=null) {
+                  write_source.suspend; flush
+                }
+              })
               read_buffer.clear.flip
               try {
                 channel.socket.setSoLinger(true, 0)
@@ -410,8 +415,10 @@ class Scenario {
               }
               if( c == 0 ) {
                 read_source.setEventHandler(^{
-                  read_source.suspend
-                  fill
+                  if( read_source!=null ) {
+                    read_source.suspend
+                    fill
+                  }
                 })
                 read_source.resume
                 return
@@ -450,8 +457,10 @@ class Scenario {
             }
             if( c == 0 ) {
               read_source.setEventHandler(^{
-                read_source.suspend
-                fill
+                if( read_source!=null ) {
+                  read_source.suspend
+                  fill
+                }
               })
               read_source.resume
             }
@@ -489,13 +498,15 @@ class Scenario {
 
     def connect(proc: =>Unit) = {
       queue_check
-      open(host, port) {
-        write("CONNECT\n%s%s\n".format(
-          o(login).map("login:%s\n".format(_)).getOrElse(""),
-          o(passcode).map("passcode:%s\n".format(_)).getOrElse("")
-        )) {
-          expecting("CONNECTED") { frame =>
-            proc
+      if( !done.get ) {
+        open(host, port) {
+          write("CONNECT\n%s%s\n".format(
+            o(login).map("login:%s\n".format(_)).getOrElse(""),
+            o(passcode).map("passcode:%s\n".format(_)).getOrElse("")
+          )) {
+            expecting("CONNECTED") { frame =>
+              proc
+            }
           }
         }
       }
@@ -554,13 +565,24 @@ class Scenario {
         shutdown_action
       } else {
         producer_counter.incrementAndGet()
+        if(producers_disconnect) {
+          close
+        }
         if(producer_sleep > 0) {
           queue.after(producer_sleep, TimeUnit.MILLISECONDS) {
-            write_action
+            if(producers_disconnect) {
+              reconnect_action
+            } else {
+              write_action
+            }
           }
         } else {
           queue {
-            write_action
+            if(producers_disconnect) {
+              reconnect_action
+            } else {
+              write_action
+            }
           }
         }
       }

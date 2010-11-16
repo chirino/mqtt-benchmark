@@ -89,8 +89,10 @@ class Benchmark extends Action {
   @option(name = "--scenario-connection-scale", description = "enable the connection scale scenarios")
   var scenario_connection_scale = false
 
-  @option(name = "--scenario-connection-scale-rate", description = "enable the connection scale scenarios if set to > 0")
+  @option(name = "--scenario-connection-scale-rate", description = "How many connection to add after each sample")
   var scenario_connection_scale_rate = 50
+  @option(name = "--scenario-connection-max-samples", description = "The maximum number of sample to take in the connection scale scenario")
+  var scenario_connection_scale_max_samples = 100
 
   @option(name = "--scenario-producer-throughput", description = "enable the producer throughput scenarios")
   var scenario_producer_throughput = true
@@ -270,25 +272,32 @@ class Benchmark extends Action {
       destination_types ::= "topic"
     }
 
+
     if(scenario_connection_scale ) {
 
-      /** this test keeps going until we start getting a substancial amount of errors */
-      def is_done(scenarios:List[Scenario]):Boolean = {
-        var errors = 0L
-        scenarios.foreach( _.error_samples.lastOption.foreach(x=> errors+=x))
-        return errors >= scenario_connection_scale_rate
-      }
+      for( disconnecting <- List(false)) {
 
-      benchmark("20b_Xa_1queue_1", true, 0, is_done) { scenario=>
-        scenario.message_size = 20
-        scenario.producers = 0
-        scenario.producers_per_sample = scenario_connection_scale_rate
-        scenario.producer_sleep = 1000*5
-        scenario.persistent = false
-        scenario.sync_send = false
-        scenario.destination_count = 1
-        scenario.destination_type = "queue"
-        scenario.consumers = 1
+        /** this test keeps going until we start getting a large number of errors */
+        var remaining = scenario_connection_scale_max_samples
+        def is_done(scenarios:List[Scenario]):Boolean = {
+          remaining -= 1;
+          var errors = 0L
+          scenarios.foreach( _.error_samples.lastOption.foreach(x=> errors+=x))
+          return errors >= scenario_connection_scale_rate || remaining <= 0
+        }
+
+        benchmark("20b_Xa%s_1queue_1".format(if(disconnecting) "d" else ""), true, 0, is_done) { scenario=>
+          scenario.message_size = 20
+          scenario.producers = 0
+          scenario.producers_disconnect = disconnecting
+          scenario.producers_per_sample = scenario_connection_scale_rate
+          scenario.producer_sleep = 1000
+          scenario.persistent = false
+          scenario.sync_send = false
+          scenario.destination_count = 1
+          scenario.destination_type = "queue"
+          scenario.consumers = 1
+        }
       }
     }
 
