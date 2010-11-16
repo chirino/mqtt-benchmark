@@ -19,6 +19,10 @@
   <!-- Author: Hiram Chirino <hiram@hiramchirino.com> -->
   <head>
     <script type='text/javascript' src='http://www.google.com/jsapi'></script>
+  	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+  	<script type="text/javascript" src="./fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+  	<script type="text/javascript" src="./fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+  	<link rel="stylesheet" type="text/css" href="./fancybox/jquery.fancybox-1.3.4.css" media="screen" />
     <script type='text/javascript'>
     
       //
@@ -48,7 +52,13 @@
       }
       var broker_samples = {};
       
-      function line_chart(div, scenario) {
+      function line_chart(div, scenario, zoomed) {
+        var pointSize = 1
+        var legend='none'
+        if( zoomed ) {
+          pointSize = 3
+          legend = 'right'
+        }
         var data = new google.visualization.DataTable();
         for(broker in broker_samples) {
           try {
@@ -65,11 +75,11 @@
           chart_title = "Consumer msg/sec"
         }
         var chart = new google.visualization.LineChart(div);
-        chart.draw(data, {title: chart_title, tooltipWidth:300, tooltipHeight:120, legend:'none' });
+        chart.draw(data, {title: chart_title, tooltipWidth:300, tooltipHeight:120, legend:legend, pointSize:pointSize});
       }
       
       google.load('visualization', '1', {'packages':['linechart']});
-      google.load("jquery", "1.4.3");
+      // google.load("jquery", "1.4.3");
       google.setOnLoadCallback(function() {
         var scenarios = new Object();
         for(i = 0; i < broker_names.length; i++) {
@@ -96,6 +106,29 @@
             }
           }
         }
+        
+        $(".zoom").fancybox({
+          'onComplete': function(selectedArray, selectedIndex, options) {
+            var href = $(selectedArray[selectedIndex]).attr('href')
+            var scenario = href.substr(1)
+            $(href).addClass('zoomed')
+            line_chart(document.getElementById(scenario), scenario, true);
+          },
+          'onClosed': function(selectedArray, selectedIndex, options) {
+            var href = $(selectedArray[selectedIndex]).attr('href')
+            var scenario = href.substr(1)
+            $(href).removeClass('zoomed')
+            $(href).parent().removeAttr("style")
+            line_chart(document.getElementById(scenario), scenario);
+          },
+          'width':650,
+          'height':500,
+          'titleShow':false,
+          'autoDimensions':false,
+          'autoScale':false
+        });
+        
+        
       });
     </script>
     
@@ -130,6 +163,8 @@
       .overview { padding: 0 2em; }
       .clear { clear:both; }
       .chart-medium { width: 300px; height: 150px; }
+      .zoomed { width:100%; height: 100%; }
+      .zoom img { width:auto; height: 30px; float:right; position:relative; margin-top: -40px; top:40px; }
       h2 { margin-top:30px;}
     </style>
   </head>
@@ -154,7 +189,7 @@
           specification.  It covers a wide variety of common usage scenarios. 
         </p>
         <div style="padding:1em;">
-          <span class="block" style="padding:1em;"><strong>NOTE:</strong> Click on a data point in the graph to figure out which data points apply to which message server.</span>
+          <span class="block" style="padding:1em;"><strong>NOTE:</strong> Zoom into the graph to see it's legend.</span>
         </div>
         <h2 id="throughput_to_topic">Throughput to an Unsubscribed Topic</h2>
         <p>
@@ -164,13 +199,16 @@
           <tr>
             <td>
               <h3>With a 20 b Playload</h3>
-              <div id='p_20b_1a_1topic_0' class="chart-medium"></div>
+              <a class="zoom" href="#p_20b_1a_1topic_0"><img src="zoom.png"></a>
+              <div><div id='p_20b_1a_1topic_0' class="chart-medium">test</div></div>
             </td><td>
               <h3>With a 1 k Playload</h3>
-              <div id='p_1k_1a_1topic_0' class="chart-medium"></div>
+              <a class="zoom" href="#p_1k_1a_1topic_0"><img src="zoom.png"></a>
+              <div><div id='p_1k_1a_1topic_0' class="chart-medium"></div></div>
             </td><td>
               <h3>With a 256 k Playload</h3>
-              <div id='p_256k_1a_1topic_0' class="chart-medium"></div>
+              <a class="zoom" href="#p_256k_1a_1topic_0"><img src="zoom.png"></a>
+              <div><div id='p_256k_1a_1topic_0' class="chart-medium"></div></div>
             </td>
           </tr>
         </table>
@@ -183,20 +221,23 @@
               <p>
                 A producer sending non-persistent messages with 20 byte payloads to a queue without any attached consumers.
               </p>
-              <div id='p_20b_1a_1queue_0' class="chart-medium"></div>
+              <a class="zoom" href="#p_20b_1a_1queue_0"><img src="zoom.png"></a>
+              <div><div id='p_20b_1a_1queue_0' class="chart-medium"></div></div>
             </td><td>
               <h3>Persistent Load</h3>
               <p>
                 A producer sending persistent messages with 20 byte payloads to a queue without any attached consumers.  Each
                 send requests a receipt to achieve guaranteed delivery.
               </p>
-              <div id='p_20b_1p_1queue_0' class="chart-medium"></div>
+              <a class="zoom" href="#p_20b_1p_1queue_0"><img src="zoom.png"></a>
+              <div><div id='p_20b_1p_1queue_0' class="chart-medium"></div></div>
             </td><td>
               <h3>Unload</h3>
               <p>
                 A consumer receiving the messages previously sent to the queue but without any attached producers.
               </p>
-              <div id='c_20b_0_1queue_1' class="chart-medium"></div>
+              <a class="zoom" href="#c_20b_0_1queue_1"><img src="zoom.png"></a>
+              <div><div id='c_20b_0_1queue_1' class="chart-medium"></div></div>
             </td>
           </tr>
         </table>
@@ -227,68 +268,68 @@
             <table>
               <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
               <tr><th class="block"><div class="r90">1x1x1</div></th><td>
-                <div id='p_20b_1a_1queue_1' class="chart"></div>
-                <div id='c_20b_1a_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_1a_1queue_1"><img src="zoom.png"></a><div><div id='p_20b_1a_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1a_1queue_1"><img src="zoom.png"></a><div><div id='c_20b_1a_1queue_1' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_1a_1queue_1' class="chart"></div>
-                <div id='c_1k_1a_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_1k_1a_1queue_1"><img src="zoom.png"></a><div><div id='p_1k_1a_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_1a_1queue_1"><img src="zoom.png"></a><div><div id='c_1k_1a_1queue_1' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_1a_1queue_1' class="chart"></div>
-                <div id='c_256k_1a_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_256k_1a_1queue_1"><img src="zoom.png"></a><div><div id='p_256k_1a_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_1a_1queue_1"><img src="zoom.png"></a><div><div id='c_256k_1a_1queue_1' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5x5x5</div></th><td>
-                <div id='p_20b_5a_5queue_5' class="chart"></div>
-                <div id='c_20b_5a_5queue_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_5a_5queue_5"><img src="zoom.png"></a><div><div id='p_20b_5a_5queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5a_5queue_5"><img src="zoom.png"></a><div><div id='c_20b_5a_5queue_5' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_5a_5queue_5' class="chart"></div>
-                <div id='c_1k_5a_5queue_5' class="chart"></div>
+                <a class="zoom" href="#p_1k_5a_5queue_5"><img src="zoom.png"></a><div><div id='p_1k_5a_5queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_5a_5queue_5"><img src="zoom.png"></a><div><div id='c_1k_5a_5queue_5' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_5a_5queue_5' class="chart"></div>
-                <div id='c_256k_5a_5queue_5' class="chart"></div>
+                <a class="zoom" href="#p_256k_5a_5queue_5"><img src="zoom.png"></a><div><div id='p_256k_5a_5queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_5a_5queue_5"><img src="zoom.png"></a><div><div id='c_256k_5a_5queue_5' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10x10x10</div></th><td>
-                <div id='p_20b_10a_10queue_10' class="chart"></div>
-                <div id='c_20b_10a_10queue_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_10a_10queue_10"><img src="zoom.png"></a><div><div id='p_20b_10a_10queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10a_10queue_10"><img src="zoom.png"></a><div><div id='c_20b_10a_10queue_10' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_10a_10queue_10' class="chart"></div>
-                <div id='c_1k_10a_10queue_10' class="chart"></div>
+                <a class="zoom" href="#p_1k_10a_10queue_10"><img src="zoom.png"></a><div><div id='p_1k_10a_10queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_10a_10queue_10"><img src="zoom.png"></a><div><div id='c_1k_10a_10queue_10' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_10a_10queue_10' class="chart"></div>
-                <div id='c_256k_10a_10queue_10' class="chart"></div>
+                <a class="zoom" href="#p_256k_10a_10queue_10"><img src="zoom.png"></a><div><div id='p_256k_10a_10queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_10a_10queue_10"><img src="zoom.png"></a><div><div id='c_256k_10a_10queue_10' class="chart"></div></div>
               </td></tr>
             </table>
           </td><td>
             <table>
               <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
               <tr><th class="block"><div class="r90">1x1x1</div></th><td>
-                <div id='p_20b_1p_1queue_1' class="chart"></div>
-                <div id='c_20b_1p_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_1p_1queue_1"><img src="zoom.png"></a><div><div id='p_20b_1p_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1p_1queue_1"><img src="zoom.png"></a><div><div id='c_20b_1p_1queue_1' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_1p_1queue_1' class="chart"></div>
-                <div id='c_1k_1p_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_1k_1p_1queue_1"><img src="zoom.png"></a><div><div id='p_1k_1p_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_1p_1queue_1"><img src="zoom.png"></a><div><div id='c_1k_1p_1queue_1' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_1p_1queue_1' class="chart"></div>
-                <div id='c_256k_1p_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_256k_1p_1queue_1"><img src="zoom.png"></a><div><div id='p_256k_1p_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_1p_1queue_1"><img src="zoom.png"></a><div><div id='c_256k_1p_1queue_1' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5x5x5</div></th><td>
-                <div id='p_20b_5p_5queue_5' class="chart"></div>
-                <div id='c_20b_5p_5queue_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_5p_5queue_5"><img src="zoom.png"></a><div><div id='p_20b_5p_5queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5p_5queue_5"><img src="zoom.png"></a><div><div id='c_20b_5p_5queue_5' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_5p_5queue_5' class="chart"></div>
-                <div id='c_1k_5p_5queue_5' class="chart"></div>
+                <a class="zoom" href="#p_1k_5p_5queue_5"><img src="zoom.png"></a><div><div id='p_1k_5p_5queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_5p_5queue_5"><img src="zoom.png"></a><div><div id='c_1k_5p_5queue_5' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_5p_5queue_5' class="chart"></div>
-                <div id='c_256k_5p_5queue_5' class="chart"></div>
+                <a class="zoom" href="#p_256k_5p_5queue_5"><img src="zoom.png"></a><div><div id='p_256k_5p_5queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_5p_5queue_5"><img src="zoom.png"></a><div><div id='c_256k_5p_5queue_5' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10x10x10</div></th><td>
-                <div id='p_20b_10p_10queue_10' class="chart"></div>
-                <div id='c_20b_10p_10queue_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_10p_10queue_10"><img src="zoom.png"></a><div><div id='p_20b_10p_10queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10p_10queue_10"><img src="zoom.png"></a><div><div id='c_20b_10p_10queue_10' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_10p_10queue_10' class="chart"></div>
-                <div id='c_1k_10p_10queue_10' class="chart"></div>
+                <a class="zoom" href="#p_1k_10p_10queue_10"><img src="zoom.png"></a><div><div id='p_1k_10p_10queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_10p_10queue_10"><img src="zoom.png"></a><div><div id='c_1k_10p_10queue_10' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_10p_10queue_10' class="chart"></div>
-                <div id='c_256k_10p_10queue_10' class="chart"></div>
+                <a class="zoom" href="#p_256k_10p_10queue_10"><img src="zoom.png"></a><div><div id='p_256k_10p_10queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_10p_10queue_10"><img src="zoom.png"></a><div><div id='c_256k_10p_10queue_10' class="chart"></div></div>
               </td></tr>
             </table>
           </td></tr>
@@ -296,68 +337,68 @@
             <table>
               <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
               <tr><th class="block"><div class="r90">1x1x1</div></th><td>
-                <div id='p_20b_1a_1topic_1' class="chart"></div>
-                <div id='c_20b_1a_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_1a_1topic_1"><img src="zoom.png"></a><div><div id='p_20b_1a_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1a_1topic_1"><img src="zoom.png"></a><div><div id='c_20b_1a_1topic_1' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_1a_1topic_1' class="chart"></div>
-                <div id='c_1k_1a_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_1k_1a_1topic_1"><img src="zoom.png"></a><div><div id='p_1k_1a_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_1a_1topic_1"><img src="zoom.png"></a><div><div id='c_1k_1a_1topic_1' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_1a_1topic_1' class="chart"></div>
-                <div id='c_256k_1a_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_256k_1a_1topic_1"><img src="zoom.png"></a><div><div id='p_256k_1a_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_1a_1topic_1"><img src="zoom.png"></a><div><div id='c_256k_1a_1topic_1' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5x5x5</div></th><td>
-                <div id='p_20b_5a_5topic_5' class="chart"></div>
-                <div id='c_20b_5a_5topic_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_5a_5topic_5"><img src="zoom.png"></a><div><div id='p_20b_5a_5topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5a_5topic_5"><img src="zoom.png"></a><div><div id='c_20b_5a_5topic_5' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_5a_5topic_5' class="chart"></div>
-                <div id='c_1k_5a_5topic_5' class="chart"></div>
+                <a class="zoom" href="#p_1k_5a_5topic_5"><img src="zoom.png"></a><div><div id='p_1k_5a_5topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_5a_5topic_5"><img src="zoom.png"></a><div><div id='c_1k_5a_5topic_5' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_5a_5topic_5' class="chart"></div>
-                <div id='c_256k_5a_5topic_5' class="chart"></div>
+                <a class="zoom" href="#p_256k_5a_5topic_5"><img src="zoom.png"></a><div><div id='p_256k_5a_5topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_5a_5topic_5"><img src="zoom.png"></a><div><div id='c_256k_5a_5topic_5' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10x10x10</div></th><td>
-                <div id='p_20b_10a_10topic_10' class="chart"></div>
-                <div id='c_20b_10a_10topic_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_10a_10topic_10"><img src="zoom.png"></a><div><div id='p_20b_10a_10topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10a_10topic_10"><img src="zoom.png"></a><div><div id='c_20b_10a_10topic_10' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_10a_10topic_10' class="chart"></div>
-                <div id='c_1k_10a_10topic_10' class="chart"></div>
+                <a class="zoom" href="#p_1k_10a_10topic_10"><img src="zoom.png"></a><div><div id='p_1k_10a_10topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_10a_10topic_10"><img src="zoom.png"></a><div><div id='c_1k_10a_10topic_10' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_10a_10topic_10' class="chart"></div>
-                <div id='c_256k_10a_10topic_10' class="chart"></div>
+                <a class="zoom" href="#p_256k_10a_10topic_10"><img src="zoom.png"></a><div><div id='p_256k_10a_10topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_10a_10topic_10"><img src="zoom.png"></a><div><div id='c_256k_10a_10topic_10' class="chart"></div></div>
               </td></tr>
             </table>
           </td><td>
             <table>
               <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
               <tr><th class="block"><div class="r90">1x1x1</div></th><td>
-                <div id='p_20b_1p_1topic_1' class="chart"></div>
-                <div id='c_20b_1p_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_1p_1topic_1"><img src="zoom.png"></a><div><div id='p_20b_1p_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1p_1topic_1"><img src="zoom.png"></a><div><div id='c_20b_1p_1topic_1' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_1p_1topic_1' class="chart"></div>
-                <div id='c_1k_1p_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_1k_1p_1topic_1"><img src="zoom.png"></a><div><div id='p_1k_1p_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_1p_1topic_1"><img src="zoom.png"></a><div><div id='c_1k_1p_1topic_1' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_1p_1topic_1' class="chart"></div>
-                <div id='c_256k_1p_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_256k_1p_1topic_1"><img src="zoom.png"></a><div><div id='p_256k_1p_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_1p_1topic_1"><img src="zoom.png"></a><div><div id='c_256k_1p_1topic_1' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5x5x5</div></th><td>
-                <div id='p_20b_5p_5topic_5' class="chart"></div>
-                <div id='c_20b_5p_5topic_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_5p_5topic_5"><img src="zoom.png"></a><div><div id='p_20b_5p_5topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5p_5topic_5"><img src="zoom.png"></a><div><div id='c_20b_5p_5topic_5' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_5p_5topic_5' class="chart"></div>
-                <div id='c_1k_5p_5topic_5' class="chart"></div>
+                <a class="zoom" href="#p_1k_5p_5topic_5"><img src="zoom.png"></a><div><div id='p_1k_5p_5topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_5p_5topic_5"><img src="zoom.png"></a><div><div id='c_1k_5p_5topic_5' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_5p_5topic_5' class="chart"></div>
-                <div id='c_256k_5p_5topic_5' class="chart"></div>
+                <a class="zoom" href="#p_256k_5p_5topic_5"><img src="zoom.png"></a><div><div id='p_256k_5p_5topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_5p_5topic_5"><img src="zoom.png"></a><div><div id='c_256k_5p_5topic_5' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10x10x10</div></th><td>
-                <div id='p_20b_10p_10topic_10' class="chart"></div>
-                <div id='c_20b_10p_10topic_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_10p_10topic_10"><img src="zoom.png"></a><div><div id='p_20b_10p_10topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10p_10topic_10"><img src="zoom.png"></a><div><div id='c_20b_10p_10topic_10' class="chart"></div></div>
               </td><td>
-                <div id='p_1k_10p_10topic_10' class="chart"></div>
-                <div id='c_1k_10p_10topic_10' class="chart"></div>
+                <a class="zoom" href="#p_1k_10p_10topic_10"><img src="zoom.png"></a><div><div id='p_1k_10p_10topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_1k_10p_10topic_10"><img src="zoom.png"></a><div><div id='c_1k_10p_10topic_10' class="chart"></div></div>
               </td><td>
-                <div id='p_256k_10p_10topic_10' class="chart"></div>
-                <div id='c_256k_10p_10topic_10' class="chart"></div>
+                <a class="zoom" href="#p_256k_10p_10topic_10"><img src="zoom.png"></a><div><div id='p_256k_10p_10topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_256k_10p_10topic_10"><img src="zoom.png"></a><div><div id='c_256k_10p_10topic_10' class="chart"></div></div>
               </td></tr>
             </table>
           </td></tr>
@@ -383,68 +424,70 @@
             <table>
               <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
               <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
-                <div id='p_20b_1a_1queue_1' class="chart"></div>
-                <div id='c_20b_1a_1queue_1' class="chart"></div>
+                <!-- 
+                <a class="zoom" href="#p_20b_1a_1queue_1"><img src="zoom.png"></a><div><div id='p_20b_1a_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1a_1queue_1"><img src="zoom.png"></a><div><div id='c_20b_1a_1queue_1' class="chart"></div></div> 
+                -->
               </td><td>
-                <div id='p_20b_5a_1queue_1' class="chart"></div>
-                <div id='c_20b_5a_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_5a_1queue_1"><img src="zoom.png"></a><div><div id='p_20b_5a_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5a_1queue_1"><img src="zoom.png"></a><div><div id='c_20b_5a_1queue_1' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10a_1queue_1' class="chart"></div>
-                <div id='c_20b_10a_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_10a_1queue_1"><img src="zoom.png"></a><div><div id='p_20b_10a_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10a_1queue_1"><img src="zoom.png"></a><div><div id='c_20b_10a_1queue_1' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
-                <div id='p_20b_1a_1queue_5' class="chart"></div>
-                <div id='c_20b_1a_1queue_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_1a_1queue_5"><img src="zoom.png"></a><div><div id='p_20b_1a_1queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1a_1queue_5"><img src="zoom.png"></a><div><div id='c_20b_1a_1queue_5' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_5a_1queue_5' class="chart"></div>
-                <div id='c_20b_5a_1queue_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_5a_1queue_5"><img src="zoom.png"></a><div><div id='p_20b_5a_1queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5a_1queue_5"><img src="zoom.png"></a><div><div id='c_20b_5a_1queue_5' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10a_1queue_5' class="chart"></div>
-                <div id='c_20b_10a_1queue_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_10a_1queue_5"><img src="zoom.png"></a><div><div id='p_20b_10a_1queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10a_1queue_5"><img src="zoom.png"></a><div><div id='c_20b_10a_1queue_5' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
-                <div id='p_20b_1a_1queue_10' class="chart"></div>
-                <div id='c_20b_1a_1queue_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_1a_1queue_10"><img src="zoom.png"></a><div><div id='p_20b_1a_1queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1a_1queue_10"><img src="zoom.png"></a><div><div id='c_20b_1a_1queue_10' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_5a_1queue_10' class="chart"></div>
-                <div id='c_20b_5a_1queue_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_5a_1queue_10"><img src="zoom.png"></a><div><div id='p_20b_5a_1queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5a_1queue_10"><img src="zoom.png"></a><div><div id='c_20b_5a_1queue_10' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10a_1queue_10' class="chart"></div>
-                <div id='c_20b_10a_1queue_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_10a_1queue_10"><img src="zoom.png"></a><div><div id='p_20b_10a_1queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10a_1queue_10"><img src="zoom.png"></a><div><div id='c_20b_10a_1queue_10' class="chart"></div></div>
               </td></tr>
             </table>
           </td><td>
             <table>
               <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
               <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
-                <div id='p_20b_1p_1queue_1' class="chart"></div>
-                <div id='c_20b_1p_1queue_1' class="chart"></div>
+                <!-- <a class="zoom" href="#p_20b_1p_1queue_1"><img src="zoom.png"></a><div><div id='p_20b_1p_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1p_1queue_1"><img src="zoom.png"></a><div><div id='c_20b_1p_1queue_1' class="chart"></div></div> -->
               </td><td>
-                <div id='p_20b_5p_1queue_1' class="chart"></div>
-                <div id='c_20b_5p_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_5p_1queue_1"><img src="zoom.png"></a><div><div id='p_20b_5p_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5p_1queue_1"><img src="zoom.png"></a><div><div id='c_20b_5p_1queue_1' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10p_1queue_1' class="chart"></div>
-                <div id='c_20b_10p_1queue_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_10p_1queue_1"><img src="zoom.png"></a><div><div id='p_20b_10p_1queue_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10p_1queue_1"><img src="zoom.png"></a><div><div id='c_20b_10p_1queue_1' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
-                <div id='p_20b_1p_1queue_5' class="chart"></div>
-                <div id='c_20b_1p_1queue_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_1p_1queue_5"><img src="zoom.png"></a><div><div id='p_20b_1p_1queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1p_1queue_5"><img src="zoom.png"></a><div><div id='c_20b_1p_1queue_5' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_5p_1queue_5' class="chart"></div>
-                <div id='c_20b_5p_1queue_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_5p_1queue_5"><img src="zoom.png"></a><div><div id='p_20b_5p_1queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5p_1queue_5"><img src="zoom.png"></a><div><div id='c_20b_5p_1queue_5' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10p_1queue_5' class="chart"></div>
-                <div id='c_20b_10p_1queue_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_10p_1queue_5"><img src="zoom.png"></a><div><div id='p_20b_10p_1queue_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10p_1queue_5"><img src="zoom.png"></a><div><div id='c_20b_10p_1queue_5' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
-                <div id='p_20b_1p_1queue_10' class="chart"></div>
-                <div id='c_20b_1p_1queue_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_1p_1queue_10"><img src="zoom.png"></a><div><div id='p_20b_1p_1queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1p_1queue_10"><img src="zoom.png"></a><div><div id='c_20b_1p_1queue_10' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_5p_1queue_10' class="chart"></div>
-                <div id='c_20b_5p_1queue_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_5p_1queue_10"><img src="zoom.png"></a><div><div id='p_20b_5p_1queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5p_1queue_10"><img src="zoom.png"></a><div><div id='c_20b_5p_1queue_10' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10p_1queue_10' class="chart"></div>
-                <div id='c_20b_10p_1queue_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_10p_1queue_10"><img src="zoom.png"></a><div><div id='p_20b_10p_1queue_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10p_1queue_10"><img src="zoom.png"></a><div><div id='c_20b_10p_1queue_10' class="chart"></div></div>
               </td></tr>
             </table>
           </td></tr>
@@ -452,68 +495,68 @@
             <table>
               <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
               <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
-                <div id='p_20b_1a_1topic_1' class="chart"></div>
-                <div id='c_20b_1a_1topic_1' class="chart"></div>
+                <!-- <a class="zoom" href="#p_20b_1a_1topic_1"><img src="zoom.png"></a><div><div id='p_20b_1a_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1a_1topic_1"><img src="zoom.png"></a><div><div id='c_20b_1a_1topic_1' class="chart"></div></div> -->
               </td><td>
-                <div id='p_20b_5a_1topic_1' class="chart"></div>
-                <div id='c_20b_5a_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_5a_1topic_1"><img src="zoom.png"></a><div><div id='p_20b_5a_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5a_1topic_1"><img src="zoom.png"></a><div><div id='c_20b_5a_1topic_1' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10a_1topic_1' class="chart"></div>
-                <div id='c_20b_10a_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_10a_1topic_1"><img src="zoom.png"></a><div><div id='p_20b_10a_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10a_1topic_1"><img src="zoom.png"></a><div><div id='c_20b_10a_1topic_1' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
-                <div id='p_20b_1a_1topic_5' class="chart"></div>
-                <div id='c_20b_1a_1topic_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_1a_1topic_5"><img src="zoom.png"></a><div><div id='p_20b_1a_1topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1a_1topic_5"><img src="zoom.png"></a><div><div id='c_20b_1a_1topic_5' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_5a_1topic_5' class="chart"></div>
-                <div id='c_20b_5a_1topic_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_5a_1topic_5"><img src="zoom.png"></a><div><div id='p_20b_5a_1topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5a_1topic_5"><img src="zoom.png"></a><div><div id='c_20b_5a_1topic_5' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10a_1topic_5' class="chart"></div>
-                <div id='c_20b_10a_1topic_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_10a_1topic_5"><img src="zoom.png"></a><div><div id='p_20b_10a_1topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10a_1topic_5"><img src="zoom.png"></a><div><div id='c_20b_10a_1topic_5' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
-                <div id='p_20b_1a_1topic_10' class="chart"></div>
-                <div id='c_20b_1a_1topic_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_1a_1topic_10"><img src="zoom.png"></a><div><div id='p_20b_1a_1topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1a_1topic_10"><img src="zoom.png"></a><div><div id='c_20b_1a_1topic_10' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_5a_1topic_10' class="chart"></div>
-                <div id='c_20b_5a_1topic_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_5a_1topic_10"><img src="zoom.png"></a><div><div id='p_20b_5a_1topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5a_1topic_10"><img src="zoom.png"></a><div><div id='c_20b_5a_1topic_10' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10a_1topic_10' class="chart"></div>
-                <div id='c_20b_10a_1topic_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_10a_1topic_10"><img src="zoom.png"></a><div><div id='p_20b_10a_1topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10a_1topic_10"><img src="zoom.png"></a><div><div id='c_20b_10a_1topic_10' class="chart"></div></div>
               </td></tr>
             </table>
           </td><td>
             <table>
               <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
               <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
-                <div id='p_20b_1p_1topic_1' class="chart"></div>
-                <div id='c_20b_1p_1topic_1' class="chart"></div>
+                <!-- <a class="zoom" href="#p_20b_1p_1topic_1"><img src="zoom.png"></a><div><div id='p_20b_1p_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1p_1topic_1"><img src="zoom.png"></a><div><div id='c_20b_1p_1topic_1' class="chart"></div></div> -->
               </td><td>
-                <div id='p_20b_5p_1topic_1' class="chart"></div>
-                <div id='c_20b_5p_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_5p_1topic_1"><img src="zoom.png"></a><div><div id='p_20b_5p_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5p_1topic_1"><img src="zoom.png"></a><div><div id='c_20b_5p_1topic_1' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10p_1topic_1' class="chart"></div>
-                <div id='c_20b_10p_1topic_1' class="chart"></div>
+                <a class="zoom" href="#p_20b_10p_1topic_1"><img src="zoom.png"></a><div><div id='p_20b_10p_1topic_1' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10p_1topic_1"><img src="zoom.png"></a><div><div id='c_20b_10p_1topic_1' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
-                <div id='p_20b_1p_1topic_5' class="chart"></div>
-                <div id='c_20b_1p_1topic_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_1p_1topic_5"><img src="zoom.png"></a><div><div id='p_20b_1p_1topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1p_1topic_5"><img src="zoom.png"></a><div><div id='c_20b_1p_1topic_5' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_5p_1topic_5' class="chart"></div>
-                <div id='c_20b_5p_1topic_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_5p_1topic_5"><img src="zoom.png"></a><div><div id='p_20b_5p_1topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5p_1topic_5"><img src="zoom.png"></a><div><div id='c_20b_5p_1topic_5' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10p_1topic_5' class="chart"></div>
-                <div id='c_20b_10p_1topic_5' class="chart"></div>
+                <a class="zoom" href="#p_20b_10p_1topic_5"><img src="zoom.png"></a><div><div id='p_20b_10p_1topic_5' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10p_1topic_5"><img src="zoom.png"></a><div><div id='c_20b_10p_1topic_5' class="chart"></div></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
-                <div id='p_20b_1p_1topic_10' class="chart"></div>
-                <div id='c_20b_1p_1topic_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_1p_1topic_10"><img src="zoom.png"></a><div><div id='p_20b_1p_1topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_1p_1topic_10"><img src="zoom.png"></a><div><div id='c_20b_1p_1topic_10' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_5p_1topic_10' class="chart"></div>
-                <div id='c_20b_5p_1topic_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_5p_1topic_10"><img src="zoom.png"></a><div><div id='p_20b_5p_1topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_5p_1topic_10"><img src="zoom.png"></a><div><div id='c_20b_5p_1topic_10' class="chart"></div></div>
               </td><td>
-                <div id='p_20b_10p_1topic_10' class="chart"></div>
-                <div id='c_20b_10p_1topic_10' class="chart"></div>
+                <a class="zoom" href="#p_20b_10p_1topic_10"><img src="zoom.png"></a><div><div id='p_20b_10p_1topic_10' class="chart"></div></div>
+                <a class="zoom" href="#c_20b_10p_1topic_10"><img src="zoom.png"></a><div><div id='c_20b_10p_1topic_10' class="chart"></div></div>
               </td></tr>
             </table>
           </td></tr>
