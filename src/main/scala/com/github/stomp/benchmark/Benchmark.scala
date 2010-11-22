@@ -160,15 +160,15 @@ class Benchmark extends Action {
     null
   }
 
-  protected def create_scenario = new Scenario
+  protected def create_scenario = new BlockingScenario
 
-  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null)(init_func: (Scenario)=>Unit ):Unit = {
-    multi_benchmark(List(name), drain, sc, is_done) { scenarios =>
+  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=true)(init_func: (Scenario)=>Unit ):Unit = {
+    multi_benchmark(List(name), drain, sc, is_done, blocking) { scenarios =>
       init_func(scenarios.head)
     }
   }
 
-  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null)(init_func: (List[Scenario])=>Unit ):Unit = {
+  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=true)(init_func: (List[Scenario])=>Unit ):Unit = {
     val scenarios:List[Scenario] = names.map { name=>
       val scenario = create_scenario
       scenario.name = name
@@ -286,7 +286,7 @@ class Benchmark extends Action {
           return errors >= scenario_connection_scale_rate || remaining <= 0
         }
 
-        benchmark("20b_Xa%s_1queue_1".format(if(disconnecting) "d" else ""), true, 0, is_done) { scenario=>
+        benchmark("20b_Xa%s_1queue_1".format(if(disconnecting) "d" else ""), true, 0, is_done, false) { scenario=>
           scenario.message_size = 20
           scenario.producers = 0
           scenario.producers_disconnect = disconnecting

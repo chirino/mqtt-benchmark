@@ -40,7 +40,7 @@ running `sbt console`
 
 Then at the console you execute:
 
-    scala> val scenario = new com.github.stomp.benchmark.Scenario
+    scala> val scenario = new com.github.stomp.benchmark.BlockingScenario
     scenario: com.github.stomp.benchmark.Scenario = 
     --------------------------------------
     Scenario Settings
