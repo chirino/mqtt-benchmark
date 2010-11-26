@@ -608,31 +608,45 @@ class NonBlockingScenario extends Scenario {
         channel = SocketChannel.open
         channel.configureBlocking(false)
         val source: DispatchSource = createSource(channel, SelectionKey.OP_CONNECT, queue)
-        source.setEventHandler(^{
+
+        def finishConnect = {
           try {
-            if (channel!=null && channel.finishConnect) {
-              source.release
-              read_source = createSource(channel, SelectionKey.OP_READ, queue)
-              write_source = createSource(channel, SelectionKey.OP_WRITE, queue)
-              write_source.setEventHandler(^{
-                if(write_source!=null) {
-                  write_source.suspend; flush
+            if (channel!=null && !channel.isConnected ) {
+              if( channel.finishConnect ) {
+                source.release
+                read_source = createSource(channel, SelectionKey.OP_READ, queue)
+                write_source = createSource(channel, SelectionKey.OP_WRITE, queue)
+                write_source.setEventHandler(^{
+                  if(write_source!=null) {
+                    write_source.suspend; flush
+                  }
+                })
+                read_buffer.clear.flip
+                try {
+                  channel.socket.setSoLinger(true, 0)
+                  channel.socket.setTcpNoDelay(false)
+                } catch { case x => // ignore
                 }
-              })
-              read_buffer.clear.flip
-              try {
-                channel.socket.setSoLinger(true, 0)
-                channel.socket.setTcpNoDelay(false)
-              } catch { case x => // ignore
+                func
+              } else {
+                throw new Exception("Connect timed out")
               }
-              func
             }
           } catch {
             case e:Exception=>
               on_failure(e)
           }
+        }
+        source.setEventHandler(^{
+          finishConnect
         })
         source.resume
+
+        // This should cause a connect timeout after 5 seconds.
+        queue.after(5, TimeUnit.SECONDS) {
+          finishConnect
+        }
+
         channel.connect(new InetSocketAddress(host, port))
 
       } catch {
