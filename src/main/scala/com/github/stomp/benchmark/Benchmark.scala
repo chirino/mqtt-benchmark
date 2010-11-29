@@ -113,6 +113,8 @@ class Benchmark extends Action {
   var queue_prefix = "/queue/"
   @option(name = "--topic-prefix", description = "prefix used for topic destiantion names.")
   var topic_prefix = "/topic/"
+  @option(name = "--blocking-io", description = "Should the clients use blocking io.")
+  var blocking_io = false
 
   var samples = HashMap[String, List[Long]]()
 
@@ -160,17 +162,15 @@ class Benchmark extends Action {
     null
   }
 
-  protected def create_scenario = new BlockingScenario
-
-  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=true)(init_func: (Scenario)=>Unit ):Unit = {
+  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=blocking_io)(init_func: (Scenario)=>Unit ):Unit = {
     multi_benchmark(List(name), drain, sc, is_done, blocking) { scenarios =>
       init_func(scenarios.head)
     }
   }
 
-  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=true)(init_func: (List[Scenario])=>Unit ):Unit = {
+  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=blocking_io)(init_func: (List[Scenario])=>Unit ):Unit = {
     val scenarios:List[Scenario] = names.map { name=>
-      val scenario = create_scenario
+      val scenario = if(blocking) new BlockingScenario else new NonBlockingScenario
       scenario.name = name
       scenario.sample_interval = sample_interval
       scenario.host = host
