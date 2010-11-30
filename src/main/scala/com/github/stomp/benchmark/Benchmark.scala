@@ -76,8 +76,8 @@ class Benchmark extends Action {
   @option(name = "--warm-up-count", description = "number of warm up samples to ignore")
   var warm_up_count = 3
 
-  @argument(index=0, name = "name", description = "name of server being benchmarked", required=true)
-  var out:String = _
+  @argument(index=0, name = "out", description = "The file to store benchmark metrics in", required=true)
+  var out:File = _
 
   @option(name = "--enable-topics", description = "enable benchmarking the topic scenarios")
   var enable_topics = true
@@ -129,7 +129,7 @@ class Benchmark extends Action {
 
   def execute(session: CommandSession): AnyRef = {
     if( broker_name == null ) {
-      broker_name = out
+      broker_name = out.getName.stripSuffix(".json")
     }
 
     println("===================================================================")
@@ -138,8 +138,7 @@ class Benchmark extends Action {
 
     run_benchmarks
 
-    val file = new File(out+".json")
-    val os = new PrintStream(new FileOutputStream(file))
+    val os = new PrintStream(new FileOutputStream(out))
     os.println("{")
     os.println("""  "benchmark_settings": {""")
     os.println("""    "broker_name": "%s",""".format(broker_name))
@@ -157,7 +156,7 @@ class Benchmark extends Action {
 
     os.close
     println("===================================================================")
-    println("Stored: "+file)
+    println("Stored: "+out)
     println("===================================================================")
     null
   }
@@ -272,6 +271,38 @@ class Benchmark extends Action {
       destination_types ::= "topic"
     }
 
+
+    if( enable_peristence && scenario_queue_loading ) {
+      for( persistent <- List(false, true)) {
+        val size = 20
+
+        // Benchmark queue loading
+        val name = "%s_1%s%s_1queue_0".format(mlabel(size), plabel(persistent), slabel(persistent))
+        benchmark(name, false, 30) { g=>
+          g.message_size = 20
+          g.producers = 1
+          g.sync_send = persistent
+          g.persistent = persistent
+          g.destination_count = 1
+          g.destination_type = "queue"
+          g.consumers = 0
+          g.destination_name = "load_me_up"
+        }
+
+        // Benchmark unloading
+        if(persistent) {
+          val name = "%s_0_1queue_1".format(mlabel(size))
+          benchmark(name, true, 30) { g=>
+            g.producers = 0
+            g.destination_count = 1
+            g.destination_type = "queue"
+            g.consumers = 1
+            g.destination_name = "load_me_up"
+          }
+        }
+
+      }
+    }
 
     if(scenario_connection_scale ) {
 
@@ -422,38 +453,6 @@ class Benchmark extends Action {
           g.consumers = load
           g.durable = true
         }
-      }
-    }
-
-    if( enable_peristence && scenario_queue_loading ) {
-      for( persistent <- List(false, true)) {
-        val size = 20
-
-        // Benchmark queue loading
-        val name = "%s_1%s%s_1queue_0".format(mlabel(size), plabel(persistent), slabel(persistent))
-        benchmark(name, false, 30) { g=>
-          g.message_size = 20
-          g.producers = 1
-          g.sync_send = persistent
-          g.persistent = persistent
-          g.destination_count = 1
-          g.destination_type = "queue"
-          g.consumers = 0
-          g.destination_name = "load_me_up"
-        }
-
-        // Benchmark unloading
-        if(persistent) {
-          val name = "%s_0_1queue_1".format(mlabel(size))
-          benchmark(name, true, 30) { g=>
-            g.producers = 0
-            g.destination_count = 1
-            g.destination_type = "queue"
-            g.consumers = 1
-            g.destination_name = "load_me_up"
-          }
-        }
-
       }
     }
 

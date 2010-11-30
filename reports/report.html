@@ -29,8 +29,11 @@
       // Update the following array to add more
       // stomp servers to the comparison 
       //
-      var broker_names = ['apollo-1.0-SNAPSHOT', 'activemq-5.4.1', 'hornetq-2.1.1.Final', 'rabbitmq-0.0.0'];
+      var broker_files = ['apollo-1.0-SNAPSHOT.json', 'activemq-5.4.1.json', 'hornetq-2.1.2.Final.json', 'rabbitmq-0.0.0.json'];
       
+      var broker_samples = [];
+      var sample_interval = 0;
+
       function add_col(table, label, data) { 
         var col = table.getNumberOfColumns();
         table.addColumn('number', label);
@@ -43,14 +46,14 @@
               table.setValue(i, j, 0);
             }
           }
-          table.setValue(i, col, data[i]);
+          
+          table.setValue(i, col, data[i]*1000/sample_interval);
         }
         // fill in unset values..
         for(i=data.length ; i < table.getNumberOfRows(); i++ ) {
           table.setValue(i, col, 0);
         }
       }
-      var broker_samples = {};
       
       function line_chart(div, scenario, zoomed) {
         var pointSize = 1
@@ -60,10 +63,10 @@
           legend = 'right'
         }
         var data = new google.visualization.DataTable();
-        for(broker in broker_samples) {
+        for(i in broker_samples) {
           try {
-            if( broker_samples[broker][scenario] !=null ) {
-              add_col(data, broker, broker_samples[broker][scenario]);
+            if( broker_samples[i][scenario] !=null ) {
+              add_col(data, broker_samples[i].benchmark_settings.broker_name, broker_samples[i][scenario]);
             }
           } catch(ignore){
           }
@@ -82,15 +85,23 @@
       // google.load("jquery", "1.4.3");
       google.setOnLoadCallback(function() {
         var scenarios = new Object();
-        for(i = 0; i < broker_names.length; i++) {
-          var name = broker_names[i];
-          $.ajax({ url: name+'.json', async:false, success: function(data) {
+        for(i = 0; i < broker_files.length; i++) {
+          $.ajax({ url: broker_files[i], async:false, success: function(data) {
             if( typeof data == 'string' ) {
-              broker_samples[name] = $.parseJSON( data );
+              broker_samples[i] = $.parseJSON( data );
             } else {
-              broker_samples[name] = data;
+              broker_samples[i] = data;
             }
-            for( scenario in broker_samples[name] ) {
+            
+            if( i==0 ) {
+              sample_interval = broker_samples[i].benchmark_settings.sample_interval;
+            } else {
+              if( broker_samples[i].benchmark_settings.sample_interval != sample_interval ) {
+                // We could get fancy and down sample, but for now just raise a warning.
+                alert("The benchmarks in "+broker_files[0]+" and "+broker_files[i]+" were run using different sample intervals.");
+              }
+            }
+            for( scenario in broker_samples[i] ) {
               scenarios[scenario] = true;
             }
           }});
@@ -200,7 +211,7 @@
             <td>
               <h3>With a 20 b Playload</h3>
               <a class="zoom" href="#p_20b_1a_1topic_0"><img src="zoom.png"></a>
-              <div><div id='p_20b_1a_1topic_0' class="chart-medium">test</div></div>
+              <div><div id='p_20b_1a_1topic_0' class="chart-medium"></div></div>
             </td><td>
               <h3>With a 1 k Playload</h3>
               <a class="zoom" href="#p_1k_1a_1topic_0"><img src="zoom.png"></a>

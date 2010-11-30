@@ -15,22 +15,19 @@ of all the command line arguments that the benchmark supports.
 
 For each broker you are benchmarking you will typically execute:
 
-    sbt run foo-3.2
+    sbt run reports/foo-3.2.json
 
-Where foo-3.2 is the Stomp server product and version you are benchmarking.  
 The benchmarking tool will then execute a large number of predefined 
 usage scenarios and gather the performance metrics for each.  Those metrics
-will get stored in a `foo-3.2.json` file.  
+will get stored in a `reports/foo-3.2.json` file.  
 
 ## Updating the Report
 
-The `report.html` file can load and display the results of multiple benchmark runs.
+The `reports/report.html` file can load and display the results of multiple benchmark runs.
 You can updated which benchmark results are displayed by the report.html by editing
-it and updating to the line which defines the `broker_names` variable (around line 28).
+it and updating to the line which defines the `broker_files` variable (around line 32).
 
-    var broker_names = ['foo-3.2', 'cheese-1.0']
-
-The above example will cause the report to display the `foo-3.2.json` and `cheese-1.0.json` files.
+    var broker_files = ['foo-3.2.json', 'cheese-1.0.json']
 
 ## Running a Custom Scenario
 
@@ -40,7 +37,7 @@ running `sbt console`
 
 Then at the console you execute:
 
-    scala> val scenario = new com.github.stomp.benchmark.BlockingScenario
+    scala> val scenario = new com.github.stomp.benchmark.NonBlockingScenario
     scenario: com.github.stomp.benchmark.Scenario = 
     --------------------------------------
     Scenario Settings
@@ -68,7 +65,7 @@ Then at the console you execute:
       selector              = null
       durable               = false
 
-This creates a new Scenario object which you can adjust it's properties and
+This creates a new NonBlockingScenario object which you can adjust it's properties and
 then run by executing `scenario.run`.  For example, to run 10 producers and no
 consumer on a topic, you would update the scenario object properties as follows:
 
@@ -130,7 +127,7 @@ to install, setup, and start the server.
 
 2. Run the benchmark using the default options.  Example:
 
-    sbt run apollo-1.0-SNAPSHOT
+    sbt run reports/apollo-1.0-SNAPSHOT.json
 
 ## Running against ActiveMQ 5.4.1
 
@@ -147,7 +144,7 @@ such is sometimes considered to be the reference implementation for Stomp 1.0.
 
 3. Run the benchmark using the default options.  Example:
 
-    sbt run activemq-5.4.1
+    sbt run reports/activemq-5.4.1.json
 
 ## Running against HornetQ 2.1.1.Final
 
@@ -195,5 +192,5 @@ stomp acceptor:
 4. Run the benchmark with the `--topic-prefix` and `--queue-prefix` options.  For
 example:
 
-    sbt run --topic-prefix=jms.topic. --queue-prefix=jms.queue. hornetq-2.1.1.Final
+    sbt run --topic-prefix=jms.topic. --queue-prefix=jms.queue. reports/hornetq-2.1.1.Final.json
 

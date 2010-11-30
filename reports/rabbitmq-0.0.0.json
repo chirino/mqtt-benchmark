@@ -1,6 +1,6 @@
 {
   "benchmark_settings": {
-    "broker_name": "rabbitmq",
+    "broker_name": "RabbitMQ Source Checkout",
     "host": "127.0.0.1",
     "port": 61613,
     "sample_count": 15,
