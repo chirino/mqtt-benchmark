@@ -86,6 +86,8 @@ trait Scenario {
   var topic_prefix = "/topic/"
   var name = "custom"
 
+  var drain_timeout = 2000L
+
   def run() = {
     print(toString)
     println("--------------------------------------")
@@ -284,7 +286,7 @@ trait Scenario {
       // Keep sleeping until we stop draining messages.
       var drained = 0L
       try {
-        Thread.sleep(1000);
+        Thread.sleep(drain_timeout);
         def done() = {
           val c = consumer_counter.getAndSet(0)
           drained += c
@@ -292,7 +294,7 @@ trait Scenario {
         }
         while( !done ) {
           print(".")
-          Thread.sleep(500);
+          Thread.sleep(drain_timeout);
         }
       } finally {
         done.set(true)

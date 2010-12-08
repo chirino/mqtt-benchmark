@@ -115,8 +115,11 @@ class Benchmark extends Action {
   var topic_prefix = "/topic/"
   @option(name = "--blocking-io", description = "Should the clients use blocking io.")
   var blocking_io = false
+  @option(name = "--drain_timeout", description = "How long to wait for a drain to timeout in ms.")
+  var drain_timeout = 1000L
 
   var samples = HashMap[String, List[Long]]()
+
 
 
   def json_format(value:Option[List[Long]]):String = {
@@ -178,6 +181,7 @@ class Benchmark extends Action {
       scenario.passcode = passcode
       scenario.queue_prefix = queue_prefix
       scenario.topic_prefix = topic_prefix
+      scenario.drain_timeout = drain_timeout
       scenario
     }
 
