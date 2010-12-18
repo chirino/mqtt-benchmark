@@ -116,7 +116,7 @@ class Benchmark extends Action {
   @option(name = "--blocking-io", description = "Should the clients use blocking io.")
   var blocking_io = false
   @option(name = "--drain_timeout", description = "How long to wait for a drain to timeout in ms.")
-  var drain_timeout = 1000L
+  var drain_timeout = 3000L
 
   var samples = HashMap[String, List[Long]]()
 
