@@ -409,6 +409,10 @@ class BlockingScenario extends Scenario {
     def receive(expect:Array[Byte]):Array[Byte] = {
       val rc = receive()
       if( !rc.startsWith(expect) ) {
+        val data = new String(rc)
+        if( data.startsWith("ERROR") ) {
+          println(data)
+        }
         throw new Exception("Expected "+expect)
       }
       rc
@@ -837,7 +841,11 @@ class NonBlockingScenario extends Scenario {
       queue_check
       receive { rc=>
         if( !rc.startsWith(expect) ) {
-          on_failure(new Exception("Expected "+expect+", but got ["+new String(rc)+"]"))
+          val data = new String(rc)
+          if( data.startsWith("ERROR") ) {
+            println(data)
+          }
+          on_failure(new Exception("Expected "+expect))
         } else {
           func(rc)
         }
