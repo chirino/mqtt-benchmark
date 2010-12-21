@@ -124,7 +124,7 @@ trait Scenario {
               }
               samples.get("c_custom").foreach { case List(count:Long) =>
                 total_consumer_count += count
-                print_rate("Consumer", count, total_producer_count, end - start)
+                print_rate("Consumer", count, total_consumer_count, end - start)
               }
               samples.get("e_custom").foreach { case List(count:Long) =>
                 if( count!= 0 ) {
