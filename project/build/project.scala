@@ -6,7 +6,7 @@ class BenchmarkProject(info: ProjectInfo) extends DefaultProject(info) {
   lazy val smx_repo = MavenRepository("smx","http://svn.apache.org/repos/asf/servicemix/m2-repo")
   lazy val fusesource_snapshot_repo = MavenRepository("fusesource-snapshot","http://repo.fusesource.com/nexus/content/repositories/snapshots/")
   
-  lazy val scalate = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.1.0"
+  lazy val karaf_console = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.1.0"
   lazy val slf4j_nop = "org.slf4j" % "slf4j-nop" % "1.6.0"
   lazy val hawtdispatch = "org.fusesource.hawtdispatch" % "hawtdispatch-scala" % "1.1-SNAPSHOT"
 
