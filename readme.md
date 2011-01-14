@@ -125,9 +125,9 @@ project.
 1. Follow the [getting started guide](http://activemq.apache.org/apollo/versions/1.0-SNAPSHOT/website/documentation/getting-started.html) 
 to install, setup, and start the server.
 
-2. Run the benchmark using the default options.  Example:
+2. Run the benchmark with the admin credentials.  Example:
 
-    sbt run reports/apollo-1.0-SNAPSHOT.json
+    sbt run --login admin --password password reports/apollo-1.0-SNAPSHOT.json
 
 ## Running against ActiveMQ 5.4.1
 
@@ -146,7 +146,7 @@ such is sometimes considered to be the reference implementation for Stomp 1.0.
 
     sbt run reports/activemq-5.4.1.json
 
-## Running against HornetQ 2.1.1.Final
+## Running against HornetQ 2.1.2.Final
 
 [HornetQ](http://www.jboss.org/hornetq) provides native Stomp 1.0 Support.
 
@@ -192,5 +192,16 @@ stomp acceptor:
 4. Run the benchmark with the `--topic-prefix` and `--queue-prefix` options.  For
 example:
 
-    sbt run --topic-prefix=jms.topic. --queue-prefix=jms.queue. reports/hornetq-2.1.1.Final.json
+    sbt run --topic-prefix=jms.topic. --queue-prefix=jms.queue. reports/hornetq-2.1.2.Final.json
+
+## Running against RabbitMQ 2.2.0
+
+[RabbitMQ](http://www.rabbitmq.com/) is an erlang based message server..
+
+1. Install RabbitMQ and the [Stomp Plugin](http://www.rabbitmq.com/plugins.html#rabbitmq-stomp).
+
+2. Run the benchmark with the default guest credentatials.  Example:
+
+    sbt run --login guest --password guest reports/rabbitmq-2.2.0.json
+
 
