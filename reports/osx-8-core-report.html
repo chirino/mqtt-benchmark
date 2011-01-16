@@ -29,7 +29,7 @@
       // Update the following array to add more
       // stomp servers to the comparison 
       //
-      var broker_files = ['ubuntu-4-core-data/apollo-1.0-SNAPSHOT.json', 'ubuntu-4-core-data/activemq-5.4.2.json', 'ubuntu-4-core-data/hornetq-2.1.2.Final.json', 'ubuntu-4-core-data/rabbitmq-2.2.0.json'];
+      var broker_files = ['osx-8-core-data/apollo-1.0-SNAPSHOT.json', 'osx-8-core-data/activemq-5.4.1.json', 'osx-8-core-data/hornetq-2.1.2.Final.json', 'osx-8-core-data/rabbitmq-0.0.0.json'];
       
       var broker_samples = [];
       var sample_interval = 0;
@@ -199,23 +199,13 @@
           provides a comparative benchmark of messaging servers that implement the <a href="http://stomp.github.com/stomp-specification-1-0.html"/>Stomp 1.0</a> 
           specification.  It covers a wide variety of common usage scenarios. 
         </p>
-        <p>
-          The benchmark load generator and broker was run on a machine with:
-          <ul>
-	    <li>CPU: Intel(R) Core(TM)2 Quad CPU @ 2.66GHz</li>
-	    <li>Memory: 2 GB</li>
-	    <li>OS: Ubuntu 10.04, Linux Kernel 2.6.32 x86_64</li>
-	    <li>Disk: SATA 5400 RPM</li>
-	    <li>Java: OpenJDK 64-Bit 1.6.0_20</li>
-          </ul>
-        </p>
+        <div style="padding:1em;">
+          <span class="block" style="padding:1em;"><strong>NOTE:</strong> Zoom into the graph to see it's legend.</span>
+        </div>
         <h2 id="throughput_to_topic">Throughput to an Unsubscribed Topic</h2>
         <p>
           A single producer sending non-persistent messages to a topic that does not have an consumers attached.
         </p>
-        <div style="padding:1em;">
-          <span class="block" style="padding:1em;"><strong>NOTE:</strong> Zoom into the graph to see it's legend.</span>
-        </div>
         <table class="charts padded">
           <tr>
             <td>
