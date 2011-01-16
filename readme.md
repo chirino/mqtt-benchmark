@@ -127,7 +127,7 @@ to install, setup, and start the server.
 
 2. Run the benchmark with the admin credentials.  Example:
 
-    sbt run --login admin --password password reports/apollo-1.0-SNAPSHOT.json
+    sbt run --login admin --passcode password reports/apollo-1.0-SNAPSHOT.json
 
 ## Running against ActiveMQ 5.4.1
 
@@ -202,6 +202,6 @@ example:
 
 2. Run the benchmark with the default guest credentatials.  Example:
 
-    sbt run --login guest --password guest reports/rabbitmq-2.2.0.json
+    sbt run --login guest --passcode guest reports/rabbitmq-2.2.0.json
 
 

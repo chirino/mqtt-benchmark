@@ -29,7 +29,7 @@
       // Update the following array to add more
       // stomp servers to the comparison 
       //
-      var broker_files = ['osx-8-core-data/apollo-1.0-SNAPSHOT.json', 'osx-8-core-data/activemq-5.4.1.json', 'osx-8-core-data/hornetq-2.1.2.Final.json', 'osx-8-core-data/rabbitmq-0.0.0.json'];
+      var broker_files = ['osx-8-core-data/apollo-1.0-SNAPSHOT.json', 'osx-8-core-data/activemq-5.4.2.json', 'osx-8-core-data/hornetq-2.1.2.Final.json', 'osx-8-core-data/rabbitmq-2.2.0.json'];
       
       var broker_samples = [];
       var sample_interval = 0;
@@ -197,15 +197,26 @@
         <p>
           This report was generated using the <a href="http://github.com/chirino/stomp-benchmark">stomp-benchmark tool</a>.  It 
           provides a comparative benchmark of messaging servers that implement the <a href="http://stomp.github.com/stomp-specification-1-0.html"/>Stomp 1.0</a> 
-          specification.  It covers a wide variety of common usage scenarios. 
+          specification.  It covers a wide variety of common usage scenarios. Each scenario is warmed up for 3 seconds before the performance samples are taken.
         </p>
-        <div style="padding:1em;">
-          <span class="block" style="padding:1em;"><strong>NOTE:</strong> Zoom into the graph to see it's legend.</span>
-        </div>
+        <p>
+          The benchmark load generator and broker was run on a machine with:
+          <ul>
+            <li>Mac Pro Model: MacPro3,1</li>
+            <li>CPU: 2 x 3 GHz Quad-Core Intel Xeon</li>
+            <li>Memory: 8 GB 800 MHz DDR2</li>
+            <li>OS: Mac OS X 10.6.6</li>
+            <li>Disk: SATA 7200 RPM</li>
+            <li>Java: 64-Bit 1.6.0_22</li>
+          </ul>
+        </p>        
         <h2 id="throughput_to_topic">Throughput to an Unsubscribed Topic</h2>
         <p>
           A single producer sending non-persistent messages to a topic that does not have an consumers attached.
         </p>
+        <div style="padding:1em;">
+          <span class="block" style="padding:1em;"><strong>NOTE:</strong> Zoom into the graph to see it's legend.</span>
+        </div>
         <table class="charts padded">
           <tr>
             <td>
