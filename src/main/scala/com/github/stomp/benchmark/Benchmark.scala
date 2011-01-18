@@ -115,8 +115,11 @@ class Benchmark extends Action {
   var topic_prefix = "/topic/"
   @option(name = "--blocking-io", description = "Should the clients use blocking io.")
   var blocking_io = false
-  @option(name = "--drain_timeout", description = "How long to wait for a drain to timeout in ms.")
+  @option(name = "--drain-timeout", description = "How long to wait for a drain to timeout in ms.")
   var drain_timeout = 3000L
+
+  @option(name = "--persistent-header", description = "The header to set on persistent messages to make them persistent.")
+  var persistent_header = "persistent:true"
 
   var samples = HashMap[String, List[Long]]()
 
@@ -182,6 +185,7 @@ class Benchmark extends Action {
       scenario.queue_prefix = queue_prefix
       scenario.topic_prefix = topic_prefix
       scenario.drain_timeout = drain_timeout
+      scenario.persistent_header = persistent_header
       scenario
     }
 

@@ -67,6 +67,7 @@ trait Scenario {
   var message_size = 1024
   var content_length=true
   var persistent = false
+  var persistent_header = "persistent:true"
   var sync_send = false
   var headers = Array[Array[String]]()
   var ack = "auto"
@@ -459,7 +460,7 @@ class BlockingScenario extends Scenario {
     val name: String = "producer " + id
     val content = ("SEND\n" +
               "destination:"+destination(id)+"\n"+
-               { if(persistent) "persistent:true\n" else "" } +
+               { if(persistent) persistent_header+"\n" else "" } +
                { if(sync_send) "receipt:xxx\n" else "" } +
                { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
                { if(content_length) "content-length:"+message_size+"\n" else "" } +
@@ -884,7 +885,7 @@ class NonBlockingScenario extends Scenario {
     queue.setLabel(name)
     val message_frame:Array[Byte] = "SEND\n" +
               "destination:"+destination(id)+"\n"+
-               { if(persistent) "persistent:true\n" else "" } +
+               { if(persistent) persistent_header+"\n" else "" } +
                { if(sync_send) "receipt:xxx\n" else "" } +
                { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
                { if(content_length) "content-length:"+message_size+"\n" else "" } +

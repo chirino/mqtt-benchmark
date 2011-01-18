@@ -202,8 +202,8 @@ example:
 
 1. Install RabbitMQ and the [Stomp Plugin](http://www.rabbitmq.com/plugins.html#rabbitmq-stomp).
 
-2. Run the benchmark with the default guest credentatials.  Example:
+2. Run the benchmark with the default guest credentatials and the --persistent-header option.  Example:
 
-    sbt run --login guest --passcode guest reports/rabbitmq-2.2.0.json
+    sbt run --login guest --passcode guest --persistent-header delivery-mode:2 reports/rabbitmq-2.2.0.json
 
 
