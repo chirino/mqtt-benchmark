@@ -73,7 +73,8 @@ trait Scenario {
   var ack = "auto"
   var selector:String = null
   var durable = false
-
+  var consumer_prefix = "consumer-"
+  
   var destination_type = "queue"
   var destination_name = "load"
   var destination_count = 1
@@ -179,6 +180,7 @@ trait Scenario {
     "  ack                   = "+ack+"\n"+
     "  selector              = "+selector+"\n"+
     "  durable               = "+durable+"\n"+
+    "  consumer_prefix       = "+consumer_prefix+"\n"+
     ""
 
   }
@@ -508,14 +510,19 @@ class BlockingScenario extends Scenario {
     override def run() {
       while (!done.get) {
         connect {
-          write(
-            "SUBSCRIBE\n" +
-             (if(!durable) {""} else {"id:durable:mysub-"+id+"\n"}) +
-             (if(selector==null) {""} else {"selector: "+selector+"\n"}) +
-             "ack:"+ack+"\n"+
-             "destination:"+destination(id)+"\n"+
-             "\n")
-
+          write("""|SUBSCRIBE
+                 |id:%s
+                 |ack:%s
+                 |destination:%s
+                 |%s%s
+                 |""".stripMargin.format(
+              consumer_prefix+id,
+              ack,
+              destination(id),
+              if(!durable) {""} else {"persistent:true\n"},
+              if(selector==null) {""} else {"selector: "+selector+"\n"}
+            )
+          )
           receive_loop
         }
       }
@@ -974,7 +981,7 @@ class NonBlockingScenario extends Scenario {
                  |destination:%s
                  |%s%s
                  |""".stripMargin.format(
-              "sub-"+id,
+              consumer_prefix+id,
               ack,
               destination(id),
               if(!durable) {""} else {"persistent:true\n"},
