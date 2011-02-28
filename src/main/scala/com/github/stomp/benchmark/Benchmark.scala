@@ -121,6 +121,9 @@ class Benchmark extends Action {
   @option(name = "--persistent-header", description = "The header to set on persistent messages to make them persistent.")
   var persistent_header = "persistent:true"
 
+  @option(name = "--messages-per-connection", description = "The number of messages that are sent before the client reconnect.")
+  var messages_per_connection = -1L
+
   var samples = HashMap[String, List[Long]]()
 
 
@@ -314,7 +317,7 @@ class Benchmark extends Action {
 
     if(scenario_connection_scale ) {
 
-      for( disconnecting <- List(false)) {
+      for( messages_per_connection <- List(-1)) {
 
         /** this test keeps going until we start getting a large number of errors */
         var remaining = scenario_connection_scale_max_samples
@@ -325,10 +328,10 @@ class Benchmark extends Action {
           return errors >= scenario_connection_scale_rate || remaining <= 0
         }
 
-        benchmark("20b_Xa%s_1queue_1".format(if(disconnecting) "d" else ""), true, 0, is_done, false) { scenario=>
+        benchmark("20b_Xa%s_1queue_1".format(messages_per_connection)+"m", true, 0, is_done, false) { scenario=>
           scenario.message_size = 20
           scenario.producers = 0
-          scenario.producers_disconnect = disconnecting
+          scenario.messages_per_connection = messages_per_connection
           scenario.producers_per_sample = scenario_connection_scale_rate
           scenario.producer_sleep = 1000
           scenario.persistent = false

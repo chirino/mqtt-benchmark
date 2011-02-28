@@ -57,7 +57,7 @@ trait Scenario {
   var consumer_sleep = 0
   var producers = 1
   var producers_per_sample = 0
-  var producers_disconnect = false
+
   var consumers = 1
   var consumers_per_sample = 0
   var sample_interval = 1000
@@ -74,7 +74,8 @@ trait Scenario {
   var selector:String = null
   var durable = false
   var consumer_prefix = "consumer-"
-  
+  var messages_per_connection = -1L
+
   var destination_type = "queue"
   var destination_name = "load"
   var destination_count = 1
@@ -172,7 +173,7 @@ trait Scenario {
     "  sync_send             = "+sync_send+"\n"+
     "  content_length        = "+content_length+"\n"+
     "  producer_sleep (ms)   = "+producer_sleep+"\n"+
-    "  headers               = "+headers+"\n"+
+    "  headers               = "+headers.mkString(", ")+"\n"+
     "  \n"+
     "  --- Consumer Properties ---\n"+
     "  consumers             = "+consumers+"\n"+
@@ -361,6 +362,7 @@ class BlockingScenario extends Scenario {
     var out:OutputStream = null
     var in:InputStream = null
     val buffer_size = 64*1204
+    var message_counter=0L
 
     def open(host: String, port: Int) = {
       socket = new Socket
@@ -472,18 +474,22 @@ class BlockingScenario extends Scenario {
     override def run() {
       while (!done.get) {
         connect {
-          var i =0
-          while (!done.get) {
+          var reconnect = false
+          while (!done.get && !reconnect) {
             write(content)
             if( sync_send ) {
               // waits for the reply..
               skip
             }
             producer_counter.incrementAndGet()
+            message_counter += 1
+            if( messages_per_connection > 0 && message_counter >= messages_per_connection ) {
+              message_counter = 0
+              reconnect = true
+            }
             if(producer_sleep > 0) {
               Thread.sleep(producer_sleep)
             }
-            i += 1
           }
         }
       }
@@ -581,268 +587,325 @@ class NonBlockingScenario extends Scenario {
     new ConsumerClient(i)
   }
   
-  trait NonBlockingClient  extends Client {
+  trait NonBlockingClient extends Client {
 
     protected var queue = createQueue("client")
-    protected var channel:SocketChannel = _
-    protected val read_buffer = ByteBuffer.allocate(buffer_size)
-    protected var read_source:DispatchSource = _
-    protected var write_source:DispatchSource = _
 
-    var is_shutdown = false
-    val has_shutdown = new CountDownLatch(1)
-    def reconnect_action:Unit
+    var message_counter=0L
+    var reconnect_delay = 0L
 
-    def start = {
-      queue ^ {
-        reconnect_action
-      }
-    }
+    sealed trait State
 
-    def queue_check = assert(getCurrentQueue == queue)
+    case class INIT() extends State
 
-    def on_failure(e:Throwable) = {
-      queue_check
-      if(done.get) {
-        shutdown_action
-      } else {
-        close
-        error_counter.incrementAndGet
-        queue.after(1000, TimeUnit.MILLISECONDS) {
-          if(!done.get) {
-            reconnect_action
-          }
-        }
-      }
-    }
+    case class CONNECTING(host: String, port: Int, on_complete: ()=>Unit) extends State {
 
-    def open(host: String, port: Int)(func: =>Unit) = {
-      queue_check
-      try {
-        channel = SocketChannel.open
-        channel.configureBlocking(false)
-        val source: DispatchSource = createSource(channel, SelectionKey.OP_CONNECT, queue)
-
-        def finishConnect = {
+      val channel = SocketChannel.open
+      channel.configureBlocking(false)
+      val source: DispatchSource = createSource(channel, SelectionKey.OP_CONNECT, queue)
+      source.setEventHandler(^{
+        if ( this == state ) {
           try {
-            if (channel!=null && !channel.isConnected ) {
-              if( channel.finishConnect ) {
-                source.release
-                read_source = createSource(channel, SelectionKey.OP_READ, queue)
-                write_source = createSource(channel, SelectionKey.OP_WRITE, queue)
-                write_source.setEventHandler(^{
-                  if(write_source!=null) {
-                    write_source.suspend; flush
-                  }
-                })
-                read_buffer.clear.flip
-                try {
-                  channel.socket.setSoLinger(true, 0)
-                  channel.socket.setTcpNoDelay(false)
-                } catch { case x => // ignore
-                }
-                func
-              } else {
-                throw new Exception("Connect timed out")
-              }
+            if( channel.finishConnect ) {
+              source.cancel
+              state = CONNECTED(channel)
+              on_complete()
             }
           } catch {
             case e:Exception=>
               on_failure(e)
           }
         }
-        source.setEventHandler(^{
-          finishConnect
-        })
-        source.resume
+      })
+      source.resume
 
-        // This should cause a connect timeout after 5 seconds.
-        queue.after(5, TimeUnit.SECONDS) {
-          finishConnect
-        }
-
+      def connect() = {
         channel.connect(new InetSocketAddress(host, port))
-
-      } catch {
-        case e:Throwable =>
-          on_failure(e)
+        // Times out the connect after 5 seconds...
+        queue.after(5, TimeUnit.SECONDS) {
+          if ( this == state ) {
+            source.cancel
+            on_failure(new Exception("Connect timed out"))
+          }
+        }
       }
-    }
 
-    protected def shutdown_action = {
-      queue_check
-      if( !is_shutdown ) {
-        is_shutdown = true
-        close()
-        has_shutdown.countDown
-      }
-    }
-
-    def close() = {
-      queue_check
-      if( read_source!=null ) {
-        read_source.release
-        read_source = null
-      }
-      if( write_source!=null ) {
-        write_source.release
-        write_source = null
-      }
-      if( channel!=null ) {
-        channel.close
-        channel = null
-      }
-    }
-
-    var write_stream = new ByteArrayOutputStream(buffer_size*2)
-    var pending_write:ByteBuffer = _
-    var on_flushed: ()=>Unit = _
-
-    def _write(data:Array[Byte]):Boolean = {
-      queue_check
-      if( write_stream.size > buffer_size ) {
-        return false
+      // We may need to delay the connection attempt.
+      if( reconnect_delay==0 ) {
+        connect
       } else {
-        write_stream.write(data)
-        write_stream.write(0)
-        write_stream.write('\n')
-        if( write_stream.size > buffer_size ) {
-          flush
-        }
-        return true;
-      }
-    }
-    
-    def write(data:Array[Byte])(func: =>Unit):Unit = {
-      def do_it:Unit = {
-        on_flushed = null
-        if( !_write(data) ) {
-          on_flushed = ()=>{ do_it }
-        } else {
-          flush
-          func
+        queue.after(5, TimeUnit.SECONDS) {
+          if ( this == state ) {
+            reconnect_delay=0
+            connect
+          }
         }
       }
-      do_it
+
+      def close() = {
+        source.cancel
+        channel.close
+        state = DISCONNECTED()
+      }
+
+      def on_failure(e:Throwable) = {
+        error_counter.incrementAndGet
+        reconnect_delay = 1000
+        close
+      }
+
     }
 
-    def flush:Unit = {
-      queue_check
+    case class CONNECTED(val channel:SocketChannel) extends State {
+
+      var write_stream = new ByteArrayOutputStream(buffer_size*2)
+      var pending_write:ByteBuffer = _
+      var on_flushed: Runnable = _
+      var on_fill: ()=>Unit = null
+
+      val read_buffer = ByteBuffer.allocate(buffer_size)
+      read_buffer.clear.flip
+
+      val read_source = createSource(channel, SelectionKey.OP_READ, queue)
+      read_source.setEventHandler(^{
+        if(state == this) {
+          fill
+        }
+      })
+
+      val write_source = createSource(channel, SelectionKey.OP_WRITE, queue)
+      write_source.setEventHandler(^{
+        if(state == this) {
+          write_source.suspend; flush
+        }
+      })
+
       try {
-        while(pending_write!=null || write_stream.size()!=0 ) {
-          if( pending_write!=null ) {
-            channel.write(pending_write)
-            if( pending_write.hasRemaining ) {
-              if( write_source.isSuspended ) {
-                write_source.resume
-              }
-              return
-            } else {
-              pending_write = null
-            }
-          }
-          if( pending_write==null && write_stream.size()!=0  ) {
-            pending_write = ByteBuffer.wrap(write_stream.toByteArray)
-            write_stream.reset
-          }
-        }
-        if(on_flushed!=null) {
-          on_flushed()
-        }
-      } catch {
-        case e:Throwable =>
-          on_failure(e)
-          return
+        channel.socket.setSoLinger(true, 0)
+        channel.socket.setTcpNoDelay(false)
+      } catch { case x => // ignore
       }
-    }
 
+      def close() = {
+        state = CLOSING()
+        read_source.setCancelHandler(^{
+          write_source.setCancelHandler(^{
+            channel.close
+            state = DISCONNECTED()
+          })
+          write_source.cancel
+        })
+        read_source.cancel
+      }
 
-    def skip(func: =>Unit):Unit = {
-      queue_check
-      def fill:Unit = {
-        if(channel==null) {
-          return
+      def on_failure(e:Throwable) = {
+        error_counter.incrementAndGet
+        reconnect_delay = 1000
+        close
+      }
+
+      def offer_write(data:Array[Byte])(func: =>Unit):Boolean = {
+        if( write_stream.size > buffer_size ) {
+          on_flushed = ^{ func }
+          false
+        } else {
+          write_stream.write(data)
+          write_stream.write(0)
+          write_stream.write('\n')
+          if( write_stream.size > buffer_size ) {
+            flush
+          }
+          true
         }
-        while(true) {
-          if( !read_buffer.hasRemaining ) {
-            try {
-              read_buffer.clear
-              val c = channel.read(read_buffer)
-              read_buffer.flip
-              if( c == -1 ) {
-                on_failure(new IOException("Server disconnected"))
+      }
+
+      def flush(func: =>Unit):Unit = {
+        on_flushed = ^{ func }
+        flush
+      }
+
+      def flush:Unit = {
+        try {
+          while(pending_write!=null || write_stream.size()!=0 ) {
+            if( pending_write!=null ) {
+              channel.write(pending_write)
+              if( pending_write.hasRemaining ) {
+                if( write_source.isSuspended ) {
+                  write_source.resume
+                }
                 return
+              } else {
+                pending_write = null
               }
-              if( c == 0 ) {
-                read_source.setEventHandler(^{
-                  if( read_source!=null ) {
-                    read_source.suspend
-                    fill
-                  }
-                })
-                read_source.resume
-                return
-              }
-            } catch {
-              case e:Exception=>
-                on_failure(e)
+            }
+            if( pending_write==null && write_stream.size()!=0  ) {
+              pending_write = ByteBuffer.wrap(write_stream.toByteArray)
+              write_stream.reset
             }
           }
+          if(on_flushed!=null) {
+            val t = on_flushed
+            on_flushed = null
+            t.run
+          }
+        } catch {
+          case e:Throwable =>
+            on_failure(e)
+            return
+        }
+      }
+
+      def skip(func: =>Unit):Unit = {
+        queue_check
+        def do_it:Unit = {
           while( read_buffer.hasRemaining ) {
             if( read_buffer.get==0 ) {
               func
               return
             }
           }
+          on_fill = ()=> { do_it }
+          refill
+        }
+        do_it
+      }
+
+      def receive(func: Array[Byte]=>Unit) = {
+        var start = true;
+        val buffer = new ByteArrayOutputStream()
+
+        def do_it:Unit = {
+          while( read_buffer.hasRemaining ) {
+            val c = read_buffer.get
+            if( c==0 ) {
+              func(buffer.toByteArray)
+              return
+            }
+            if( !start || c!= NEWLINE) {
+              start = false
+              buffer.write(c)
+            }
+          }
+          on_fill = ()=> { do_it }
+          refill
+        }
+        do_it
+      }
+
+
+      def refill:Unit = {
+        read_buffer.compact
+        read_source.resume
+        queue {
+          fill
         }
       }
-      fill
+
+      def fill:Unit = {
+        if( !read_buffer.hasRemaining ) {
+          on_fill()
+          return
+        }
+        try {
+          val c = channel.read(read_buffer)
+          if( c == -1 ) {
+            throw new IOException("Server disconnected")
+          }
+          if( c > 0 ) {
+            read_source.suspend
+            read_buffer.flip
+            if( on_fill!=null ){
+              on_fill()
+            }
+          }
+        } catch {
+          case e:Exception=>
+            on_failure(e)
+        }
+      }
+
+    }
+    case class CLOSING() extends State
+
+    case class DISCONNECTED() extends State {
+      queue {
+        if( state==this ){
+          if( done.get ) {
+            has_shutdown.countDown
+          } else {
+            reconnect_action
+          }
+        }
+      }
+    }
+
+    var state:State = INIT()
+
+    val has_shutdown = new CountDownLatch(1)
+    def reconnect_action:Unit
+
+    def on_failure(e:Throwable) = state match {
+      case x:CONNECTING => x.on_failure(e)
+      case x:CONNECTED => x.on_failure(e)
+      case _ =>
+    }
+
+    def start = queue {
+      state = DISCONNECTED()
+    }
+
+    def queue_check = assert(getCurrentQueue == queue)
+
+    def open(host: String, port: Int)(on_complete: =>Unit) = {
+      assert ( state.isInstanceOf[DISCONNECTED] )
+      queue_check
+      state = CONNECTING(host, port, ()=>on_complete)
+    }
+
+    def close() = {
+      queue_check
+      state match {
+        case x:CONNECTING => x.close
+        case x:CONNECTED => x.close
+        case _ =>
+      }
+    }
+
+    def shutdown = {
+      assert(done.get)
+      queue {
+        close
+      }
+      has_shutdown.await()
+    }
+
+    def offer_write(data:Array[Byte])(func: =>Unit):Boolean = {
+      queue_check
+      state.asInstanceOf[CONNECTED].offer_write(data)(func)
+    }
+    
+    def write(data:Array[Byte])(func: =>Unit):Unit = {
+      def retry:Unit = {
+        if( offer_write(data)(retry) ) {
+          flush(func)
+        }
+      }
+      retry
+    }
+
+    def flush(func: =>Unit):Unit = {
+      queue_check
+      state.asInstanceOf[CONNECTED].flush(func)
+    }
+
+    def skip(func: =>Unit):Unit = {
+      queue_check
+      state.asInstanceOf[CONNECTED].skip(func)
     }
 
     def receive(func: Array[Byte]=>Unit) = {
       queue_check
-      var start = true;
-      val buffer = new ByteArrayOutputStream()
-      def fill:Unit = {
-        if(channel==null) {
-          return
-        }
-        if( !read_buffer.hasRemaining ) {
-          try {
-            read_buffer.clear
-            val c = channel.read(read_buffer)
-            if( c == -1 ) {
-              on_failure(new IOException("Server disconnected"))
-              return
-            }
-            if( c == 0 ) {
-              read_source.setEventHandler(^{
-                if( read_source!=null ) {
-                  read_source.suspend
-                  fill
-                }
-              })
-              read_source.resume
-            }
-            read_buffer.flip
-          } catch {
-            case e:Exception=>
-              on_failure(e)
-          }
-        }
-        while( read_buffer.hasRemaining ) {
-          val c = read_buffer.get
-          if( c==0 ) {
-            func(buffer.toByteArray)
-            return
-          }
-          if( !start || c!= NEWLINE) {
-            start = false
-            buffer.write(c)
-          }
-        }
-      }
-      fill
+      state.asInstanceOf[CONNECTED].receive(func)
     }
 
     def expecting(expect:String)(func: Array[Byte]=>Unit):Unit = {
@@ -876,15 +939,7 @@ class NonBlockingScenario extends Scenario {
       }
     }
 
-    def shutdown = {
-      queue {
-        shutdown_action
-      }
-      has_shutdown.await()
-    }
-
     def name:String
-
   }
 
   class ProducerClient(val id: Int) extends NonBlockingClient {
@@ -905,45 +960,50 @@ class NonBlockingScenario extends Scenario {
     }
 
     def write_action:Unit = {
-      on_flushed = null
       if(done.get) {
-        shutdown_action
+        close
       } else {
-        if( !_write(message_frame) ) {
-          on_flushed = ()=>{ write_action }
-        } else {
-          if( sync_send ) {
-            flush
-            skip {
+        def retry:Unit = {
+          if( offer_write(message_frame)(retry) ) {
+            if( sync_send ) {
+              flush {
+                skip {
+                  write_completed_action
+                }
+              }
+            } else {
               write_completed_action
             }
-          } else {
-            write_completed_action
           }
         }
+        retry
       }
     }
 
     def write_completed_action:Unit = {
       if(done.get) {
-        shutdown_action
+        close
       } else {
         producer_counter.incrementAndGet()
-        if(producers_disconnect) {
-          close
-        }
+        message_counter += 1
         if(producer_sleep > 0) {
-          queue.after(producer_sleep, TimeUnit.MILLISECONDS) {
-            if(producers_disconnect) {
-              reconnect_action
-            } else {
-              write_action
+          flush {
+            queue.after(producer_sleep, TimeUnit.MILLISECONDS) {
+              if(messages_per_connection > 0 && message_counter >= messages_per_connection  ) {
+                message_counter = 0
+                close
+              } else {
+                write_action
+              }
             }
           }
         } else {
           queue {
-            if(producers_disconnect) {
-              reconnect_action
+            if(messages_per_connection > 0 && message_counter >= messages_per_connection  ) {
+              message_counter = 0
+              flush {
+                close
+              }
             } else {
               write_action
             }
