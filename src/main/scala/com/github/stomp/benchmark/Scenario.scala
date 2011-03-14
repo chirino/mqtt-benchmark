@@ -881,7 +881,10 @@ class NonBlockingScenario extends Scenario {
 
     def offer_write(data:Array[Byte])(func: =>Unit):Boolean = {
       queue_check
-      state.asInstanceOf[CONNECTED].offer_write(data)(func)
+      state match {
+        case state:CONNECTED => state.offer_write(data)(func)
+        case _ => true
+      }
     }
     
     def write(data:Array[Byte])(func: =>Unit):Unit = {
@@ -895,17 +898,26 @@ class NonBlockingScenario extends Scenario {
 
     def flush(func: =>Unit):Unit = {
       queue_check
-      state.asInstanceOf[CONNECTED].flush(func)
+      state match {
+        case state:CONNECTED => state.flush(func)
+        case _ =>
+      }
     }
 
     def skip(func: =>Unit):Unit = {
       queue_check
-      state.asInstanceOf[CONNECTED].skip(func)
+      state match {
+        case state:CONNECTED => state.skip(func)
+        case _ =>
+      }
     }
 
     def receive(func: Array[Byte]=>Unit) = {
       queue_check
-      state.asInstanceOf[CONNECTED].receive(func)
+      state match {
+        case state:CONNECTED => state.receive(func)
+        case _ =>
+      }
     }
 
     def expecting(expect:String)(func: Array[Byte]=>Unit):Unit = {
