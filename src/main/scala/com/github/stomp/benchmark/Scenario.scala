@@ -21,14 +21,14 @@ import java.util.concurrent.atomic._
 import java.util.concurrent.TimeUnit._
 import scala.collection.mutable.ListBuffer
 
-object Example {
-  def main(args:Array[String]):Unit = {
-    val scenario = new com.github.stomp.benchmark.NonBlockingScenario
-    scenario.login = "admin"
-    scenario.passcode = "password"
-    scenario.run
-  }
-}
+//object Example {
+//  def main(args:Array[String]):Unit = {
+//    val scenario = new com.github.stomp.benchmark.NonBlockingScenario
+//    scenario.login = "admin"
+//    scenario.passcode = "password"
+//    scenario.run
+//  }
+//}
 
 object Scenario {
   val MESSAGE_ID:Array[Byte] = "message-id"
