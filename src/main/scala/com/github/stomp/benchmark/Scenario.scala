@@ -53,8 +53,16 @@ trait Scenario {
   var login:String = _
   var passcode:String = _
 
-  var producer_sleep = 0
-  var consumer_sleep = 0
+  private var _producer_sleep: { def apply(): Int; def init(time: Long) } = new { def apply() = 0; def init(time: Long) {}  }
+  def producer_sleep = _producer_sleep()
+  def producer_sleep_= (new_value: Int) = _producer_sleep = new { def apply() = new_value; def init(time: Long) {}  }
+  def producer_sleep_= (new_func: { def apply(): Int; def init(time: Long) }) = _producer_sleep = new_func
+
+  private var _consumer_sleep: { def apply(): Int; def init(time: Long) } = new { def apply() = 0; def init(time: Long) {}  }
+  def consumer_sleep = _consumer_sleep()
+  def consumer_sleep_= (new_value: Int) = _consumer_sleep = new { def apply() = new_value; def init(time: Long) {}  }
+  def consumer_sleep_= (new_func: { def apply(): Int; def init(time: Long) }) = _consumer_sleep = new_func
+
   var producers = 1
   var producers_per_sample = 0
 
@@ -77,7 +85,10 @@ trait Scenario {
   var messages_per_connection = -1L
 
   var destination_type = "queue"
-  var destination_name = "load"
+  private var _destination_name: () => String = () => "load"
+  def destination_name = _destination_name()
+  def destination_name_=(new_name: String) = _destination_name = () => new_name
+  def destination_name_=(new_func: () => String) = _destination_name = new_func
   var destination_count = 1
 
   val producer_counter = new AtomicLong()
@@ -189,6 +200,8 @@ trait Scenario {
   protected def destination(i:Int) = destination_type match {
     case "queue" => queue_prefix+destination_name+"-"+(i%destination_count)
     case "topic" => topic_prefix+destination_name+"-"+(i%destination_count)
+    case "raw_queue" => destination_name
+    case "raw_topic" => destination_name
     case _ => throw new Exception("Unsuported destination type: "+destination_type)
   }
 
@@ -247,6 +260,9 @@ trait Scenario {
   def with_load[T](func: =>T ):T = {
     done.set(false)
 
+    _producer_sleep.init(System.currentTimeMillis())
+    _consumer_sleep.init(System.currentTimeMillis())
+
     for (i <- 0 until producers) {
       val client = createProducer(i)
       producer_clients ::= client
@@ -277,7 +293,7 @@ trait Scenario {
 
   def drain = {
     done.set(false)
-    if( destination_type=="queue" || durable==true ) {
+    if( destination_type=="queue" || destination_type=="raw_queue" || durable==true ) {
       print("draining")
       consumer_counter.set(0)
       var consumer_clients = List[Client]()
@@ -476,19 +492,22 @@ class BlockingScenario extends Scenario {
         connect {
           var reconnect = false
           while (!done.get && !reconnect) {
-            write(content)
-            if( sync_send ) {
-              // waits for the reply..
-              skip
+            val p_sleep = producer_sleep
+            if ( p_sleep >= 0 ) {
+              write(content)
+              if( sync_send ) {
+                // waits for the reply..
+                skip
+              }
+              producer_counter.incrementAndGet()
+              message_counter += 1
+              if( messages_per_connection > 0 && message_counter >= messages_per_connection ) {
+                message_counter = 0
+                reconnect = true
+              }
             }
-            producer_counter.incrementAndGet()
-            message_counter += 1
-            if( messages_per_connection > 0 && message_counter >= messages_per_connection ) {
-              message_counter = 0
-              reconnect = true
-            }
-            if(producer_sleep > 0) {
-              Thread.sleep(producer_sleep)
+            if(p_sleep != 0) {
+              Thread.sleep(math.abs(p_sleep))
             }
           }
         }
@@ -549,23 +568,28 @@ class BlockingScenario extends Scenario {
     def receive_loop() = {
       val clientAck = ack == "client"
       while (!done.get) {
-        if( clientAck ) {
-          val msg = receive()
-          val start = index_of(msg, MESSAGE_ID)
-          assert( start >= 0 )
-          val end = msg.indexOf("\n", start)
-          val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
-          write("""
+        val c_sleep = consumer_sleep
+        if ( c_sleep >= 0 ) {
+          if( clientAck ) {
+            val msg = receive()
+            val start = index_of(msg, MESSAGE_ID)
+            assert( start >= 0 )
+            val end = msg.indexOf("\n", start)
+            val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
+            write("""
 ACK
-message-id:""", msgId,"""
+message-  id:""", msgId,"""
 
 """)
 
-        } else {
-          skip
+          } else {
+            skip
+          }
+          consumer_counter.incrementAndGet()
         }
-        consumer_counter.incrementAndGet()
-        Thread.sleep(consumer_sleep)
+        if(c_sleep != 0) {
+          Thread.sleep(math.abs(c_sleep))
+        }
       }
     }
   }
@@ -976,16 +1000,22 @@ class NonBlockingScenario extends Scenario {
         close
       } else {
         def retry:Unit = {
-          if( offer_write(message_frame)(retry) ) {
+          if( (producer_sleep >= 0) && offer_write(message_frame)(retry) ) {
             if( sync_send ) {
               flush {
                 skip {
+                  producer_counter.incrementAndGet()
+                  message_counter += 1
                   write_completed_action
                 }
               }
             } else {
+              producer_counter.incrementAndGet()
+              message_counter += 1
               write_completed_action
             }
+          } else {
+            write_completed_action
           }
         }
         retry
@@ -996,11 +1026,10 @@ class NonBlockingScenario extends Scenario {
       if(done.get) {
         close
       } else {
-        producer_counter.incrementAndGet()
-        message_counter += 1
-        if(producer_sleep > 0) {
+        val p_sleep = producer_sleep
+        if(p_sleep != 0) {
           flush {
-            queue.after(producer_sleep, TimeUnit.MILLISECONDS) {
+            queue.after(math.abs(p_sleep), TimeUnit.MILLISECONDS) {
               if(messages_per_connection > 0 && message_counter >= messages_per_connection  ) {
                 message_counter = 0
                 close
@@ -1079,9 +1108,9 @@ class NonBlockingScenario extends Scenario {
     def receive_action:Unit = {
 
       def receive_completed = {
-        consumer_counter.incrementAndGet()
-        if( consumer_sleep>0 ) {
-          queue.after(consumer_sleep, TimeUnit.MILLISECONDS) {
+        val c_sleep = consumer_sleep
+        if( c_sleep != 0 ) {
+          queue.after(math.abs(c_sleep), TimeUnit.MILLISECONDS) {
             receive_action
           }
         } else {
@@ -1090,25 +1119,31 @@ class NonBlockingScenario extends Scenario {
           }
         }
       }
+      
+      if (consumer_sleep >= 0) {
+        if( clientAck ) {
+          receive { msg=>
+            val start = index_of(msg, MESSAGE_ID)
+            assert( start >= 0 )
+            val end = msg.indexOf("\n", start)
+            val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
+            write("""|ACK
+                     |message-id:%s
+                     |
+                     |""".stripMargin.format(msgId)) {
+              consumer_counter.incrementAndGet()
+              receive_completed
+            }
+          }
 
-      if( clientAck ) {
-        receive { msg=>
-          val start = index_of(msg, MESSAGE_ID)
-          assert( start >= 0 )
-          val end = msg.indexOf("\n", start)
-          val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
-          write("""|ACK
-                   |message-id:%s
-                   |
-                   |""".stripMargin.format(msgId)) {
+        } else {
+          skip {
+            consumer_counter.incrementAndGet()
             receive_completed
           }
         }
-
       } else {
-        skip {
-          receive_completed
-        }
+        receive_completed
       }
     }
   }
