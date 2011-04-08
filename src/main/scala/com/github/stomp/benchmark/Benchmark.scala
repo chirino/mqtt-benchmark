@@ -261,6 +261,43 @@ class Benchmark extends Action {
     }
   }
 
+  trait sleepFunction {
+
+    protected val SLEEP = -500
+
+    protected var init_time: Long = 0
+
+    def init(time: Long) { init_time = time }
+
+    def now() = { (System.currentTimeMillis() - init_time) / 1000 }
+
+    def apply() = 0
+
+    /* Sleeps for short periods of time (fast) or long ones (slow) in bursts */
+    def burstSleep(slow: Int = 100, fast: Int = 0, duration: Int = 1, period: Int = 10) = {
+      new {
+        var burstLeft: Long = 0
+        var previousTime: Long = 0
+        def apply(time: Long) = {
+          if (time != previousTime) {
+            if (burstLeft > 0) {
+              burstLeft -= time-previousTime
+              if(burstLeft < 0){
+                burstLeft = 0
+              }
+            } else {
+              if (util.Random.nextInt(period) == 0) {
+                burstLeft = duration
+              }
+            }
+            previousTime = time
+          }
+          if (burstLeft > 0) fast else slow
+        }
+      }
+    }
+  }
+
   private def mlabel(size:Int) = if((size%1024)==0) (size/1024)+"k" else size+"b"
   private def plabel(persistent:Boolean) = if(persistent) "p" else ""
   private def slabel(sync_send:Boolean) = if(sync_send) "" else "a"
