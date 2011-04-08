@@ -104,7 +104,6 @@ class NonBlockingScenario extends Scenario {
       }
 
       def on_failure(e:Throwable) = {
-        e.printStackTrace
         error_counter.incrementAndGet
         reconnect_delay = 1000
         close
@@ -164,7 +163,6 @@ class NonBlockingScenario extends Scenario {
       }
 
       def on_failure(e:Throwable) = {
-        e.printStackTrace
         error_counter.incrementAndGet
         reconnect_delay = 1000
         close
@@ -192,7 +190,6 @@ class NonBlockingScenario extends Scenario {
 
       def flush:Unit = {
         try {
-//          println("flushing...")
           while(pending_write!=null || write_stream.size()!=0 ) {
             if( pending_write!=null ) {
               channel.write(pending_write)
@@ -200,7 +197,6 @@ class NonBlockingScenario extends Scenario {
                 if( write_source.isSuspended ) {
                   write_source.resume
                 }
-//                println("write_source.resume")
                 return
               } else {
                 pending_write = null
@@ -214,7 +210,6 @@ class NonBlockingScenario extends Scenario {
           if(on_flushed!=null) {
             val t = on_flushed
             on_flushed = null
-//            println("flushing callback")
             t()
           }
         } catch {
