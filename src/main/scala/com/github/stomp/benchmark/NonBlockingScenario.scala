@@ -104,16 +104,14 @@ class NonBlockingScenario extends Scenario {
       }
 
       def on_failure(e:Throwable) = {
+        if( display_errors ) {
+          e.printStackTrace
+        }
         error_counter.incrementAndGet
         reconnect_delay = 1000
         close
       }
 
-    }
-
-    def kick(v:CONNECTED) = {
-      v.flush
-      v.fill
     }
 
     case class CONNECTED(val channel:SocketChannel) extends State {
@@ -129,19 +127,23 @@ class NonBlockingScenario extends Scenario {
       val read_source = createSource(channel, SelectionKey.OP_READ, queue)
       read_source.onEvent {
         if(state == this) {
-          fill
+          if(done.get) {
+            close
+          } else {
+            fill
+          }
         }
       }
 
       val write_source = createSource(channel, SelectionKey.OP_WRITE, queue)
       write_source.onEvent {
         if(state == this) {
-          write_source.suspend; flush
+          if(done.get) {
+            close
+          } else {
+            write_source.suspend; flush
+          }
         }
-      }
-
-      queue.repeatAfter(4, TimeUnit.SECONDS) {
-        kick(this)
       }
 
       try {
@@ -163,6 +165,9 @@ class NonBlockingScenario extends Scenario {
       }
 
       def on_failure(e:Throwable) = {
+        if( display_errors ) {
+          e.printStackTrace
+        }
         error_counter.incrementAndGet
         reconnect_delay = 1000
         close
@@ -389,7 +394,7 @@ class NonBlockingScenario extends Scenario {
       receive { rc=>
         if( !rc.startsWith(expect) ) {
           val data = new String(rc)
-          if( data.startsWith("ERROR") ) {
+          if( data.startsWith("ERROR") && display_errors ) {
             println(data)
           }
           on_failure(new Exception("Expected "+expect))

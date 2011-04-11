@@ -79,6 +79,7 @@ trait Scenario {
   var durable = false
   var consumer_prefix = "consumer-"
   var messages_per_connection = -1L
+  var display_errors = false
 
   var destination_type = "queue"
   private var _destination_name: () => String = () => "load"

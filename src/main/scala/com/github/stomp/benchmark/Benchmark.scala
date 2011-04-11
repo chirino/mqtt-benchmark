@@ -124,6 +124,9 @@ class Benchmark extends Action {
   @option(name = "--messages-per-connection", description = "The number of messages that are sent before the client reconnect.")
   var messages_per_connection = -1L
 
+  @option(name = "--display-errors", description = "Should errors get dumped to the screen when they occur?")
+  var display_errors = false
+
   var samples = HashMap[String, List[Long]]()
 
 
@@ -189,6 +192,7 @@ class Benchmark extends Action {
       scenario.topic_prefix = topic_prefix
       scenario.drain_timeout = drain_timeout
       scenario.persistent_header = persistent_header
+      scenario.display_errors = display_errors
       scenario
     }
 

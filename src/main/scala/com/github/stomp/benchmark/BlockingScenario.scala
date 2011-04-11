@@ -98,7 +98,7 @@ class BlockingScenario extends Scenario {
       val rc = receive()
       if( !rc.startsWith(expect) ) {
         val data = new String(rc)
-        if( data.startsWith("ERROR") ) {
+        if( data.startsWith("ERROR") && display_errors) {
           println(data)
         }
         throw new Exception("Expected "+expect)
@@ -118,7 +118,9 @@ class BlockingScenario extends Scenario {
       } catch {
         case e: Throwable =>
           if(!done.get) {
-            println("failure occured: "+e)
+            if( display_errors ) {
+              e.printStackTrace
+            }
             error_counter.incrementAndGet
             try {
               Thread.sleep(1000)
