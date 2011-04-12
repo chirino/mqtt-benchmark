@@ -60,15 +60,19 @@ class NonBlockingScenario extends Scenario {
       val source: DispatchSource = createSource(channel, SelectionKey.OP_CONNECT, queue)
       source.onEvent {
         if ( this == state ) {
-          try {
-            if( channel.finishConnect ) {
-              source.cancel
-              state = CONNECTED(channel)
-              on_complete()
+          if(done.get) {
+            close
+          } else {
+            try {
+              if( channel.finishConnect ) {
+                source.cancel
+                state = CONNECTED(channel)
+                on_complete()
+              }
+            } catch {
+              case e:Exception=>
+                on_failure(e)
             }
-          } catch {
-            case e:Exception=>
-              on_failure(e)
           }
         }
       }
