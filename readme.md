@@ -118,7 +118,7 @@ example:
 
 2. Run the benchmark with the default guest credentatials and the --persistent-header option.  Example:
 
-    sbt run --login guest --passcode guest --persistent-header delivery-mode:2 reports/ubuntu-intel-2600k/rabbitmq-2.4.1.json
+    sbt run --login guest --passcode guest reports/ubuntu-intel-2600k/rabbitmq-2.4.1.json
 
 
 ## Running a Custom Scenario
