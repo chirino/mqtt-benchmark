@@ -83,8 +83,8 @@ class Benchmark extends Action {
   var enable_topics = true
   @option(name = "--enable-queues", description = "enable benchmarking the queue scenarios")
   var enable_queues = true
-  @option(name = "--enable-peristence", description = "enable benchmarking the peristent scenarios")
-  var enable_peristence = true
+  @option(name = "--enable-persistent", description = "enable benchmarking the persistent scenarios")
+  var enable_persistence = true
 
   @option(name = "--scenario-connection-scale", description = "enable the connection scale scenarios")
   var scenario_connection_scale = false
@@ -309,7 +309,7 @@ class Benchmark extends Action {
   def run_benchmarks = {
 
 
-    val persistence_values = if (enable_peristence) {
+    val persistence_values = if (enable_persistence) {
       List(false, true)
     } else {
       List(false)
@@ -324,7 +324,7 @@ class Benchmark extends Action {
     }
 
 
-    if( enable_peristence && scenario_queue_loading ) {
+    if( enable_persistence && scenario_queue_loading ) {
       for( persistent <- List(false, true)) {
         val size = 20
 
