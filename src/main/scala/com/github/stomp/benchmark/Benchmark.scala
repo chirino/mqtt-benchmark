@@ -25,6 +25,7 @@ import org.apache.felix.gogo.commands.basic.DefaultActionPreparator
 import collection.JavaConversions
 import java.lang.{String, Class}
 import org.apache.felix.gogo.commands.{CommandException, Action, Option => option, Argument => argument, Command => command}
+import javax.management.remote.rmi._RMIConnection_Stub
 
 object Benchmark {
   def main(args: Array[String]):Unit = {
@@ -127,15 +128,15 @@ class Benchmark extends Action {
   @option(name = "--display-errors", description = "Should errors get dumped to the screen when they occur?")
   var display_errors = false
 
-  var samples = HashMap[String, List[Long]]()
+  var samples = HashMap[String, List[(Long,Long)]]()
 
 
 
-  def json_format(value:Option[List[Long]]):String = {
+  def json_format(value:Option[List[String]]):String = {
     value.map { json_format _ }.getOrElse("null")
   }
 
-  def json_format(value:List[Long]):String = {
+  def json_format(value:List[String]):String = {
     "[ "+value.mkString(",")+" ]"
   }
 
@@ -162,7 +163,7 @@ class Benchmark extends Action {
     os.println("""    "scenario_connection_scale_rate": %d""".format(scenario_connection_scale_rate))
     os.println("""  },""")
     os.println(samples.map { case (name, sample)=>
-      """  "%s": %s""".format(name, json_format(sample))
+      """  "%s": %s""".format(name, json_format(sample.map(x=> "[%d,%d]".format(x._1,x._2))))
     }.mkString(",\n"))
     os.println("}")
 
@@ -251,8 +252,8 @@ class Benchmark extends Action {
       scenarios.foreach{ scenario=>
         val collected = scenario.collection_end
         collected.foreach{ x=>
-          if( !x._1.startsWith("e_") || x._2.find( _ != 0 ).isDefined ) {
-            println("%s samples: %s".format(x._1, json_format(x._2)) )
+          if( !x._1.startsWith("e_") || x._2.find( _._2 != 0 ).isDefined ) {
+            println("%s samples: %s".format(x._1, json_format(x._2.map(_._2.toString))) )
           }
         }
         samples ++= collected
@@ -324,38 +325,6 @@ class Benchmark extends Action {
     }
 
 
-    if( enable_persistence && scenario_queue_loading ) {
-      for( persistent <- List(false, true)) {
-        val size = 20
-
-        // Benchmark queue loading
-        val name = "%s_1%s%s_1queue_0".format(mlabel(size), plabel(persistent), slabel(persistent))
-        benchmark(name, false, 30) { g=>
-          g.message_size = 20
-          g.producers = 1
-          g.sync_send = persistent
-          g.persistent = persistent
-          g.destination_count = 1
-          g.destination_type = "queue"
-          g.consumers = 0
-          g.destination_name = "load_me_up"
-        }
-
-        // Benchmark unloading
-        if(persistent) {
-          val name = "%s_0_1queue_1".format(mlabel(size))
-          benchmark(name, true, 30) { g=>
-            g.producers = 0
-            g.destination_count = 1
-            g.destination_type = "queue"
-            g.consumers = 1
-            g.destination_name = "load_me_up"
-          }
-        }
-
-      }
-    }
-
     if(scenario_connection_scale ) {
 
       for( messages_per_connection <- List(-1)) {
@@ -365,7 +334,7 @@ class Benchmark extends Action {
         def is_done(scenarios:List[Scenario]):Boolean = {
           remaining -= 1;
           var errors = 0L
-          scenarios.foreach( _.error_samples.lastOption.foreach(x=> errors+=x))
+          scenarios.foreach( _.error_samples.lastOption.foreach( errors+= _._2 ) )
           return errors >= scenario_connection_scale_rate || remaining <= 0
         }
 
@@ -505,6 +474,38 @@ class Benchmark extends Action {
           g.consumers = load
           g.durable = true
         }
+      }
+    }
+
+    if( enable_persistence && scenario_queue_loading ) {
+      for( persistent <- List(false, true)) {
+        val size = 20
+
+        // Benchmark queue loading
+        val name = "%s_1%s%s_1queue_0".format(mlabel(size), plabel(persistent), slabel(persistent))
+        benchmark(name, false, 30) { g=>
+          g.message_size = 20
+          g.producers = 1
+          g.sync_send = persistent
+          g.persistent = persistent
+          g.destination_count = 1
+          g.destination_type = "queue"
+          g.consumers = 0
+          g.destination_name = "load_me_up"
+        }
+
+        // Benchmark unloading
+        if(persistent) {
+          val name = "%s_0_1queue_1".format(mlabel(size))
+          benchmark(name, true, 30) { g=>
+            g.producers = 0
+            g.destination_count = 1
+            g.destination_type = "queue"
+            g.consumers = 1
+            g.destination_name = "load_me_up"
+          }
+        }
+
       }
     }
 

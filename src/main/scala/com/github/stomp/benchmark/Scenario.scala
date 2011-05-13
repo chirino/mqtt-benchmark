@@ -129,19 +129,22 @@ trait Scenario {
               val end = System.nanoTime
               collection_sample
               val samples = collection_end
-              samples.get("p_custom").foreach { case List(count:Long) =>
+              samples.get("p_custom").foreach { case (_, count)::Nil =>
                 total_producer_count += count
                 print_rate("Producer", count, total_producer_count, end - start)
+              case _ =>
               }
-              samples.get("c_custom").foreach { case List(count:Long) =>
+              samples.get("c_custom").foreach { case (_, count)::Nil =>
                 total_consumer_count += count
                 print_rate("Consumer", count, total_consumer_count, end - start)
+              case _ =>
               }
-              samples.get("e_custom").foreach { case List(count:Long) =>
+              samples.get("e_custom").foreach { case (_, count)::Nil =>
                 if( count!= 0 ) {
                   total_error_count += count
                   print_rate("Error", count, total_error_count, end - start)
                 }
+              case _ =>
               }
               start = end
             }
@@ -210,9 +213,9 @@ trait Scenario {
     }
   }
 
-  var producer_samples:Option[ListBuffer[Long]] = None
-  var consumer_samples:Option[ListBuffer[Long]] = None
-  var error_samples = ListBuffer[Long]()
+  var producer_samples:Option[ListBuffer[(Long,Long)]] = None
+  var consumer_samples:Option[ListBuffer[(Long,Long)]] = None
+  var error_samples = ListBuffer[(Long,Long)]()
 
   def collection_start: Unit = {
     producer_counter.set(0)
@@ -220,19 +223,19 @@ trait Scenario {
     error_counter.set(0)
 
     producer_samples = if (producers > 0 || producers_per_sample>0 ) {
-      Some(ListBuffer[Long]())
+      Some(ListBuffer[(Long,Long)]())
     } else {
       None
     }
     consumer_samples = if (consumers > 0 || consumers_per_sample>0 ) {
-      Some(ListBuffer[Long]())
+      Some(ListBuffer[(Long,Long)]())
     } else {
       None
     }
   }
 
-  def collection_end: Map[String, scala.List[Long]] = {
-    var rc = Map[String, List[Long]]()
+  def collection_end: Map[String, scala.List[(Long,Long)]] = {
+    var rc = Map[String, List[(Long,Long)]]()
     producer_samples.foreach{ samples =>
       rc += "p_"+name -> samples.toList
       samples.clear
@@ -326,9 +329,10 @@ trait Scenario {
 
   def collection_sample: Unit = {
 
-    producer_samples.foreach(_ += producer_counter.getAndSet(0))
-    consumer_samples.foreach(_ += consumer_counter.getAndSet(0))
-    error_samples += error_counter.getAndSet(0)
+    val now = System.currentTimeMillis()
+    producer_samples.foreach(_.append((now, producer_counter.getAndSet(0))))
+    consumer_samples.foreach(_.append((now, consumer_counter.getAndSet(0))))
+    error_samples.append((now, error_counter.getAndSet(0)))
 
     // we might need to increment number the producers..
     for (i <- 0 until producers_per_sample) {
