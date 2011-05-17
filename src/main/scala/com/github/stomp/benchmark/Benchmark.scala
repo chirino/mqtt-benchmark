@@ -18,6 +18,8 @@
 package com.github.stomp.benchmark
 
 import scala.collection.mutable.HashMap
+import scala.xml.{XML, NodeSeq, Node}
+import scala.util.control.Exception.catching
 
 import org.osgi.service.command.CommandSession
 import java.io.{PrintStream, FileOutputStream, File}
@@ -110,6 +112,9 @@ class Benchmark extends Action {
   @option(name = "--scenario-slow-consumer", description = "enable the slow consumer scenarios")
   var scenario_slow_consumer = false
 
+  @option(name = "--scenario-file", description = "uses a scenario defined in an XML file instead of the default ones")
+  var scenario_file:File = _
+
   @option(name = "--queue-prefix", description = "prefix used for queue destiantion names.")
   var queue_prefix = "/queue/"
   @option(name = "--topic-prefix", description = "prefix used for topic destiantion names.")
@@ -149,7 +154,12 @@ class Benchmark extends Action {
     println("Benchmarking %s at: %s:%d".format(broker_name, host, port))
     println("===================================================================")
 
-    run_benchmarks
+
+    if( scenario_file == null ) {
+      run_benchmarks
+    } else {
+      load_and_run_benchmarks
+    }
 
     val os = new PrintStream(new FileOutputStream(out))
     os.println("{")
@@ -202,8 +212,10 @@ class Benchmark extends Action {
     scenarios.foreach{ scenario=>
       scenario.destination_name = if( scenario.destination_type == "queue" ) {
        "loadq"
-      } else {
+      } else if( scenario.destination_type == "topic" ) {
        "loadt"
+      } else {
+        scenario.destination_name
       }
     }
 
@@ -279,8 +291,8 @@ class Benchmark extends Action {
     def apply() = 0
 
     /* Sleeps for short periods of time (fast) or long ones (slow) in bursts */
-    def burstSleep(slow: Int = 100, fast: Int = 0, duration: Int = 1, period: Int = 10) = {
-      new {
+    def burstSleep(slow: Int, fast: Int, duration: Int, period: Int) = {
+      new Function1[Long, Int] {
         var burstLeft: Long = 0
         var previousTime: Long = 0
         def apply(time: Long) = {
@@ -509,5 +521,142 @@ class Benchmark extends Action {
       }
     }
 
+  }
+
+  def load_and_run_benchmarks = { 
+
+    def getStringValue(property_name: String, ns_xml: NodeSeq): Option[String] = {
+      val value = ns_xml \ property_name
+      if (value.length == 1) Some(value.text.trim) else None
+    }
+
+    def getIntValue(property_name: String, ns_xml: NodeSeq): Option[Int] = {
+      val value = getStringValue(property_name, ns_xml)
+      try {
+        value.map((x:String) => x.toInt)
+      } catch {
+        case e: NumberFormatException => throw new Exception("Error in XML scenario, not integer provided: " + value.getOrElse("\"\""))
+      }
+    }
+
+    def getBooleanValue(property_name: String, ns_xml: NodeSeq): Option[Boolean] = {
+      val value = getStringValue(property_name, ns_xml)
+      try {
+        value.map((x:String) => x.toBoolean)
+      } catch {
+        case e: NumberFormatException => throw new Exception("Error in XML scenario, not integer provided: " + value.getOrElse("\"\""))
+      }
+    }
+
+    def getStringValueCascade (property_name: String, global_common_xml: NodeSeq = NodeSeq.Empty, scenario_common_xml: NodeSeq = NodeSeq.Empty, clients_xml: NodeSeq = NodeSeq.Empty): Option[String] = {
+      var value: Option[String] = None
+      value = getStringValue(property_name, global_common_xml).orElse(value)
+      value = getStringValue(property_name, scenario_common_xml).orElse(value)
+      getStringValue(property_name, clients_xml).orElse(value)
+    }
+
+    def getIntValueCascade (property_name: String, global_common_xml: NodeSeq = NodeSeq.Empty, scenario_common_xml: NodeSeq = NodeSeq.Empty, clients_xml: NodeSeq = NodeSeq.Empty): Option[Int] = {
+      var value: Option[Int] = None
+      value = getIntValue(property_name, global_common_xml).orElse(value)
+      value = getIntValue(property_name, scenario_common_xml).orElse(value)
+      getIntValue(property_name, clients_xml).orElse(value)
+    }
+
+    def getBooleanValueCascade (property_name: String, global_common_xml: NodeSeq = NodeSeq.Empty, scenario_common_xml: NodeSeq = NodeSeq.Empty, clients_xml: NodeSeq = NodeSeq.Empty): Option[Boolean] = {
+      var value: Option[Boolean] = None
+      value = getBooleanValue(property_name, global_common_xml).orElse(value)
+      value = getBooleanValue(property_name, scenario_common_xml).orElse(value)
+      getBooleanValue(property_name, clients_xml).orElse(value)
+    }
+
+    def getPropertySleep(property_name: String, clients_xml: NodeSeq): sleepFunction = { 
+      val format_catcher = catching(classOf[NumberFormatException])
+      val property_sleep_nodeset = clients_xml \ property_name
+      val property_sleep_value: Option[Int] = format_catcher.opt(property_sleep_nodeset.text.toInt)
+      if (property_sleep_nodeset.length == 1 && property_sleep_value.isDefined) {
+        new sleepFunction { override def apply() = property_sleep_value.get }
+      } else if ((property_sleep_nodeset \ "range").length > 0) {
+        new sleepFunction {
+          var ranges: List[Tuple2[Int, (Long) => Int]] = Nil 
+          for (range_node <- property_sleep_nodeset \ "range") {
+            val range_value =  format_catcher.opt(range_node.text.toInt)
+            val range_end =  getIntValue("@end", range_node)
+            val range_burst = range_node \ "burst"
+            if (range_node.text == "sleep") {
+              ranges :+= Tuple2(range_end.get, (time: Long) => SLEEP)
+            } else if (range_value.isDefined) {
+              ranges :+= Tuple2(range_end.get, (time: Long) => range_value.get)
+            } else if (range_burst.length == 1) {
+              var (slow, fast, duration, period) = (100, 0 , 1, 10)
+              slow = getIntValue("@slow", range_burst).getOrElse(slow)
+              fast = getIntValue("@fast", range_burst).getOrElse(fast)
+              duration = getIntValue("@duration", range_burst).getOrElse(duration)
+              period = getIntValue("@period", range_burst).getOrElse(period)
+              ranges :+= Tuple2(range_end.get, burstSleep(slow, fast, duration, period))
+            } else {
+              throw new Exception("Error in XML scenario, unsuported sleep function: "+range_node.text)
+            }
+          }
+
+          override def apply() = {
+            val n = now
+            val r = ranges.find( r => n < r._1 )
+            if (r.isDefined) {
+                r.get._2(n)
+            } else {
+                SLEEP
+            }
+          }
+        }
+      } else {
+        new sleepFunction { override def apply() = 0 }
+      }
+    }
+
+    val scenarios_xml = XML.loadFile(scenario_file)
+    val global_common_xml = scenarios_xml \ "common"
+
+    for (scenario_xml <- scenarios_xml \ "scenario") {
+      val scenario_common_xml = scenario_xml \ "common"
+      val names = (scenario_xml \ "clients").map( client => (client \ "@name").text ).toList 
+      val sc = getIntValueCascade("sample_count", global_common_xml, scenario_common_xml).getOrElse(sample_count)
+      val drain = getBooleanValueCascade("drain", global_common_xml, scenario_common_xml).getOrElse(false)
+      val blocking = getBooleanValueCascade("blocking_io", global_common_xml, scenario_common_xml).getOrElse(blocking_io)
+      warm_up_count = getIntValueCascade("warm_up_count", global_common_xml, scenario_common_xml).getOrElse(warm_up_count)
+
+      multi_benchmark(names = names, drain = drain, sc = sc, blocking = blocking) { scenarios =>
+        for (scenario <- scenarios) {
+            val clients_xml = (scenario_xml \ "clients").filter( clients => (clients \ "@name").text == scenario.name )
+
+            scenario.login = getStringValueCascade("login", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.login)
+            scenario.passcode = getStringValueCascade("passcode", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.passcode)
+            scenario.host = getStringValueCascade("host", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.host)
+            scenario.port = getIntValueCascade("port", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.port)
+            scenario.sample_interval = getIntValueCascade("sample_interval", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.sample_interval)
+            scenario.producers = getIntValueCascade("producers", global_common_xml, scenario_common_xml, clients_xml).getOrElse(0)
+            scenario.consumers = getIntValueCascade("consumers", global_common_xml, scenario_common_xml, clients_xml).getOrElse(0)
+            scenario.destination_type = getStringValueCascade("destination_type", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.destination_type)
+            scenario.destination_name = getStringValueCascade("destination_name", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.destination_name)
+
+            scenario.consumer_prefix = getStringValueCascade("consumer_prefix", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.consumer_prefix)
+            scenario.queue_prefix = getStringValueCascade("queue_prefix", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.queue_prefix)
+            scenario.topic_prefix = getStringValueCascade("topic_prefix", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.topic_prefix)
+            scenario.message_size = getIntValueCascade("message_size", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.message_size)
+            scenario.content_length = getBooleanValueCascade("content_length", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.content_length)
+            scenario.drain_timeout = getIntValueCascade("drain_timeout", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.drain_timeout.toInt).toLong
+            scenario.persistent = getBooleanValueCascade("persistent", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.persistent)
+            scenario.durable = getBooleanValueCascade("durable", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.durable)
+            scenario.sync_send = getBooleanValueCascade("sync_send", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.sync_send)
+            scenario.ack = getStringValueCascade("ack", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.ack)
+            scenario.messages_per_connection = getIntValueCascade("drain_timeout", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.drain_timeout.toInt).toLong
+            scenario.producers_per_sample = getIntValueCascade("producers_per_sample", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.producers_per_sample)
+            scenario.consumers_per_sample = getIntValueCascade("consumers_per_sample", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.consumers_per_sample)
+            scenario.selector = getStringValueCascade("selector", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.selector)
+
+            scenario.producer_sleep = getPropertySleep("producer_sleep", clients_xml)
+            scenario.consumer_sleep = getPropertySleep("consumer_sleep", clients_xml)
+        }
+      }
+    }
   }
 }
