@@ -207,3 +207,60 @@ Press enter to stop the run.
     ... <enter pressed> ...
     
     scala>
+
+## Running a custom scenario from XML file
+
+Is it possible to run stomp-benchmark using scenarios defined in XML files providing the option `--scenario-file`
+
+An example of scenario in xml:
+
+    <scenarios>
+        <common>
+            <sample_interval>1000</sample_interval> <!-- Not needed, it's the default -->
+            <blocking_io>false</blocking_io> <!-- Not needed, it's the default -->
+            <warm_up_count>0</warm_up_count>
+            <drain>false</drain> <!-- Not needed, it's the default -->
+        </common>
+        <scenario name="Burst producers, slow and fast consumers">
+            <common>
+                <sample_count>80</sample_count>
+            </common>
+            <clients name="1 Burst Producer">
+                <producers>1</producers>
+                <consumers>0</consumers> <!-- Not needed, it's the default -->
+                <destination_type>raw_topic</destination_type>
+                <destination_name>/topic/VirtualTopic.foo</destination_name>
+                <producer_sleep>
+                    <range end="10">sleep</range>
+                    <range end="70"><burst fast="0" duration="5" /></range>
+                    <range end="80">sleep</range> <!-- Not needed, it's the default -->
+                </producer_sleep>
+            </clients>
+            <clients name="5 Slow Consumers">
+                <producers>0</producers> <!-- Not needed, it's the default -->
+                <consumers>5</consumers>
+                <destination_type>raw_queue</destination_type>
+                <destination_name>/queue/Consumer.1.VirtualTopic.foo</destination_name>
+                <consumer_sleep>100</consumer_sleep>
+            </clients>
+            <clients name="1 Fast Consumer">
+                <producers>0</producers> <!-- Not needed, it's the default -->
+                <consumers>1</consumers>
+                <destination_type>raw_queue</destination_type>
+                <destination_name>/queue/Consumer.2.VirtualTopic.foo</destination_name>
+                <consumer_sleep>
+                    <range end="30">0</range>
+                    <range end="80">sleep</range> <!-- Not needed, it's the default -->
+                </consumer_sleep>
+            </clients>
+        </scenario>
+    </scenarios>
+
+There are some properties that can only be defined in the common sections: sample_count, drain, blocking_io and warm_up_count.
+
+These properties can be defined anywhere: login, passcode, host, port, sample_interval, producers, consumers,
+destination_type, destination_name, consumer_prefix, queue_prefix, topic_prefix, message_size, content_length,
+drain_timeout, persistent, durable, sync_send, ack, messages_per_connection, producers_per_sample, consumers_per_sample,
+selector, producer_sleep, consumer_sleep
+
+Refer to the example for the use of producer_sleep and consumer_sleep.

@@ -449,20 +449,24 @@ class NonBlockingScenario extends Scenario {
         if(done.get) {
           close
         } else {
-          if( offer_write(message_frame)(retry) ) {
-            if( sync_send ) {
-              flush {
-                skip {
-                  producer_counter.incrementAndGet()
-                  message_counter += 1
-                  write_completed_action
+          if(producer_sleep >= 0) {
+            if (offer_write(message_frame)(retry)) {
+              if( sync_send ) {
+                flush {
+                  skip {
+                    producer_counter.incrementAndGet()
+                    message_counter += 1
+                    write_completed_action
+                  }
                 }
+              } else {
+                producer_counter.incrementAndGet()
+                message_counter += 1
+                write_completed_action
               }
-            } else {
-              producer_counter.incrementAndGet()
-              message_counter += 1
-              write_completed_action
             }
+          } else {
+              write_completed_action
           }
         }
       }
