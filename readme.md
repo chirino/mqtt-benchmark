@@ -27,10 +27,12 @@ will get stored in a `reports/foo-3.2.json` file.
 
 The `reports/report.html` file can load and display the results of multiple benchmark runs.
 You can updated which benchmark results are displayed by the report.html by editing
-it and updating to the line which defines the `broker_files` variable (around line 32).
+it and updating to the line which defines the `products` variable (around line 34).
 
-    var broker_files = ['foo-3.2.json', 'cheese-1.0.json']
-
+      var products = [
+        'apollo-1.0-SNAPSHOT', 
+        'activemq-5.4.2'
+      ];
 
 ### Running against Apollo 1.0-beta1
 
