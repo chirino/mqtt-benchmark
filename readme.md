@@ -258,9 +258,9 @@ An example of scenario in xml:
         </scenario>
     </scenarios>
 
-There are some properties that can only be defined in the common sections: sample_count, drain, blocking_io and warm_up_count.
+There are some properties that can only be defined in the common sections: sample_interval, sample_count, drain, blocking_io and warm_up_count.
 
-These properties can be defined anywhere: login, passcode, host, port, sample_interval, producers, consumers,
+These properties can be defined anywhere: login, passcode, host, port, producers, consumers,
 destination_type, destination_name, consumer_prefix, queue_prefix, topic_prefix, message_size, content_length,
 drain_timeout, persistent, durable, sync_send, ack, messages_per_connection, producers_per_sample, consumers_per_sample,
 selector, producer_sleep, consumer_sleep

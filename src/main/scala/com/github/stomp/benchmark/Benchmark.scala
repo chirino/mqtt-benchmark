@@ -623,6 +623,7 @@ class Benchmark extends Action {
       val drain = getBooleanValueCascade("drain", global_common_xml, scenario_common_xml).getOrElse(false)
       val blocking = getBooleanValueCascade("blocking_io", global_common_xml, scenario_common_xml).getOrElse(blocking_io)
       warm_up_count = getIntValueCascade("warm_up_count", global_common_xml, scenario_common_xml).getOrElse(warm_up_count)
+      sample_interval = getIntValueCascade("sample_interval", global_common_xml, scenario_common_xml).getOrElse(sample_interval)
 
       multi_benchmark(names = names, drain = drain, sc = sc, blocking = blocking) { scenarios =>
         for (scenario <- scenarios) {
@@ -632,7 +633,6 @@ class Benchmark extends Action {
             scenario.passcode = getStringValueCascade("passcode", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.passcode)
             scenario.host = getStringValueCascade("host", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.host)
             scenario.port = getIntValueCascade("port", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.port)
-            scenario.sample_interval = getIntValueCascade("sample_interval", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.sample_interval)
             scenario.producers = getIntValueCascade("producers", global_common_xml, scenario_common_xml, clients_xml).getOrElse(0)
             scenario.consumers = getIntValueCascade("consumers", global_common_xml, scenario_common_xml, clients_xml).getOrElse(0)
             scenario.destination_type = getStringValueCascade("destination_type", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.destination_type)
