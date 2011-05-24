@@ -648,7 +648,7 @@ class Benchmark extends Action {
             scenario.durable = getBooleanValueCascade("durable", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.durable)
             scenario.sync_send = getBooleanValueCascade("sync_send", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.sync_send)
             scenario.ack = getStringValueCascade("ack", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.ack)
-            scenario.messages_per_connection = getIntValueCascade("drain_timeout", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.drain_timeout.toInt).toLong
+            scenario.messages_per_connection = getIntValueCascade("messages_per_connection", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.messages_per_connection.toInt).toLong
             scenario.producers_per_sample = getIntValueCascade("producers_per_sample", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.producers_per_sample)
             scenario.consumers_per_sample = getIntValueCascade("consumers_per_sample", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.consumers_per_sample)
             scenario.selector = getStringValueCascade("selector", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.selector)
