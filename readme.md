@@ -233,9 +233,9 @@ An example of scenario in xml:
                 <destination_type>raw_topic</destination_type>
                 <destination_name>/topic/VirtualTopic.foo</destination_name>
                 <producer_sleep>
-                    <range end="10">sleep</range>
-                    <range end="70"><burst fast="0" duration="5" /></range>
-                    <range end="80">sleep</range> <!-- Not needed, it's the default -->
+                    <range end="10000">sleep</range>
+                    <range end="70000"><burst fast="0" duration="5000" /></range>
+                    <range end="80000">sleep</range> <!-- Not needed, it's the default -->
                 </producer_sleep>
             </clients>
             <clients name="5 Slow Consumers">
@@ -251,8 +251,8 @@ An example of scenario in xml:
                 <destination_type>raw_queue</destination_type>
                 <destination_name>/queue/Consumer.2.VirtualTopic.foo</destination_name>
                 <consumer_sleep>
-                    <range end="30">0</range>
-                    <range end="80">sleep</range> <!-- Not needed, it's the default -->
+                    <range end="30000">0</range>
+                    <range end="80000">sleep</range> <!-- Not needed, it's the default -->
                 </consumer_sleep>
             </clients>
         </scenario>

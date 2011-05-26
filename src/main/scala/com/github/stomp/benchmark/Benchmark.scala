@@ -286,7 +286,7 @@ class Benchmark extends Action {
 
     def init(time: Long) { init_time = time }
 
-    def now() = { (System.currentTimeMillis() - init_time) / 1000 }
+    def now() = { System.currentTimeMillis() - init_time }
 
     def apply() = 0
 
