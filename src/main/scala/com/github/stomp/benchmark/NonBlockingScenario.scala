@@ -56,6 +56,10 @@ class NonBlockingScenario extends Scenario {
     case class CONNECTING(host: String, port: Int, on_complete: ()=>Unit) extends State {
 
       val channel = SocketChannel.open
+      ignore_failure(channel.socket.setReceiveBufferSize(buffer_size))
+      ignore_failure(channel.socket.setSoLinger(true, 0))
+      ignore_failure(channel.socket.setTcpNoDelay(false))
+      
       channel.configureBlocking(false)
       val source: DispatchSource = createSource(channel, SelectionKey.OP_CONNECT, queue)
       source.onEvent {
@@ -148,12 +152,6 @@ class NonBlockingScenario extends Scenario {
             write_source.suspend; flush
           }
         }
-      }
-
-      try {
-        channel.socket.setSoLinger(true, 0)
-        channel.socket.setTcpNoDelay(false)
-      } catch { case x => // ignore
       }
 
       def close() = {

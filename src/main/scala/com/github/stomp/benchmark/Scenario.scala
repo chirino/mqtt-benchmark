@@ -353,6 +353,11 @@ trait Scenario {
   def createProducer(i:Int):Client
   def createConsumer(i:Int):Client
 
+  protected def ignore_failure(func: =>Unit):Unit = try {
+    func
+  } catch { case _ =>
+  }
+
 }
 
 
