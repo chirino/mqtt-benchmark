@@ -45,7 +45,7 @@ object Benchmark {
     val action = new Benchmark()
     val p = new DefaultActionPreparator
     try {
-      if( p.prepare(action, session, JavaConversions.seqAsJavaList(args.toList)) ) {
+      if( p.prepare(action, session, JavaConversions.asJavaList(args.toList)) ) {
         action.execute(session)
       }
     } catch {
