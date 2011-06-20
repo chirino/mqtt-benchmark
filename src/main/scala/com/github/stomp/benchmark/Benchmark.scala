@@ -58,80 +58,115 @@ object Benchmark {
 
 @command(scope="stomp", name = "benchmark", description = "The Stomp benchmarking tool")
 class Benchmark extends Action {
+  
+  // Helpers needed to diferenciate between default value and not set on the CLI value for primitive values
+  def toIntOption(x: java.lang.Integer): Option[Int] = if(x!=null) Some(x.intValue) else None
+  def toLongOption(x: java.lang.Long): Option[Long] = if(x!=null) Some(x.longValue) else None
+  def toBooleanOption(x: java.lang.Boolean): Option[Boolean] = if(x!=null) Some(x.booleanValue) else None
 
   @option(name = "--broker_name", description = "The name of the broker being benchmarked.")
-  var broker_name:String = _
+  var cl_broker_name:String = _
+  var broker_name = FlexibleProperty(default = None, high_priority = () => Option(cl_broker_name))
 
   @option(name = "--host", description = "server host name")
-  var host = "127.0.0.1"
+  var cl_host: String = _
+  var host = FlexibleProperty(default = Some("127.0.0.1"), high_priority = () => Option(cl_host))
   @option(name = "--port", description = "server port")
-  var port = 61613
+  var cl_port: java.lang.Integer = _
+  var port = FlexibleProperty(default = Some(61613), high_priority = () => toIntOption(cl_port))
 
   @option(name = "--login", description = "login name to connect with")
-  var login:String = null
+  var cl_login:String = _
+  var login = FlexibleProperty(default = None, high_priority = () => Option(cl_login))
   @option(name = "--passcode", description = "passcode to connect with")
-  var passcode:String = null
+  var cl_passcode:String = _
+  var passcode = FlexibleProperty(default = None, high_priority = () => Option(cl_passcode))
 
   @option(name = "--sample-count", description = "number of samples to take")
-  var sample_count = 15
+  var cl_sample_count: java.lang.Integer = _
+  var sample_count = FlexibleProperty(default = Some(15), high_priority = () => toIntOption(cl_sample_count))
   @option(name = "--sample-interval", description = "number of milli seconds that data is collected.")
-  var sample_interval = 1000
+  var cl_sample_interval: java.lang.Integer = _
+  var sample_interval = FlexibleProperty(default = Some(1000), high_priority = () => toIntOption(cl_sample_interval))
   @option(name = "--warm-up-count", description = "number of warm up samples to ignore")
-  var warm_up_count = 3
+  var cl_warm_up_count: java.lang.Integer = _
+  var warm_up_count = FlexibleProperty(default = Some(3), high_priority = () => toIntOption(cl_warm_up_count))
 
   @argument(index=0, name = "out", description = "The file to store benchmark metrics in", required=true)
-  var out:File = _
+  var cl_out: File = _
+  var out = FlexibleProperty(default = None, high_priority = () => Option(cl_out))
 
   @option(name = "--enable-topics", description = "enable benchmarking the topic scenarios")
-  var enable_topics = true
+  var cl_enable_topics: java.lang.Boolean = _
+  var enable_topics = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_enable_topics))
   @option(name = "--enable-queues", description = "enable benchmarking the queue scenarios")
-  var enable_queues = true
+  var cl_enable_queues: java.lang.Boolean = _
+  var enable_queues = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_enable_queues))
   @option(name = "--enable-persistent", description = "enable benchmarking the persistent scenarios")
-  var enable_persistence = true
+  var cl_enable_persistence: java.lang.Boolean = _
+  var enable_persistence = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_enable_persistence))
 
   @option(name = "--scenario-connection-scale", description = "enable the connection scale scenarios")
-  var scenario_connection_scale = false
+  var cl_scenario_connection_scale: java.lang.Boolean = _
+  var scenario_connection_scale = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_connection_scale))
 
   @option(name = "--scenario-connection-scale-rate", description = "How many connection to add after each sample")
-  var scenario_connection_scale_rate = 50
+  var cl_scenario_connection_scale_rate: java.lang.Integer = _
+  var scenario_connection_scale_rate = FlexibleProperty(default = Some(50), high_priority = () => toIntOption(cl_scenario_connection_scale_rate))
   @option(name = "--scenario-connection-max-samples", description = "The maximum number of sample to take in the connection scale scenario")
-  var scenario_connection_scale_max_samples = 100
+  var cl_scenario_connection_scale_max_samples: java.lang.Integer = _
+  var scenario_connection_scale_max_samples = FlexibleProperty(default = Some(100), high_priority = () => toIntOption(cl_scenario_connection_scale_max_samples))
 
   @option(name = "--scenario-producer-throughput", description = "enable the producer throughput scenarios")
-  var scenario_producer_throughput = true
+  var cl_scenario_producer_throughput: java.lang.Boolean = _
+  var scenario_producer_throughput = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_producer_throughput))
   @option(name = "--scenario-queue-loading", description = "enable the queue load/unload scenarios")
-  var scenario_queue_loading = true
+  var cl_scenario_queue_loading: java.lang.Boolean = _
+  var scenario_queue_loading = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_queue_loading))
   @option(name = "--scenario-partitioned", description = "enable the partitioned load scenarios")
-  var scenario_partitioned = true
+  var cl_scenario_partitioned: java.lang.Boolean = _
+  var scenario_partitioned = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_partitioned))
   @option(name = "--scenario-fan-in-out", description = "enable the fan in/fan out scenarios")
-  var scenario_fan_in_out = true
+  var cl_scenario_fan_in_out: java.lang.Boolean = _
+  var scenario_fan_in_out = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_fan_in_out))
   @option(name = "--scenario-durable-subs", description = "enable the durable subscription scenarios")
-  var scenario_durable_subs = false
+  var cl_scenario_durable_subs: java.lang.Boolean = _
+  var scenario_durable_subs = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_durable_subs))
   @option(name = "--scenario-selector", description = "enable the selector based scenarios")
-  var scenario_selector = false
+  var cl_scenario_selector: java.lang.Boolean = _
+  var scenario_selector = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_selector))
   @option(name = "--scenario-slow-consumer", description = "enable the slow consumer scenarios")
-  var scenario_slow_consumer = false
+  var cl_scenario_slow_consumer: java.lang.Boolean = _
+  var scenario_slow_consumer = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_slow_consumer))
 
   @option(name = "--scenario-file", description = "uses a scenario defined in an XML file instead of the default ones")
-  var scenario_file:File = _
+  var cl_scenario_file: File = _
+  var scenario_file = FlexibleProperty(default = None, high_priority = () => Option(cl_scenario_file))
 
   @option(name = "--queue-prefix", description = "prefix used for queue destiantion names.")
-  var queue_prefix = "/queue/"
+  var cl_queue_prefix: String = _
+  var queue_prefix = FlexibleProperty(default = Some("/queue/"), high_priority = () => Option(cl_queue_prefix))
   @option(name = "--topic-prefix", description = "prefix used for topic destiantion names.")
-  var topic_prefix = "/topic/"
+  var cl_topic_prefix: String = _
+  var topic_prefix = FlexibleProperty(default = Some("/topic/"), high_priority = () => Option(cl_topic_prefix))
   @option(name = "--blocking-io", description = "Should the clients use blocking io.")
-  var blocking_io = false
+  var cl_blocking_io: java.lang.Boolean = _
+  var blocking_io = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_blocking_io))
   @option(name = "--drain-timeout", description = "How long to wait for a drain to timeout in ms.")
-  var drain_timeout = 3000L
+  var cl_drain_timeout: java.lang.Long = _
+  var drain_timeout = FlexibleProperty(default = Some(3000L), high_priority = () => toLongOption(cl_drain_timeout))
 
   @option(name = "--persistent-header", description = "The header to set on persistent messages to make them persistent.")
-  var persistent_header = "persistent:true"
+  var cl_persistent_header: String = _
+  var persistent_header = FlexibleProperty(default = Some("persistent:true"), high_priority = () => Option(cl_persistent_header))
 
   @option(name = "--messages-per-connection", description = "The number of messages that are sent before the client reconnect.")
-  var messages_per_connection = -1L
+  var cl_messages_per_connection: java.lang.Long = _
+  var messages_per_connection = FlexibleProperty(default = Some(-1L), high_priority = () => toLongOption(cl_messages_per_connection))
 
   @option(name = "--display-errors", description = "Should errors get dumped to the screen when they occur?")
-  var display_errors = false
+  var cl_display_errors: java.lang.Boolean = _
+  var display_errors = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_display_errors))
 
   var samples = HashMap[String, List[(Long,Long)]]()
 
@@ -146,31 +181,32 @@ class Benchmark extends Action {
   }
 
   def execute(session: CommandSession): AnyRef = {
-    if( broker_name == null ) {
-      broker_name = out.getName.stripSuffix(".json")
-    }
+    
+    FlexibleProperty.init_all()
+    
+    broker_name.set_default(out.get.getName.stripSuffix(".json"))
 
     println("===================================================================")
-    println("Benchmarking %s at: %s:%d".format(broker_name, host, port))
+    println("Benchmarking %s at: %s:%d".format(broker_name.get, host.get, port.get))
     println("===================================================================")
 
 
-    if( scenario_file == null ) {
+    if( scenario_file.getOption.isEmpty ) {
       run_benchmarks
     } else {
       load_and_run_benchmarks
     }
 
-    val os = new PrintStream(new FileOutputStream(out))
+    val os = new PrintStream(new FileOutputStream(out.get))
     os.println("{")
     os.println("""  "benchmark_settings": {""")
-    os.println("""    "broker_name": "%s",""".format(broker_name))
-    os.println("""    "host": "%s",""".format(host))
-    os.println("""    "port": %d,""".format(port))
-    os.println("""    "sample_count": %d,""".format(sample_count))
-    os.println("""    "sample_interval": %d,""".format(sample_interval))
-    os.println("""    "warm_up_count": %d,""".format(warm_up_count))
-    os.println("""    "scenario_connection_scale_rate": %d""".format(scenario_connection_scale_rate))
+    os.println("""    "broker_name": "%s",""".format(broker_name.get))
+    os.println("""    "host": "%s",""".format(host.get))
+    os.println("""    "port": %d,""".format(port.get))
+    os.println("""    "sample_count": %d,""".format(sample_count.get))
+    os.println("""    "sample_interval": %d,""".format(sample_interval.get))
+    os.println("""    "warm_up_count": %d,""".format(warm_up_count.get))
+    os.println("""    "scenario_connection_scale_rate": %d""".format(scenario_connection_scale_rate.get))
     os.println("""  },""")
     os.println(samples.map { case (name, sample)=>
       """  "%s": %s""".format(name, json_format(sample.map(x=> "[%d,%d]".format(x._1,x._2))))
@@ -179,31 +215,31 @@ class Benchmark extends Action {
 
     os.close
     println("===================================================================")
-    println("Stored: "+out)
+    println("Stored: "+out.get)
     println("===================================================================")
     null
   }
 
-  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=blocking_io)(init_func: (Scenario)=>Unit ):Unit = {
+  private def benchmark(name:String, drain:Boolean=true, sc:Int=sample_count.get, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=blocking_io.get)(init_func: (Scenario)=>Unit ):Unit = {
     multi_benchmark(List(name), drain, sc, is_done, blocking) { scenarios =>
       init_func(scenarios.head)
     }
   }
 
-  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=blocking_io)(init_func: (List[Scenario])=>Unit ):Unit = {
+  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count.get, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=blocking_io.get)(init_func: (List[Scenario])=>Unit ):Unit = {
     val scenarios:List[Scenario] = names.map { name=>
       val scenario = if(blocking) new BlockingScenario else new NonBlockingScenario
       scenario.name = name
-      scenario.sample_interval = sample_interval
-      scenario.host = host
-      scenario.port = port
-      scenario.login = login
-      scenario.passcode = passcode
-      scenario.queue_prefix = queue_prefix
-      scenario.topic_prefix = topic_prefix
-      scenario.drain_timeout = drain_timeout
-      scenario.persistent_header = persistent_header
-      scenario.display_errors = display_errors
+      scenario.sample_interval = sample_interval.get
+      scenario.host = host.get
+      scenario.port = port.get
+      scenario.login = login.getOption
+      scenario.passcode = passcode.getOption
+      scenario.queue_prefix = queue_prefix.get
+      scenario.topic_prefix = topic_prefix.get
+      scenario.drain_timeout = drain_timeout.get
+      scenario.persistent_header = persistent_header.get
+      scenario.display_errors = display_errors.get
       scenario
     }
 
@@ -236,8 +272,8 @@ class Benchmark extends Action {
 
     Thread.currentThread.setPriority(Thread.MAX_PRIORITY)
     val sample_set = with_load(scenarios) {
-      for( i <- 0 until warm_up_count ) {
-        Thread.sleep(sample_interval)
+      for( i <- 0 until warm_up_count.get ) {
+        Thread.sleep(sample_interval.get)
         print(".")
       }
       scenarios.foreach(_.collection_start)
@@ -245,7 +281,7 @@ class Benchmark extends Action {
       if( is_done!=null ) {
         while( !is_done(scenarios) ) {
           print(".")
-          Thread.sleep(sample_interval)
+          Thread.sleep(sample_interval.get)
           scenarios.foreach(_.collection_sample)
         }
 
@@ -253,7 +289,7 @@ class Benchmark extends Action {
         var remaining = sc
         while( remaining > 0 ) {
           print(".")
-          Thread.sleep(sample_interval)
+          Thread.sleep(sample_interval.get)
           scenarios.foreach(_.collection_sample)
           remaining-=1
         }
@@ -322,39 +358,39 @@ class Benchmark extends Action {
   def run_benchmarks = {
 
 
-    val persistence_values = if (enable_persistence) {
+    val persistence_values = if (enable_persistence.get) {
       List(false, true)
     } else {
       List(false)
     }
 
     var destination_types = List[String]()
-    if( enable_queues ) {
+    if( enable_queues.get ) {
       destination_types ::= "queue"
     }
-    if( enable_topics ) {
+    if( enable_topics.get ) {
       destination_types ::= "topic"
     }
 
 
-    if(scenario_connection_scale ) {
+    if(scenario_connection_scale.get ) {
 
       for( messages_per_connection <- List(-1)) {
 
         /** this test keeps going until we start getting a large number of errors */
-        var remaining = scenario_connection_scale_max_samples
+        var remaining = scenario_connection_scale_max_samples.get
         def is_done(scenarios:List[Scenario]):Boolean = {
           remaining -= 1;
           var errors = 0L
           scenarios.foreach( _.error_samples.lastOption.foreach( errors+= _._2 ) )
-          return errors >= scenario_connection_scale_rate || remaining <= 0
+          return errors >= scenario_connection_scale_rate.get || remaining <= 0
         }
 
         benchmark("20b_Xa%s_1queue_1".format(messages_per_connection)+"m", true, 0, is_done, false) { scenario=>
           scenario.message_size = 20
           scenario.producers = 0
           scenario.messages_per_connection = messages_per_connection
-          scenario.producers_per_sample = scenario_connection_scale_rate
+          scenario.producers_per_sample = scenario_connection_scale_rate.get
           scenario.producer_sleep = 1000
           scenario.persistent = false
           scenario.sync_send = false
@@ -366,7 +402,7 @@ class Benchmark extends Action {
     }
 
     // Setup a scenario /w fast and slow consumers
-    if(scenario_slow_consumer) {
+    if(scenario_slow_consumer.get) {
       for( dt <- destination_types) {
         multi_benchmark(List("20b_1a_1%s_1fast".format(dt), "20b_0_1%s_1slow".format(dt))) {
           case List(fast:Scenario, slow:Scenario) =>
@@ -389,7 +425,7 @@ class Benchmark extends Action {
     }
 
     // Setup selecting consumers on 1 destination.
-    if( scenario_selector ) {
+    if( scenario_selector.get ) {
       for( dt <- destination_types) {
         multi_benchmark(List("20b_color_2a_1%s_0".format(dt), "20b_0_1%s_1_red".format(dt), "20b_0_1%s_1_blue".format(dt))) {
           case List(producer:Scenario, red:Scenario, blue:Scenario) =>
@@ -418,7 +454,7 @@ class Benchmark extends Action {
       }
     }
 
-    if( enable_topics && scenario_producer_throughput ) {
+    if( enable_topics.get && scenario_producer_throughput.get ) {
       // Benchmark for figuring out the max producer throughput
       for( size <- List(20, 1024, 1024 * 256) ) {
         val name = "%s_1a_1topic_0".format(mlabel(size))
@@ -435,7 +471,7 @@ class Benchmark extends Action {
     }
 
     // Benchmark for the queue parallel load scenario
-    if( scenario_partitioned ) {
+    if( scenario_partitioned.get ) {
 
       val message_sizes = List(20, 1024, 1024 * 256)
       val destinations = List(1, 5, 10)
@@ -454,7 +490,7 @@ class Benchmark extends Action {
       }
     }
 
-    if( scenario_fan_in_out  ) {
+    if( scenario_fan_in_out.get  ) {
       val client_count = List(1, 5, 10)
       val message_sizes = List(20)
       
@@ -474,7 +510,7 @@ class Benchmark extends Action {
       }
     }
 
-    if( enable_topics && scenario_durable_subs) {
+    if( enable_topics.get && scenario_durable_subs.get) {
       // Benchmark for durable subscriptions on topics
       for( persistent <- persistence_values ; size <- List(1024)  ; load <- List(5, 20) ) {
         val name = "%s_1%s%s_1topic_%dd".format(mlabel(size), plabel(persistent), slabel(persistent), load)
@@ -491,7 +527,7 @@ class Benchmark extends Action {
       }
     }
 
-    if( enable_persistence && scenario_queue_loading ) {
+    if( enable_persistence.get && scenario_queue_loading.get ) {
       for( persistent <- List(false, true)) {
         val size = 20
 
@@ -525,7 +561,31 @@ class Benchmark extends Action {
 
   }
 
-  def load_and_run_benchmarks = { 
+  def load_and_run_benchmarks = {
+    
+    var producers = FlexibleProperty[Int]() 
+    var consumers = FlexibleProperty[Int]()
+    var destination_type = FlexibleProperty[String]()
+    var destination_name = FlexibleProperty[String]()
+    var consumer_prefix = FlexibleProperty[String]()
+    
+    var message_size = FlexibleProperty[Int]()
+    var content_length = FlexibleProperty[Boolean]()
+    
+    var drain = FlexibleProperty[Boolean](default = Some(false))
+    var persistent = FlexibleProperty[Boolean]()
+    var durable = FlexibleProperty[Boolean]()
+    var sync_send = FlexibleProperty[Boolean]()
+
+    var ack = FlexibleProperty[String]()
+    
+    var producers_per_sample = FlexibleProperty[Int]()
+    var consumers_per_sample = FlexibleProperty[Int]()
+
+    var selector = FlexibleProperty[String]()
+    
+    var producer_sleep = FlexibleProperty[sleepFunction](default = Some(new sleepFunction { override def apply() = 0 }))
+    var consumer_sleep = FlexibleProperty[sleepFunction](default = Some(new sleepFunction { override def apply() = 0 }))
 
     def getStringValue(property_name: String, ns_xml: NodeSeq): Option[String] = {
       val value = ns_xml \ property_name
@@ -546,39 +606,18 @@ class Benchmark extends Action {
       try {
         value.map((x:String) => x.toBoolean)
       } catch {
-        case e: NumberFormatException => throw new Exception("Error in XML scenario, not integer provided: " + value.getOrElse("\"\""))
+        case e: NumberFormatException => throw new Exception("Error in XML scenario, not boolean provided: " + value.getOrElse("\"\""))
       }
     }
 
-    def getStringValueCascade (property_name: String, global_common_xml: NodeSeq = NodeSeq.Empty, scenario_common_xml: NodeSeq = NodeSeq.Empty, clients_xml: NodeSeq = NodeSeq.Empty): Option[String] = {
-      var value: Option[String] = None
-      value = getStringValue(property_name, global_common_xml).orElse(value)
-      value = getStringValue(property_name, scenario_common_xml).orElse(value)
-      getStringValue(property_name, clients_xml).orElse(value)
-    }
-
-    def getIntValueCascade (property_name: String, global_common_xml: NodeSeq = NodeSeq.Empty, scenario_common_xml: NodeSeq = NodeSeq.Empty, clients_xml: NodeSeq = NodeSeq.Empty): Option[Int] = {
-      var value: Option[Int] = None
-      value = getIntValue(property_name, global_common_xml).orElse(value)
-      value = getIntValue(property_name, scenario_common_xml).orElse(value)
-      getIntValue(property_name, clients_xml).orElse(value)
-    }
-
-    def getBooleanValueCascade (property_name: String, global_common_xml: NodeSeq = NodeSeq.Empty, scenario_common_xml: NodeSeq = NodeSeq.Empty, clients_xml: NodeSeq = NodeSeq.Empty): Option[Boolean] = {
-      var value: Option[Boolean] = None
-      value = getBooleanValue(property_name, global_common_xml).orElse(value)
-      value = getBooleanValue(property_name, scenario_common_xml).orElse(value)
-      getBooleanValue(property_name, clients_xml).orElse(value)
-    }
-
-    def getPropertySleep(property_name: String, clients_xml: NodeSeq): sleepFunction = { 
+    def getPropertySleep(property_name: String, clients_xml: NodeSeq): Option[sleepFunction] = { 
       val format_catcher = catching(classOf[NumberFormatException])
       val property_sleep_nodeset = clients_xml \ property_name
       val property_sleep_value: Option[Int] = format_catcher.opt(property_sleep_nodeset.text.toInt)
       if (property_sleep_nodeset.length == 1 && property_sleep_value.isDefined) {
-        new sleepFunction { override def apply() = property_sleep_value.get }
+        Some(new sleepFunction { override def apply() = property_sleep_value.get })
       } else if ((property_sleep_nodeset \ "range").length > 0) {
-        new sleepFunction {
+        Some(new sleepFunction {
           var ranges: List[Tuple2[Int, (Long) => Int]] = Nil 
           for (range_node <- property_sleep_nodeset \ "range") {
             val range_value =  format_catcher.opt(range_node.text.toInt)
@@ -609,56 +648,128 @@ class Benchmark extends Action {
                 SLEEP
             }
           }
-        }
+        })
       } else {
-        new sleepFunction { override def apply() = 0 }
+        None
       }
     }
+    
+    def push_properties(node: NodeSeq) {
+      sample_count.push(getIntValue("sample_count", node))
+      drain.push(getBooleanValue("drain", node))
+      blocking_io.push(getBooleanValue("blocking_io", node))
+      warm_up_count.push(getIntValue("warm_up_count", node))
+      sample_interval.push(getIntValue("sample_interval", node))
+      
+      login.push(getStringValue("login", node))
+      passcode.push(getStringValue("passcode", node))
+      host.push(getStringValue("host", node))
+      port.push(getIntValue("port", node))
+      producers.push(getIntValue("producers", node))
+      consumers.push(getIntValue("consumers", node))
+      destination_type.push(getStringValue("destination_type", node))
+      destination_name.push(getStringValue("destination_name", node))
 
-    val scenarios_xml = XML.loadFile(scenario_file)
+      consumer_prefix.push(getStringValue("consumer_prefix", node))
+      queue_prefix.push(getStringValue("queue_prefix", node))
+      topic_prefix.push(getStringValue("topic_prefix", node))
+      message_size.push(getIntValue("message_size", node))
+      content_length.push(getBooleanValue("content_length", node))
+      drain_timeout.push(getIntValue("drain_timeout", node).map(_.toLong))
+      persistent.push(getBooleanValue("persistent", node))
+      durable.push(getBooleanValue("durable", node))
+      sync_send.push(getBooleanValue("sync_send", node))
+      ack.push(getStringValue("ack", node))
+      messages_per_connection.push(getIntValue("messages_per_connection", node).map(_.toLong))
+      producers_per_sample.push(getIntValue("producers_per_sample", node))
+      consumers_per_sample.push(getIntValue("consumers_per_sample", node))
+      selector.push(getStringValue("selector", node))
+
+      producer_sleep.push(getPropertySleep("producer_sleep", node))
+      consumer_sleep.push(getPropertySleep("consumer_sleep", node))
+    }
+    
+    def pop_properties() {
+      sample_count.pop()
+      drain.pop()
+      blocking_io.pop()
+      warm_up_count.pop()
+      sample_interval.pop()
+      
+      login.pop()
+      passcode.pop()
+      host.pop()
+      port.pop()
+      producers.pop()
+      consumers.pop()
+      destination_type.pop()
+      destination_name.pop()
+
+      consumer_prefix.pop()
+      queue_prefix.pop()
+      topic_prefix.pop()
+      message_size.pop()
+      content_length.pop()
+      drain_timeout.pop()
+      persistent.pop()
+      durable.pop()
+      sync_send.pop()
+      ack.pop()
+      messages_per_connection.pop()
+      producers_per_sample.pop()
+      consumers_per_sample.pop()
+      selector.pop()
+      
+      producer_sleep.pop()
+      consumer_sleep.pop()
+    }
+
+    val scenarios_xml = XML.loadFile(scenario_file.get)
     val global_common_xml = scenarios_xml \ "common"
+    push_properties(global_common_xml)
 
     for (scenario_xml <- scenarios_xml \ "scenario") {
       val scenario_common_xml = scenario_xml \ "common"
-      val names = (scenario_xml \ "clients").map( client => (client \ "@name").text ).toList 
-      val sc = getIntValueCascade("sample_count", global_common_xml, scenario_common_xml).getOrElse(sample_count)
-      val drain = getBooleanValueCascade("drain", global_common_xml, scenario_common_xml).getOrElse(false)
-      val blocking = getBooleanValueCascade("blocking_io", global_common_xml, scenario_common_xml).getOrElse(blocking_io)
-      warm_up_count = getIntValueCascade("warm_up_count", global_common_xml, scenario_common_xml).getOrElse(warm_up_count)
-      sample_interval = getIntValueCascade("sample_interval", global_common_xml, scenario_common_xml).getOrElse(sample_interval)
-
-      multi_benchmark(names = names, drain = drain, sc = sc, blocking = blocking) { scenarios =>
+      push_properties(scenario_common_xml)
+      val names = (scenario_xml \ "clients").map( client => (client \ "@name").text ).toList
+      
+      multi_benchmark(names = names, drain = drain.get) { scenarios =>
         for (scenario <- scenarios) {
-            val clients_xml = (scenario_xml \ "clients").filter( clients => (clients \ "@name").text == scenario.name )
+          val clients_xml = (scenario_xml \ "clients").filter( clients => (clients \ "@name").text == scenario.name )  
+          push_properties(clients_xml)
+          
+          scenario.login = login.getOption()
+          scenario.passcode = passcode.getOption()
+          scenario.host = host.getOrElse(scenario.host)
+          scenario.port = port.getOrElse(scenario.port)
+          scenario.producers = producers.getOrElse(0)
+          scenario.consumers = consumers.getOrElse(0)
+          scenario.destination_type = destination_type.getOrElse(scenario.destination_type)
+          scenario.destination_name = destination_name.getOrElse(scenario.destination_name)
 
-            scenario.login = getStringValueCascade("login", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.login)
-            scenario.passcode = getStringValueCascade("passcode", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.passcode)
-            scenario.host = getStringValueCascade("host", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.host)
-            scenario.port = getIntValueCascade("port", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.port)
-            scenario.producers = getIntValueCascade("producers", global_common_xml, scenario_common_xml, clients_xml).getOrElse(0)
-            scenario.consumers = getIntValueCascade("consumers", global_common_xml, scenario_common_xml, clients_xml).getOrElse(0)
-            scenario.destination_type = getStringValueCascade("destination_type", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.destination_type)
-            scenario.destination_name = getStringValueCascade("destination_name", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.destination_name)
-
-            scenario.consumer_prefix = getStringValueCascade("consumer_prefix", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.consumer_prefix)
-            scenario.queue_prefix = getStringValueCascade("queue_prefix", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.queue_prefix)
-            scenario.topic_prefix = getStringValueCascade("topic_prefix", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.topic_prefix)
-            scenario.message_size = getIntValueCascade("message_size", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.message_size)
-            scenario.content_length = getBooleanValueCascade("content_length", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.content_length)
-            scenario.drain_timeout = getIntValueCascade("drain_timeout", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.drain_timeout.toInt).toLong
-            scenario.persistent = getBooleanValueCascade("persistent", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.persistent)
-            scenario.durable = getBooleanValueCascade("durable", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.durable)
-            scenario.sync_send = getBooleanValueCascade("sync_send", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.sync_send)
-            scenario.ack = getStringValueCascade("ack", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.ack)
-            scenario.messages_per_connection = getIntValueCascade("messages_per_connection", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.messages_per_connection.toInt).toLong
-            scenario.producers_per_sample = getIntValueCascade("producers_per_sample", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.producers_per_sample)
-            scenario.consumers_per_sample = getIntValueCascade("consumers_per_sample", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.consumers_per_sample)
-            scenario.selector = getStringValueCascade("selector", global_common_xml, scenario_common_xml, clients_xml).getOrElse(scenario.selector)
-
-            scenario.producer_sleep = getPropertySleep("producer_sleep", clients_xml)
-            scenario.consumer_sleep = getPropertySleep("consumer_sleep", clients_xml)
+          scenario.consumer_prefix = consumer_prefix.getOrElse(scenario.consumer_prefix)
+          scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)
+          scenario.topic_prefix = topic_prefix.getOrElse(scenario.topic_prefix)
+          scenario.message_size = message_size.getOrElse(scenario.message_size)
+          scenario.content_length = content_length.getOrElse(scenario.content_length)
+          scenario.drain_timeout = drain_timeout.getOrElse(scenario.drain_timeout)
+          scenario.persistent = persistent.getOrElse(scenario.persistent)
+          scenario.durable = durable.getOrElse(scenario.durable)
+          scenario.sync_send = sync_send.getOrElse(scenario.sync_send)
+          scenario.ack = ack.getOrElse(scenario.ack)
+          scenario.messages_per_connection = messages_per_connection.getOrElse(scenario.messages_per_connection)
+          scenario.producers_per_sample = producers_per_sample.getOrElse(scenario.producers_per_sample)
+          scenario.consumers_per_sample = consumers_per_sample.getOrElse(scenario.consumers_per_sample)
+          scenario.selector = selector.getOrElse(scenario.selector)
+            
+          scenario.producer_sleep = producer_sleep.get
+          scenario.consumer_sleep = consumer_sleep.get
+          
+          pop_properties()
         }
       }
+      pop_properties()
     }
+    pop_properties()
   }
 }

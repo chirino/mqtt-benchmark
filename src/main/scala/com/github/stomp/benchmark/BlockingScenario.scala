@@ -110,8 +110,8 @@ class BlockingScenario extends Scenario {
       try {
         open(host, port)
         write("CONNECT\n%s%s\n".format(
-          o(login).map("login:%s\n".format(_)).getOrElse(""),
-          o(passcode).map("passcode:%s\n".format(_)).getOrElse("")
+          login.map("login:%s\n".format(_)).getOrElse(""),
+          passcode.map("passcode:%s\n".format(_)).getOrElse("")
         ))
         receive ("CONNECTED")
         proc

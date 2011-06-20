@@ -24,8 +24,8 @@ import scala.collection.mutable.ListBuffer
 //object Example {
 //  def main(args:Array[String]):Unit = {
 //    val scenario = new com.github.stomp.benchmark.NonBlockingScenario
-//    scenario.login = "admin"
-//    scenario.passcode = "password"
+//    scenario.login = Some("admin")
+//    scenario.passcode = Some("password")
 //    scenario.run
 //  }
 //}
@@ -46,8 +46,8 @@ object Scenario {
 trait Scenario {
   import Scenario._
 
-  var login:String = _
-  var passcode:String = _
+  var login: Option[String] = None
+  var passcode: Option[String] = None
 
   private var _producer_sleep: { def apply(): Int; def init(time: Long) } = new { def apply() = 0; def init(time: Long) {}  }
   def producer_sleep = _producer_sleep()
