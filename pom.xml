@@ -33,7 +33,7 @@
     <!-- dependency versions -->
     <scala-version>2.8.1</scala-version>
     <maven-scala-plugin-version>2.15.0</maven-scala-plugin-version>
-    <karaf-version>2.1.0</karaf-version>
+    <karaf-version>2.2.1</karaf-version>
     <slf4j-version>1.6.0</slf4j-version>
 
   </properties>
