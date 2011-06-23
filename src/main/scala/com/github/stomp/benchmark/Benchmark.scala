@@ -167,8 +167,13 @@ class Benchmark extends Action {
   @option(name = "--display-errors", description = "Should errors get dumped to the screen when they occur?")
   var cl_display_errors: java.lang.Boolean = _
   var display_errors = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_display_errors))
+  
+  @option(name = "--new-json", description = "Generate the new json format including more information")
+  var cl_new_json: java.lang.Boolean = _
+  var new_json = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_new_json))
 
   var samples = HashMap[String, List[(Long,Long)]]()
+  var benchmark_results = new BenchmarkResults()
 
 
 
@@ -198,20 +203,25 @@ class Benchmark extends Action {
     }
 
     val os = new PrintStream(new FileOutputStream(out.get))
-    os.println("{")
-    os.println("""  "benchmark_settings": {""")
-    os.println("""    "broker_name": "%s",""".format(broker_name.get))
-    os.println("""    "host": "%s",""".format(host.get))
-    os.println("""    "port": %d,""".format(port.get))
-    os.println("""    "sample_count": %d,""".format(sample_count.get))
-    os.println("""    "sample_interval": %d,""".format(sample_interval.get))
-    os.println("""    "warm_up_count": %d,""".format(warm_up_count.get))
-    os.println("""    "scenario_connection_scale_rate": %d""".format(scenario_connection_scale_rate.get))
-    os.println("""  },""")
-    os.println(samples.map { case (name, sample)=>
-      """  "%s": %s""".format(name, json_format(sample.map(x=> "[%d,%d]".format(x._1,x._2))))
-    }.mkString(",\n"))
-    os.println("}")
+    
+    if( scenario_file.getOption.isEmpty || (!new_json.get)) {
+      os.println("{")
+      os.println("""  "benchmark_settings": {""")
+      os.println("""    "broker_name": "%s",""".format(broker_name.get))
+      os.println("""    "host": "%s",""".format(host.get))
+      os.println("""    "port": %d,""".format(port.get))
+      os.println("""    "sample_count": %d,""".format(sample_count.get))
+      os.println("""    "sample_interval": %d,""".format(sample_interval.get))
+      os.println("""    "warm_up_count": %d,""".format(warm_up_count.get))
+      os.println("""    "scenario_connection_scale_rate": %d""".format(scenario_connection_scale_rate.get))
+      os.println("""  },""")
+      os.println(samples.map { case (name, sample)=>
+        """  "%s": %s""".format(name, json_format(sample.map(x=> "[%d,%d]".format(x._1,x._2))))
+      }.mkString(",\n"))
+      os.println("}")
+    } else {
+      os.print(benchmark_results.to_json())
+    }
 
     os.close
     println("===================================================================")
@@ -226,7 +236,7 @@ class Benchmark extends Action {
     }
   }
 
-  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count.get, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=blocking_io.get)(init_func: (List[Scenario])=>Unit ):Unit = {
+  private def multi_benchmark(names:List[String], drain:Boolean=true, sc:Int=sample_count.get, is_done: (List[Scenario])=>Boolean = null, blocking:Boolean=blocking_io.get, results: HashMap[String, ClientResults] = HashMap.empty)(init_func: (List[Scenario])=>Unit ):Unit = {
     val scenarios:List[Scenario] = names.map { name=>
       val scenario = if(blocking) new BlockingScenario else new NonBlockingScenario
       scenario.name = name
@@ -302,6 +312,18 @@ class Benchmark extends Action {
         collected.foreach{ x=>
           if( !x._1.startsWith("e_") || x._2.find( _._2 != 0 ).isDefined ) {
             println("%s samples: %s".format(x._1, json_format(x._2.map(_._2.toString))) )
+            
+            if (results.contains(scenario.name)) {
+              // Copy the scenario results to the results structure
+              val client_results = results(scenario.name)
+              client_results.producers_data = collected.getOrElse("p_"+scenario.name, Nil)
+              client_results.consumers_data = collected.getOrElse("c_"+scenario.name, Nil)
+              client_results.error_data = collected.getOrElse("e_"+scenario.name, Nil)
+              if ( client_results.error_data.foldLeft(0L)((a,x) => a + x._2) == 0 ) {
+                // If there are no errors, we keep an empty list
+                client_results.error_data = Nil
+              }
+            }
           }
         }
         samples ++= collected
@@ -725,48 +747,79 @@ class Benchmark extends Action {
     }
 
     val scenarios_xml = XML.loadFile(scenario_file.get)
+    
     val global_common_xml = scenarios_xml \ "common"
     push_properties(global_common_xml)
-
-    for (scenario_xml <- scenarios_xml \ "scenario") {
-      val scenario_common_xml = scenario_xml \ "common"
-      push_properties(scenario_common_xml)
-      val names = (scenario_xml \ "clients").map( client => (client \ "@name").text ).toList
+    
+    benchmark_results.description = getStringValue("description", scenarios_xml).getOrElse("")
+    
+    for (group_xml <- scenarios_xml \ "group") {
+      val group_common_xml = group_xml \ "common"
+      push_properties(group_common_xml)
       
-      multi_benchmark(names = names, drain = drain.get) { scenarios =>
-        for (scenario <- scenarios) {
-          val clients_xml = (scenario_xml \ "clients").filter( clients => (clients \ "@name").text == scenario.name )  
-          push_properties(clients_xml)
-          
-          scenario.login = login.getOption()
-          scenario.passcode = passcode.getOption()
-          scenario.host = host.getOrElse(scenario.host)
-          scenario.port = port.getOrElse(scenario.port)
-          scenario.producers = producers.getOrElse(0)
-          scenario.consumers = consumers.getOrElse(0)
-          scenario.destination_type = destination_type.getOrElse(scenario.destination_type)
-          scenario.destination_name = destination_name.getOrElse(scenario.destination_name)
-
-          scenario.consumer_prefix = consumer_prefix.getOrElse(scenario.consumer_prefix)
-          scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)
-          scenario.topic_prefix = topic_prefix.getOrElse(scenario.topic_prefix)
-          scenario.message_size = message_size.getOrElse(scenario.message_size)
-          scenario.content_length = content_length.getOrElse(scenario.content_length)
-          scenario.drain_timeout = drain_timeout.getOrElse(scenario.drain_timeout)
-          scenario.persistent = persistent.getOrElse(scenario.persistent)
-          scenario.durable = durable.getOrElse(scenario.durable)
-          scenario.sync_send = sync_send.getOrElse(scenario.sync_send)
-          scenario.ack = ack.getOrElse(scenario.ack)
-          scenario.messages_per_connection = messages_per_connection.getOrElse(scenario.messages_per_connection)
-          scenario.producers_per_sample = producers_per_sample.getOrElse(scenario.producers_per_sample)
-          scenario.consumers_per_sample = consumers_per_sample.getOrElse(scenario.consumers_per_sample)
-          scenario.selector = selector.getOrElse(scenario.selector)
+      var group_results = new GroupResults()
+      benchmark_results.groups :+= group_results
+      group_results.name = getStringValue("@name", group_xml).get
+      group_results.description = getStringValue("description", group_xml).getOrElse("")
+      
+      for (scenario_xml <- group_xml \ "scenario") {
+        val scenario_common_xml = scenario_xml \ "common"
+        push_properties(scenario_common_xml)
+        
+        var scenario_results = new SingleScenarioResults()
+        group_results.scenarios :+= scenario_results
+        scenario_results.name = getStringValue("@name", scenario_xml).get
+        
+        val names = (scenario_xml \ "clients").map( client => (client \ "@name").text ).toList
+        
+        var scenario_client_results = new HashMap[String, ClientResults]()
+        
+        multi_benchmark(names = names, drain = drain.get, results = scenario_client_results) { scenarios =>
+          for (scenario <- scenarios) {
+            val clients_xml = (scenario_xml \ "clients").filter( clients => (clients \ "@name").text == scenario.name )
+            push_properties(clients_xml)
             
-          scenario.producer_sleep = producer_sleep.get
-          scenario.consumer_sleep = consumer_sleep.get
-          
-          pop_properties()
+            var client_results = new ClientResults()
+            scenario_results.clients :+= client_results
+            client_results.name = getStringValue("@name", clients_xml).get
+            
+            scenario_client_results += (scenario.name -> client_results) // To be able to fill the results from multi_benchmark
+            
+            // Load all the properties in the scenario
+            scenario.login = login.getOption()
+            scenario.passcode = passcode.getOption()
+            scenario.host = host.getOrElse(scenario.host)
+            scenario.port = port.getOrElse(scenario.port)
+            scenario.producers = producers.getOrElse(0)
+            scenario.consumers = consumers.getOrElse(0)
+            scenario.destination_type = destination_type.getOrElse(scenario.destination_type)
+            scenario.destination_name = destination_name.getOrElse(scenario.destination_name)
+  
+            scenario.consumer_prefix = consumer_prefix.getOrElse(scenario.consumer_prefix)
+            scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)
+            scenario.topic_prefix = topic_prefix.getOrElse(scenario.topic_prefix)
+            scenario.message_size = message_size.getOrElse(scenario.message_size)
+            scenario.content_length = content_length.getOrElse(scenario.content_length)
+            scenario.drain_timeout = drain_timeout.getOrElse(scenario.drain_timeout)
+            scenario.persistent = persistent.getOrElse(scenario.persistent)
+            scenario.durable = durable.getOrElse(scenario.durable)
+            scenario.sync_send = sync_send.getOrElse(scenario.sync_send)
+            scenario.ack = ack.getOrElse(scenario.ack)
+            scenario.messages_per_connection = messages_per_connection.getOrElse(scenario.messages_per_connection)
+            scenario.producers_per_sample = producers_per_sample.getOrElse(scenario.producers_per_sample)
+            scenario.consumers_per_sample = consumers_per_sample.getOrElse(scenario.consumers_per_sample)
+            scenario.selector = selector.getOrElse(scenario.selector)
+              
+            scenario.producer_sleep = producer_sleep.get
+            scenario.consumer_sleep = consumer_sleep.get
+            
+            // Copy the scenario settings to the results
+            client_results.settings = scenario.settings
+            
+            pop_properties()
+          }
         }
+        pop_properties()
       }
       pop_properties()
     }
