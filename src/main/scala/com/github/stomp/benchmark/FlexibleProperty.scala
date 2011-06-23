@@ -46,8 +46,7 @@ class FlexibleProperty[T]() {
 
   private var default_value: Option[T] = None
   private var high_priority_value: Option[T] = None
-  private var level: Int = 0
-  private var values: List[T] = Nil
+  private var values: List[Option[T]] = Nil
   private var high_priority_function: () => Option[T] =  () => None
   
   def init() {
@@ -71,41 +70,30 @@ class FlexibleProperty[T]() {
   }
   
   def push(value: Option[T]) {
-    if (value.isDefined)
-      values = value.get :: values
-    level += 1
+    values = value :: values
   }
   
   def pop(): Option[T] = {
-    if (level == values.length) {
-      val h = values.head
-      values = values.tail
-      level -= 1
-      Some(h)
+    val h = values.head
+    values = values.tail
+    h
+  }
+  
+  def getOption(): Option[T] = {
+    if (high_priority_value.isDefined) {
+      high_priority_value
     } else {
-      level -= 1
-      None 
+      val filtered_values = values.filter(_.isDefined)
+      if (! filtered_values.isEmpty){
+        filtered_values.head
+      } else {
+        default_value
+      }
     }
   }
   
   def get(): T = {
-    if (high_priority_value.isDefined) {
-      high_priority_value.get
-    } else  if (! values.isEmpty){
-      values.head
-    } else {
-      default_value.get
-    }
-  }
-  
-   def getOption(): Option[T] = {
-    if (high_priority_value.isDefined) {
-      high_priority_value
-    } else  if (! values.isEmpty){
-      values.headOption
-    } else {
-      default_value
-    }
+    getOption.get
   }
   
   def getOrElse(default: T): T = {
