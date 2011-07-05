@@ -609,13 +609,13 @@ class Benchmark extends Action {
     var producer_sleep = FlexibleProperty[sleepFunction](default = Some(new sleepFunction { override def apply() = 0 }))
     var consumer_sleep = FlexibleProperty[sleepFunction](default = Some(new sleepFunction { override def apply() = 0 }))
 
-    def getStringValue(property_name: String, ns_xml: NodeSeq): Option[String] = {
+    def getStringValue(property_name: String, ns_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[String] = {
       val value = ns_xml \ property_name
-      if (value.length == 1) Some(value.text.trim) else None
+      if (value.length == 1) Some(substituteVariables(value.text.trim, vars)) else None
     }
 
-    def getIntValue(property_name: String, ns_xml: NodeSeq): Option[Int] = {
-      val value = getStringValue(property_name, ns_xml)
+    def getIntValue(property_name: String, ns_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[Int] = {
+      val value = getStringValue(property_name, ns_xml, vars)
       try {
         value.map((x:String) => x.toInt)
       } catch {
@@ -623,8 +623,8 @@ class Benchmark extends Action {
       }
     }
 
-    def getBooleanValue(property_name: String, ns_xml: NodeSeq): Option[Boolean] = {
-      val value = getStringValue(property_name, ns_xml)
+    def getBooleanValue(property_name: String, ns_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[Boolean] = {
+      val value = getStringValue(property_name, ns_xml, vars)
       try {
         value.map((x:String) => x.toBoolean)
       } catch {
@@ -632,7 +632,7 @@ class Benchmark extends Action {
       }
     }
 
-    def getPropertySleep(property_name: String, clients_xml: NodeSeq): Option[sleepFunction] = { 
+    def getPropertySleep(property_name: String, clients_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[sleepFunction] = { 
       val format_catcher = catching(classOf[NumberFormatException])
       val property_sleep_nodeset = clients_xml \ property_name
       val property_sleep_value: Option[Int] = format_catcher.opt(property_sleep_nodeset.text.toInt)
@@ -643,7 +643,7 @@ class Benchmark extends Action {
           var ranges: List[Tuple2[Int, (Long) => Int]] = Nil 
           for (range_node <- property_sleep_nodeset \ "range") {
             val range_value =  format_catcher.opt(range_node.text.toInt)
-            val range_end =  getIntValue("@end", range_node)
+            val range_end =  getIntValue("@end", range_node, vars)
             val range_burst = range_node \ "burst"
             if (range_node.text == "sleep") {
               ranges :+= Tuple2(range_end.get, (time: Long) => SLEEP)
@@ -651,10 +651,10 @@ class Benchmark extends Action {
               ranges :+= Tuple2(range_end.get, (time: Long) => range_value.get)
             } else if (range_burst.length == 1) {
               var (slow, fast, duration, period) = (100, 0 , 1, 10)
-              slow = getIntValue("@slow", range_burst).getOrElse(slow)
-              fast = getIntValue("@fast", range_burst).getOrElse(fast)
-              duration = getIntValue("@duration", range_burst).getOrElse(duration)
-              period = getIntValue("@period", range_burst).getOrElse(period)
+              slow = getIntValue("@slow", range_burst, vars).getOrElse(slow)
+              fast = getIntValue("@fast", range_burst, vars).getOrElse(fast)
+              duration = getIntValue("@duration", range_burst, vars).getOrElse(duration)
+              period = getIntValue("@period", range_burst, vars).getOrElse(period)
               ranges :+= Tuple2(range_end.get, burstSleep(slow, fast, duration, period))
             } else {
               throw new Exception("Error in XML scenario, unsuported sleep function: "+range_node.text)
@@ -676,39 +676,39 @@ class Benchmark extends Action {
       }
     }
     
-    def push_properties(node: NodeSeq) {
-      sample_count.push(getIntValue("sample_count", node))
-      drain.push(getBooleanValue("drain", node))
-      blocking_io.push(getBooleanValue("blocking_io", node))
-      warm_up_count.push(getIntValue("warm_up_count", node))
-      sample_interval.push(getIntValue("sample_interval", node))
+    def push_properties(node: NodeSeq, vars: Map[String, String] = Map.empty[String, String]) {
+      sample_count.push(getIntValue("sample_count", node, vars))
+      drain.push(getBooleanValue("drain", node, vars))
+      blocking_io.push(getBooleanValue("blocking_io", node, vars))
+      warm_up_count.push(getIntValue("warm_up_count", node, vars))
+      sample_interval.push(getIntValue("sample_interval", node, vars))
       
-      login.push(getStringValue("login", node))
-      passcode.push(getStringValue("passcode", node))
-      host.push(getStringValue("host", node))
-      port.push(getIntValue("port", node))
-      producers.push(getIntValue("producers", node))
-      consumers.push(getIntValue("consumers", node))
-      destination_type.push(getStringValue("destination_type", node))
-      destination_name.push(getStringValue("destination_name", node))
+      login.push(getStringValue("login", node, vars))
+      passcode.push(getStringValue("passcode", node, vars))
+      host.push(getStringValue("host", node, vars))
+      port.push(getIntValue("port", node, vars))
+      producers.push(getIntValue("producers", node, vars))
+      consumers.push(getIntValue("consumers", node, vars))
+      destination_type.push(getStringValue("destination_type", node, vars))
+      destination_name.push(getStringValue("destination_name", node, vars))
 
-      consumer_prefix.push(getStringValue("consumer_prefix", node))
-      queue_prefix.push(getStringValue("queue_prefix", node))
-      topic_prefix.push(getStringValue("topic_prefix", node))
-      message_size.push(getIntValue("message_size", node))
-      content_length.push(getBooleanValue("content_length", node))
-      drain_timeout.push(getIntValue("drain_timeout", node).map(_.toLong))
-      persistent.push(getBooleanValue("persistent", node))
-      durable.push(getBooleanValue("durable", node))
-      sync_send.push(getBooleanValue("sync_send", node))
-      ack.push(getStringValue("ack", node))
-      messages_per_connection.push(getIntValue("messages_per_connection", node).map(_.toLong))
-      producers_per_sample.push(getIntValue("producers_per_sample", node))
-      consumers_per_sample.push(getIntValue("consumers_per_sample", node))
-      selector.push(getStringValue("selector", node))
+      consumer_prefix.push(getStringValue("consumer_prefix", node, vars))
+      queue_prefix.push(getStringValue("queue_prefix", node, vars))
+      topic_prefix.push(getStringValue("topic_prefix", node, vars))
+      message_size.push(getIntValue("message_size", node, vars))
+      content_length.push(getBooleanValue("content_length", node, vars))
+      drain_timeout.push(getIntValue("drain_timeout", node, vars).map(_.toLong))
+      persistent.push(getBooleanValue("persistent", node, vars))
+      durable.push(getBooleanValue("durable", node, vars))
+      sync_send.push(getBooleanValue("sync_send", node, vars))
+      ack.push(getStringValue("ack", node, vars))
+      messages_per_connection.push(getIntValue("messages_per_connection", node, vars).map(_.toLong))
+      producers_per_sample.push(getIntValue("producers_per_sample", node, vars))
+      consumers_per_sample.push(getIntValue("consumers_per_sample", node, vars))
+      selector.push(getStringValue("selector", node, vars))
 
-      producer_sleep.push(getPropertySleep("producer_sleep", node))
-      consumer_sleep.push(getPropertySleep("consumer_sleep", node))
+      producer_sleep.push(getPropertySleep("producer_sleep", node, vars))
+      consumer_sleep.push(getPropertySleep("consumer_sleep", node, vars))
     }
     
     def pop_properties() {
@@ -745,6 +745,38 @@ class Benchmark extends Action {
       producer_sleep.pop()
       consumer_sleep.pop()
     }
+    
+    /** This fucntion generates a list of tuples, each of them containing the
+      * variables to be replaced in the scenario template and the SingleScenarioResults
+      * object that will keep the results for this scenario.
+      * 
+      * The list is generated from a list of variables and posible values, and
+      * the parent of the ScenarioResults tree structure. The ScenarioResults
+      * objects are linked properly. */
+    def combineLoopVariables(loop_vars: List[LoopVariable], parent: LoopScenarioResults): List[(Map[String, String], SingleScenarioResults)] = loop_vars match {
+      case LoopVariable(name, _, values) :: Nil => values map { v =>
+        var scenario_results = new SingleScenarioResults()
+        parent.scenarios :+= (v.label, scenario_results)
+        (Map(name -> v.value), scenario_results)
+      }
+      case LoopVariable(name, _, values) :: tail => {
+        values flatMap { lv =>
+          var scenario_results = new LoopScenarioResults()
+          parent.scenarios :+= (lv.label, scenario_results)
+          val combined_tail = combineLoopVariables(tail, scenario_results)
+          combined_tail map { vv => (vv._1 + (name -> lv.value), vv._2) } 
+        }
+      }
+      case _ => Nil
+    }
+    
+    def substituteVariables(orig: String, vars: Map[String, String]): String = {
+      var modified = orig
+      for ((key, value) <- vars) {
+        modified = modified.replaceAll("\\$\\{"+key+"\\}", value)
+      }
+      modified
+    }
 
     val scenarios_xml = XML.loadFile(scenario_file.get)
     
@@ -754,6 +786,7 @@ class Benchmark extends Action {
     benchmark_results.description = getStringValue("description", scenarios_xml).getOrElse("")
     
     for (group_xml <- scenarios_xml \ "group") {
+      
       val group_common_xml = group_xml \ "common"
       push_properties(group_common_xml)
       
@@ -762,64 +795,98 @@ class Benchmark extends Action {
       group_results.name = getStringValue("@name", group_xml).get
       group_results.description = getStringValue("description", group_xml).getOrElse("")
       
+      // Parse the loop variables
+      var loop_vars = (group_xml \ "loop" \ "var") map { var_xml =>
+        val values = (var_xml \ "value") map { value_xml =>
+          val value = value_xml.text
+          var label = (value_xml \ "@label").text
+          label = if (label == "") value else label // If there is no label, we use the value
+          val description = (value_xml \ "@description").text
+          LoopValue(value, label, description)
+        } toList 
+        val name = (var_xml \ "@name").text
+        var label = (var_xml \ "@label").text
+        label = if (label == "") name else label // If there is no label, we use the name
+        LoopVariable(name, label, values)
+      } toList
+      
+      group_results.loop = loop_vars
+      
       for (scenario_xml <- group_xml \ "scenario") {
-        val scenario_common_xml = scenario_xml \ "common"
-        push_properties(scenario_common_xml)
         
-        var scenario_results = new SingleScenarioResults()
-        group_results.scenarios :+= scenario_results
-        scenario_results.name = getStringValue("@name", scenario_xml).get
-        
-        val names = (scenario_xml \ "clients").map( client => (client \ "@name").text ).toList
-        
-        var scenario_client_results = new HashMap[String, ClientResults]()
-        
-        multi_benchmark(names = names, drain = drain.get, results = scenario_client_results) { scenarios =>
-          for (scenario <- scenarios) {
-            val clients_xml = (scenario_xml \ "clients").filter( clients => (clients \ "@name").text == scenario.name )
-            push_properties(clients_xml)
-            
-            var client_results = new ClientResults()
-            scenario_results.clients :+= client_results
-            client_results.name = getStringValue("@name", clients_xml).get
-            
-            scenario_client_results += (scenario.name -> client_results) // To be able to fill the results from multi_benchmark
-            
-            // Load all the properties in the scenario
-            scenario.login = login.getOption()
-            scenario.passcode = passcode.getOption()
-            scenario.host = host.getOrElse(scenario.host)
-            scenario.port = port.getOrElse(scenario.port)
-            scenario.producers = producers.getOrElse(0)
-            scenario.consumers = consumers.getOrElse(0)
-            scenario.destination_type = destination_type.getOrElse(scenario.destination_type)
-            scenario.destination_name = destination_name.getOrElse(scenario.destination_name)
-  
-            scenario.consumer_prefix = consumer_prefix.getOrElse(scenario.consumer_prefix)
-            scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)
-            scenario.topic_prefix = topic_prefix.getOrElse(scenario.topic_prefix)
-            scenario.message_size = message_size.getOrElse(scenario.message_size)
-            scenario.content_length = content_length.getOrElse(scenario.content_length)
-            scenario.drain_timeout = drain_timeout.getOrElse(scenario.drain_timeout)
-            scenario.persistent = persistent.getOrElse(scenario.persistent)
-            scenario.durable = durable.getOrElse(scenario.durable)
-            scenario.sync_send = sync_send.getOrElse(scenario.sync_send)
-            scenario.ack = ack.getOrElse(scenario.ack)
-            scenario.messages_per_connection = messages_per_connection.getOrElse(scenario.messages_per_connection)
-            scenario.producers_per_sample = producers_per_sample.getOrElse(scenario.producers_per_sample)
-            scenario.consumers_per_sample = consumers_per_sample.getOrElse(scenario.consumers_per_sample)
-            scenario.selector = selector.getOrElse(scenario.selector)
-              
-            scenario.producer_sleep = producer_sleep.get
-            scenario.consumer_sleep = consumer_sleep.get
-            
-            // Copy the scenario settings to the results
-            client_results.settings = scenario.settings
-            
-            pop_properties()
-          }
+        // If there are no loop variables, we just have one empty map and a SingleScenarioResults
+        // Otherwise, we combine the diferent values of the loop variables and generate a ScenarioResults tree
+        val variables_and_result_list = if (loop_vars.isEmpty) {
+          val scenario_results = new SingleScenarioResults()
+          group_results.scenarios :+= scenario_results
+          List((Map.empty[String, String], scenario_results)) 
+        } else {
+          val scenario_results = new LoopScenarioResults()
+          group_results.scenarios :+= scenario_results
+          combineLoopVariables(loop_vars, scenario_results)
         }
-        pop_properties()
+        
+        for (variables_and_result <- variables_and_result_list) {
+          
+          val vars = variables_and_result._1
+          val scenario_results = variables_and_result._2
+          
+          val scenario_common_xml = scenario_xml \ "common"
+          push_properties(scenario_common_xml, vars)
+          
+          scenario_results.name = substituteVariables(getStringValue("@name", scenario_xml, vars).get, vars)
+          
+          val names = (scenario_xml \ "clients").map( client => substituteVariables((client \ "@name").text, vars) ).toList
+          
+          var scenario_client_results = new HashMap[String, ClientResults]()
+          
+          multi_benchmark(names = names, drain = drain.get, results = scenario_client_results) { scenarios =>
+            for (scenario <- scenarios) {
+              val clients_xml = (scenario_xml \ "clients").filter( clients => substituteVariables((clients \ "@name").text, vars) == scenario.name )
+              push_properties(clients_xml, vars)
+              
+              var client_results = new ClientResults()
+              scenario_results.clients :+= client_results
+              client_results.name = getStringValue("@name", clients_xml, vars).get
+              
+              scenario_client_results += (scenario.name -> client_results) // To be able to fill the results from multi_benchmark
+              
+              // Load all the properties in the scenario
+              scenario.login = login.getOption()
+              scenario.passcode = passcode.getOption()
+              scenario.host = host.getOrElse(scenario.host)
+              scenario.port = port.getOrElse(scenario.port)
+              scenario.producers = producers.getOrElse(0)
+              scenario.consumers = consumers.getOrElse(0)
+              scenario.destination_type = destination_type.getOrElse(scenario.destination_type)
+              scenario.destination_name = destination_name.getOrElse(scenario.destination_name)
+    
+              scenario.consumer_prefix = consumer_prefix.getOrElse(scenario.consumer_prefix)
+              scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)
+              scenario.topic_prefix = topic_prefix.getOrElse(scenario.topic_prefix)
+              scenario.message_size = message_size.getOrElse(scenario.message_size)
+              scenario.content_length = content_length.getOrElse(scenario.content_length)
+              scenario.drain_timeout = drain_timeout.getOrElse(scenario.drain_timeout)
+              scenario.persistent = persistent.getOrElse(scenario.persistent)
+              scenario.durable = durable.getOrElse(scenario.durable)
+              scenario.sync_send = sync_send.getOrElse(scenario.sync_send)
+              scenario.ack = ack.getOrElse(scenario.ack)
+              scenario.messages_per_connection = messages_per_connection.getOrElse(scenario.messages_per_connection)
+              scenario.producers_per_sample = producers_per_sample.getOrElse(scenario.producers_per_sample)
+              scenario.consumers_per_sample = consumers_per_sample.getOrElse(scenario.consumers_per_sample)
+              scenario.selector = selector.getOrElse(scenario.selector)
+                
+              scenario.producer_sleep = producer_sleep.get
+              scenario.consumer_sleep = consumer_sleep.get
+              
+              // Copy the scenario settings to the results
+              client_results.settings = scenario.settings
+              
+              pop_properties()
+            }
+          }
+          pop_properties()
+        }
       }
       pop_properties()
     }

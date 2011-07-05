@@ -32,9 +32,10 @@ class BenchmarkResults {
     sb ++= indent + "{\n"
     sb ++= indent + "    \"description\": \"" + description + "\",\n"
     sb ++= indent + "    \"groups\": [\n"
-    groups.foreach( group => {
-      sb ++= group.to_json(level + 2)
-    })
+    sb ++=  groups map { group =>
+      group.to_json(level + 2)
+    } mkString(",\n")
+    sb ++= "\n"
     sb ++= indent + "    ]\n"
     sb ++= indent + "}\n"
     
@@ -42,10 +43,13 @@ class BenchmarkResults {
   }
 }
 
+case class LoopValue(val value: String, val label: String, val description: String)
+case class LoopVariable(val name: String, val label: String, val values: List[LoopValue])
+
 class GroupResults {
   var name: String = ""
   var description: String = ""
-  //var loop = new LinkedHashMap[String, List[(String, String)]]() // FIXME Maybe a List is better
+  var loop: List[LoopVariable] = Nil
   var scenarios: List[ScenarioResults] = Nil
   
   def to_json(level: Int = 0): String = {
@@ -56,12 +60,28 @@ class GroupResults {
     sb ++= indent + "{\n"
     sb ++= indent + "    \"name\": \"" + name + "\",\n"
     sb ++= indent + "    \"description\": \"" + description + "\",\n"
+
+    sb ++= indent + "    \"loop\": {\n"
+    sb ++=  loop map { loop_var =>
+      val values = loop_var.values map { value =>
+        indent + "            { \"label\": \"" + value.label + "\", \"description\": \"" + value.description + "\"}"
+      } mkString(",\n")
+      
+      indent + "        \"" + loop_var.label + "\": [\n" +
+      values + "\n" +
+      indent + "        ]"
+    } mkString(",\n")
+    sb ++= "\n"
+    sb ++= indent + "    },\n"
+    
     sb ++= indent + "    \"scenarios\": [\n"
-    scenarios.foreach( scenario => {
-      sb ++= scenario.to_json(level + 2)
-    })
+    sb ++=  scenarios map { scenario =>
+      scenario.to_json(level + 2)
+    } mkString(",\n")
+    sb ++= "\n"
+    
     sb ++= indent + "    ]\n"
-    sb ++= indent + "},\n"
+    sb ++= indent + "}"
     
     sb.toString
   }
@@ -71,13 +91,25 @@ abstract class ScenarioResults {
    def to_json(level: Int): String; 
 }
 
-/*class LoopResults extends ScenarioResults {
-  var scenarios = new LinkedHashMap[String, ScenarioResults]() // FIXME Maybe a List is better
+class LoopScenarioResults extends ScenarioResults {
+  var scenarios: List[(String, ScenarioResults)] = Nil
   
   def to_json(level: Int = 0): String = {
-  
+    var sb = new StringBuilder()
+    
+    val indent = "    " * level
+    
+    sb ++= indent + "{\n"
+
+    sb ++=  scenarios map { scenario =>
+      indent + "    \"" + scenario._1 + "\": \n" + scenario._2.to_json(level + 2)
+    } mkString(",\n")
+    sb ++= "\n"
+    sb ++= indent + "}"
+    
+    sb.toString
   }
-}*/
+}
 
 class SingleScenarioResults extends ScenarioResults {
   var name: String = ""
@@ -91,11 +123,12 @@ class SingleScenarioResults extends ScenarioResults {
     sb ++= indent + "{\n"
     sb ++= indent + "    \"name\": \"" + name + "\",\n"
     sb ++= indent + "    \"clients\": [\n"
-    clients.foreach( client => {
-      sb ++= client.to_json(level + 2)
-    })
+    sb ++=  clients map { client =>
+      client.to_json(level + 2)
+    } mkString(",\n")
+    sb ++= "\n"
     sb ++= indent + "    ]\n"
-    sb ++= indent + "},\n"
+    sb ++= indent + "}"
     
     sb.toString
   }
@@ -115,17 +148,18 @@ class ClientResults {
     
     sb ++= indent + "{\n"
     sb ++= indent + "    \"name\": \"" + name + "\",\n"
-    sb ++= indent + "    \"settings\": [\n"
-    settings.foreach( setting => {
-      sb ++= indent + "        \"" + setting._1 + "\": \"" + setting._2 + "\",\n"
-    })
-    sb ++= indent + "    ]\n"
-    sb ++= indent + "    \"data\": [\n"
+    sb ++= indent + "    \"settings\": {\n"
+    sb ++=  settings map { setting =>
+      indent + "        \"" + setting._1 + "\": \"" + setting._2 + "\""
+    } mkString(",\n")
+    sb ++= "\n"
+    sb ++= indent + "    },\n"
+    sb ++= indent + "    \"data\": {\n"
     sb ++= indent + "        \"producers\": [ " + producers_data.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ],\n"
     sb ++= indent + "        \"consumers\": [ " + consumers_data.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ],\n"
     sb ++= indent + "        \"error\": [ " + error_data.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ]\n"
-    sb ++= indent + "    ]\n"
-    sb ++= indent + "},\n"
+    sb ++= indent + "    }\n"
+    sb ++= indent + "}"
     
     sb.toString
   }
