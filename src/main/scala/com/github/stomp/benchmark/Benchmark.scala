@@ -604,6 +604,7 @@ class Benchmark extends Action {
     var producers_per_sample = FlexibleProperty[Int]()
     var consumers_per_sample = FlexibleProperty[Int]()
 
+    var headers = FlexibleProperty[Array[Array[String]]](default = Some(Array[Array[String]]()))
     var selector = FlexibleProperty[String]()
     
     var producer_sleep = FlexibleProperty[sleepFunction](default = Some(new sleepFunction { override def apply() = 0 }))
@@ -676,6 +677,21 @@ class Benchmark extends Action {
       }
     }
     
+    def getPropertyHeaders(property_name: String, ns_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[Array[Array[String]]] = {
+      val headers = ns_xml \ property_name
+      if (headers.length == 1) {
+        Some((headers(0) \ "client_type") map { client_type =>
+          (client_type \ "header") map { header =>
+            substituteVariables(header.text.trim, vars)
+          } toArray
+        } toArray)
+      } else {
+        None
+      }
+      
+      //Some() else None
+    }
+    
     def push_properties(node: NodeSeq, vars: Map[String, String] = Map.empty[String, String]) {
       sample_count.push(getIntValue("sample_count", node, vars))
       drain.push(getBooleanValue("drain", node, vars))
@@ -705,6 +721,8 @@ class Benchmark extends Action {
       messages_per_connection.push(getIntValue("messages_per_connection", node, vars).map(_.toLong))
       producers_per_sample.push(getIntValue("producers_per_sample", node, vars))
       consumers_per_sample.push(getIntValue("consumers_per_sample", node, vars))
+      
+      headers.push(getPropertyHeaders("headers", node, vars))
       selector.push(getStringValue("selector", node, vars))
 
       producer_sleep.push(getPropertySleep("producer_sleep", node, vars))
@@ -740,6 +758,8 @@ class Benchmark extends Action {
       messages_per_connection.pop()
       producers_per_sample.pop()
       consumers_per_sample.pop()
+      
+      headers.pop()
       selector.pop()
       
       producer_sleep.pop()
@@ -874,6 +894,8 @@ class Benchmark extends Action {
               scenario.messages_per_connection = messages_per_connection.getOrElse(scenario.messages_per_connection)
               scenario.producers_per_sample = producers_per_sample.getOrElse(scenario.producers_per_sample)
               scenario.consumers_per_sample = consumers_per_sample.getOrElse(scenario.consumers_per_sample)
+              
+              scenario.headers = headers.get
               scenario.selector = selector.getOrElse(scenario.selector)
                 
               scenario.producer_sleep = producer_sleep.get
