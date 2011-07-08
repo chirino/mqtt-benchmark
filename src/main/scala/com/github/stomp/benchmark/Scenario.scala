@@ -184,7 +184,7 @@ trait Scenario {
     "  sync_send             = "+sync_send+"\n"+
     "  content_length        = "+content_length+"\n"+
     "  producer_sleep (ms)   = "+producer_sleep+"\n"+
-    "  headers               = "+headers.mkString(", ")+"\n"+
+    "  headers               = "+headers.map( _.mkString(", ") ).mkString("(", "), (", ")")+"\n"+
     "  \n"+
     "  --- Consumer Properties ---\n"+
     "  consumers             = "+consumers+"\n"+
@@ -195,6 +195,34 @@ trait Scenario {
     "  consumer_prefix       = "+consumer_prefix+"\n"+
     ""
 
+  }
+  
+  def settings(): List[(String, String)] = {
+    var s: List[(String, String)] = Nil
+    
+    s :+= ("host", host)
+    s :+= ("port", port.toString)
+    s :+= ("destination_type", destination_type)
+    s :+= ("queue_prefix", queue_prefix)
+    s :+= ("topic_prefix", topic_prefix)
+    s :+= ("destination_count", destination_count.toString)
+    s :+= ("destination_name", destination_name)
+    s :+= ("sample_interval", sample_interval.toString)
+    s :+= ("producers", producers.toString)
+    s :+= ("message_size", message_size.toString)
+    s :+= ("persistent", persistent.toString)
+    s :+= ("sync_send", sync_send.toString)
+    s :+= ("content_length", content_length.toString)
+    s :+= ("producer_sleep", producer_sleep.toString)
+    s :+= ("headers", headers.map( _.mkString(", ") ).mkString("(", "), (", ")"))
+    s :+= ("consumers", consumers.toString)
+    s :+= ("consumer_sleep", consumer_sleep.toString)
+    s :+= ("ack", ack)
+    s :+= ("selector", selector)
+    s :+= ("durable", durable.toString)
+    s :+= ("consumer_prefix", consumer_prefix)
+    
+    s
   }
 
   protected def destination(i:Int) = destination_type match {
