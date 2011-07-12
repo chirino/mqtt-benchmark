@@ -281,12 +281,12 @@ class Benchmark extends Action {
     init_func(scenarios)
 
     scenarios.foreach{ scenario=>
-      scenario.destination_name = if( scenario.destination_type == "queue" ) {
-       "loadq"
-      } else if( scenario.destination_type == "topic" ) {
-       "loadt"
-      } else {
-        scenario.destination_name
+      if (scenario.destination_name.isEmpty) {
+       if( scenario.destination_type == "queue" ) {
+         scenario.destination_name = "loadq"
+       } else if( scenario.destination_type == "topic" ) {
+         scenario.destination_name = "loadt"
+       }
       }
     }
 
