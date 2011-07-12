@@ -589,6 +589,7 @@ class Benchmark extends Action {
     var consumers = FlexibleProperty[Int]()
     var destination_type = FlexibleProperty[String]()
     var destination_name = FlexibleProperty[String]()
+    var destination_count = FlexibleProperty[Int]()
     var consumer_prefix = FlexibleProperty[String]()
     
     var message_size = FlexibleProperty[Int]()
@@ -707,6 +708,7 @@ class Benchmark extends Action {
       consumers.push(getIntValue("consumers", node, vars))
       destination_type.push(getStringValue("destination_type", node, vars))
       destination_name.push(getStringValue("destination_name", node, vars))
+      destination_count.push(getIntValue("destination_count", node, vars))
 
       consumer_prefix.push(getStringValue("consumer_prefix", node, vars))
       queue_prefix.push(getStringValue("queue_prefix", node, vars))
@@ -744,6 +746,7 @@ class Benchmark extends Action {
       consumers.pop()
       destination_type.pop()
       destination_name.pop()
+      destination_count.pop()
 
       consumer_prefix.pop()
       queue_prefix.pop()
@@ -791,9 +794,22 @@ class Benchmark extends Action {
     }
     
     def substituteVariables(orig: String, vars: Map[String, String]): String = {
+      val format_catcher = catching(classOf[NumberFormatException])
       var modified = orig
       for ((key, value) <- vars) {
         modified = modified.replaceAll("\\$\\{"+key+"\\}", value)
+        
+        // Functions applied to the variable
+        val int_value: Option[Int] = format_catcher.opt( value.toInt )
+        val boolean_value: Option[Boolean] = format_catcher.opt( value.toBoolean )
+        
+        if (int_value.isDefined) {
+          modified = modified.replaceAll("\\$\\{mlabel\\("+key+"\\)\\}", mlabel(int_value.get).toString)
+        }
+        if (boolean_value.isDefined) {
+          modified = modified.replaceAll("\\$\\{slabel\\("+key+"\\)\\}", slabel(boolean_value.get).toString)
+          modified = modified.replaceAll("\\$\\{plabel\\("+key+"\\)\\}", plabel(boolean_value.get).toString)
+        }
       }
       modified
     }
@@ -880,6 +896,7 @@ class Benchmark extends Action {
               scenario.consumers = consumers.getOrElse(0)
               scenario.destination_type = destination_type.getOrElse(scenario.destination_type)
               scenario.destination_name = destination_name.getOrElse(scenario.destination_name)
+              scenario.destination_count = destination_count.getOrElse(scenario.destination_count)
     
               scenario.consumer_prefix = consumer_prefix.getOrElse(scenario.consumer_prefix)
               scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)
