@@ -29,6 +29,9 @@ import org.apache.felix.gogo.commands.basic.DefaultActionPreparator
 import org.apache.felix.service.command.CommandSession
 import org.apache.felix.gogo.commands.{CommandException, Action, Option => option, Argument => argument, Command => command}
 
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+
 object Benchmark {
   def main(args: Array[String]):Unit = {
     val session = new CommandSession {
@@ -185,23 +188,7 @@ class Benchmark extends Action {
     "[ "+value.mkString(",")+" ]"
   }
 
-  def execute(session: CommandSession): AnyRef = {
-    
-    FlexibleProperty.init_all()
-    
-    broker_name.set_default(out.get.getName.stripSuffix(".json"))
-
-    println("===================================================================")
-    println("Benchmarking %s at: %s:%d".format(broker_name.get, host.get, port.get))
-    println("===================================================================")
-
-
-    if( scenario_file.getOption.isEmpty ) {
-      run_benchmarks
-    } else {
-      load_and_run_benchmarks
-    }
-
+  def write_results() {
     val os = new PrintStream(new FileOutputStream(out.get))
     
     if( scenario_file.getOption.isEmpty || (!new_json.get)) {
@@ -224,9 +211,47 @@ class Benchmark extends Action {
     }
 
     os.close
+    
     println("===================================================================")
     println("Stored: "+out.get)
     println("===================================================================")
+  }
+  
+  def execute(session: CommandSession): AnyRef = {
+    
+    FlexibleProperty.init_all()
+    
+    broker_name.set_default(out.get.getName.stripSuffix(".json"))
+    
+    // Protect against ctrl-c, write the results we have in any case
+    Signal.handle(new Signal("INT"), new SignalHandler () {
+      def handle(sig: Signal) {
+        println("\n\n**** Program interruption requested by the user, writing the results ****\n")
+        write_results()
+        System.exit(0)
+      }
+    });
+
+    println("===================================================================")
+    println("Benchmarking %s at: %s:%d".format(broker_name.get, host.get, port.get))
+    println("===================================================================")
+
+    try {
+      if( scenario_file.getOption.isEmpty ) {
+        run_benchmarks
+      } else {
+        load_and_run_benchmarks
+      }
+    } catch {
+      case e : Exception => {
+        println("There was an error, we proceed to write the results we got:")
+        println(e)
+        println(e.getStackTraceString)
+      }
+    }
+    
+    write_results()
+
     null
   }
 
