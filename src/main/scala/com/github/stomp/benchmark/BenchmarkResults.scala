@@ -61,18 +61,18 @@ class GroupResults {
     sb ++= indent + "    \"name\": \"" + name + "\",\n"
     sb ++= indent + "    \"description\": \"" + description + "\",\n"
 
-    sb ++= indent + "    \"loop\": {\n"
+    sb ++= indent + "    \"loop\": [\n"
     sb ++=  loop map { loop_var =>
       val values = loop_var.values map { value =>
         indent + "            { \"label\": \"" + value.label + "\", \"description\": \"" + value.description + "\"}"
       } mkString(",\n")
       
-      indent + "        \"" + loop_var.label + "\": [\n" +
+      indent + "        [\"" + loop_var.label + "\", [\n" +
       values + "\n" +
-      indent + "        ]"
+      indent + "        ]]"
     } mkString(",\n")
     sb ++= "\n"
-    sb ++= indent + "    },\n"
+    sb ++= indent + "    ],\n"
     
     sb ++= indent + "    \"scenarios\": [\n"
     sb ++=  scenarios map { scenario =>
