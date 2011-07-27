@@ -113,6 +113,7 @@ class LoopScenarioResults extends ScenarioResults {
 
 class SingleScenarioResults extends ScenarioResults {
   var name: String = ""
+  var label: String = ""
   var clients: List[ClientResults] = Nil
   
   def to_json(level: Int = 0): String = {
@@ -122,6 +123,7 @@ class SingleScenarioResults extends ScenarioResults {
     
     sb ++= indent + "{\n"
     sb ++= indent + "    \"name\": \"" + name + "\",\n"
+    sb ++= indent + "    \"label\": \"" + label + "\",\n"
     sb ++= indent + "    \"clients\": [\n"
     sb ++=  clients map { client =>
       client.to_json(level + 2)

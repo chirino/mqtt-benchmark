@@ -896,6 +896,7 @@ class Benchmark extends Action {
           push_properties(scenario_common_xml, vars)
           
           scenario_results.name = substituteVariables(getStringValue("@name", scenario_xml, vars).get, vars)
+          scenario_results.label = substituteVariables(getStringValue("@label", scenario_xml, vars).get, vars)
           
           val names = (scenario_xml \ "clients").map( client => substituteVariables((client \ "@name").text, vars) ).toList
           
