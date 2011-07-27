@@ -189,6 +189,10 @@ class Benchmark extends Action {
   }
 
   def write_results() {
+    val parent_dir = out.get.getParentFile
+    if (parent_dir != null) {
+      parent_dir.mkdirs
+    }
     val os = new PrintStream(new FileOutputStream(out.get))
     
     if( scenario_file.getOption.isEmpty || (!new_json.get)) {

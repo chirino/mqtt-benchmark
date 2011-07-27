@@ -33,6 +33,7 @@
       //
       var products = [
         'apollo-1.0-SNAPSHOT', 
+        'apollo-1.0-SNAPSHOT-2', 
         'apollo-1.0-beta1', 
         'apollo-1.0-beta3', 
         'activemq-5.4.2', 
@@ -200,7 +201,7 @@
         var i = 0;
         for(product in products) {
           var file = platform+"/"+products[product]+".json";
-          $.ajax({ url: file, async:false, success: function(data) {
+          $.ajax({ url: file, dataType: "json", async:false, success: function(data) {
             if( typeof data == 'string' ) {
               broker_samples[i] = $.parseJSON( data );
             } else {
