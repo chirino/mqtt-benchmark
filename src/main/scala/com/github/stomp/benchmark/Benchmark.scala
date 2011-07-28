@@ -29,6 +29,9 @@ import org.apache.felix.gogo.commands.basic.DefaultActionPreparator
 import org.apache.felix.service.command.CommandSession
 import org.apache.felix.gogo.commands.{CommandException, Action, Option => option, Argument => argument, Command => command}
 
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+
 object Benchmark {
   def main(args: Array[String]):Unit = {
     val session = new CommandSession {
@@ -185,24 +188,11 @@ class Benchmark extends Action {
     "[ "+value.mkString(",")+" ]"
   }
 
-  def execute(session: CommandSession): AnyRef = {
-    
-    FlexibleProperty.init_all()
-    
-    broker_name.set_default(out.get.getName.stripSuffix(".json"))
-
-    println("===================================================================")
-    println("Benchmarking %s at: %s:%d".format(broker_name.get, host.get, port.get))
-    println("===================================================================")
-
-
-    if( scenario_file.getOption.isEmpty ) {
-      run_benchmarks
-    } else {
-      load_and_run_benchmarks
+  def write_results() {
+    val parent_dir = out.get.getParentFile
+    if (parent_dir != null) {
+      parent_dir.mkdirs
     }
-    
-    out.get.getParentFile.mkdirs
     val os = new PrintStream(new FileOutputStream(out.get))
     
     if( scenario_file.getOption.isEmpty || (!new_json.get)) {
@@ -225,9 +215,47 @@ class Benchmark extends Action {
     }
 
     os.close
+    
     println("===================================================================")
     println("Stored: "+out.get)
     println("===================================================================")
+  }
+  
+  def execute(session: CommandSession): AnyRef = {
+    
+    FlexibleProperty.init_all()
+    
+    broker_name.set_default(out.get.getName.stripSuffix(".json"))
+    
+    // Protect against ctrl-c, write the results we have in any case
+    Signal.handle(new Signal("INT"), new SignalHandler () {
+      def handle(sig: Signal) {
+        println("\n\n**** Program interruption requested by the user, writing the results ****\n")
+        write_results()
+        System.exit(0)
+      }
+    });
+
+    println("===================================================================")
+    println("Benchmarking %s at: %s:%d".format(broker_name.get, host.get, port.get))
+    println("===================================================================")
+
+    try {
+      if( scenario_file.getOption.isEmpty ) {
+        run_benchmarks
+      } else {
+        load_and_run_benchmarks
+      }
+    } catch {
+      case e : Exception => {
+        println("There was an error, we proceed to write the results we got:")
+        println(e)
+        println(e.getStackTraceString)
+      }
+    }
+    
+    write_results()
+
     null
   }
 
@@ -257,12 +285,12 @@ class Benchmark extends Action {
     init_func(scenarios)
 
     scenarios.foreach{ scenario=>
-      scenario.destination_name = if( scenario.destination_type == "queue" ) {
-       "loadq"
-      } else if( scenario.destination_type == "topic" ) {
-       "loadt"
-      } else {
-        scenario.destination_name
+      if (scenario.destination_name.isEmpty) {
+       if( scenario.destination_type == "queue" ) {
+         scenario.destination_name = "loadq"
+       } else if( scenario.destination_type == "topic" ) {
+         scenario.destination_name = "loadt"
+       }
       }
     }
 
@@ -590,6 +618,7 @@ class Benchmark extends Action {
     var consumers = FlexibleProperty[Int]()
     var destination_type = FlexibleProperty[String]()
     var destination_name = FlexibleProperty[String]()
+    var destination_count = FlexibleProperty[Int]()
     var consumer_prefix = FlexibleProperty[String]()
     
     var message_size = FlexibleProperty[Int]()
@@ -708,6 +737,7 @@ class Benchmark extends Action {
       consumers.push(getIntValue("consumers", node, vars))
       destination_type.push(getStringValue("destination_type", node, vars))
       destination_name.push(getStringValue("destination_name", node, vars))
+      destination_count.push(getIntValue("destination_count", node, vars))
 
       consumer_prefix.push(getStringValue("consumer_prefix", node, vars))
       queue_prefix.push(getStringValue("queue_prefix", node, vars))
@@ -745,6 +775,7 @@ class Benchmark extends Action {
       consumers.pop()
       destination_type.pop()
       destination_name.pop()
+      destination_count.pop()
 
       consumer_prefix.pop()
       queue_prefix.pop()
@@ -792,9 +823,22 @@ class Benchmark extends Action {
     }
     
     def substituteVariables(orig: String, vars: Map[String, String]): String = {
+      val format_catcher = catching(classOf[NumberFormatException])
       var modified = orig
       for ((key, value) <- vars) {
         modified = modified.replaceAll("\\$\\{"+key+"\\}", value)
+        
+        // Functions applied to the variable
+        val int_value: Option[Int] = format_catcher.opt( value.toInt )
+        val boolean_value: Option[Boolean] = format_catcher.opt( value.toBoolean )
+        
+        if (int_value.isDefined) {
+          modified = modified.replaceAll("\\$\\{mlabel\\("+key+"\\)\\}", mlabel(int_value.get).toString)
+        }
+        if (boolean_value.isDefined) {
+          modified = modified.replaceAll("\\$\\{slabel\\("+key+"\\)\\}", slabel(boolean_value.get).toString)
+          modified = modified.replaceAll("\\$\\{plabel\\("+key+"\\)\\}", plabel(boolean_value.get).toString)
+        }
       }
       modified
     }
@@ -856,6 +900,7 @@ class Benchmark extends Action {
           push_properties(scenario_common_xml, vars)
           
           scenario_results.name = substituteVariables(getStringValue("@name", scenario_xml, vars).get, vars)
+          scenario_results.label = substituteVariables(getStringValue("@label", scenario_xml, vars).get, vars)
           
           val names = (scenario_xml \ "clients").map( client => substituteVariables((client \ "@name").text, vars) ).toList
           
@@ -881,6 +926,7 @@ class Benchmark extends Action {
               scenario.consumers = consumers.getOrElse(0)
               scenario.destination_type = destination_type.getOrElse(scenario.destination_type)
               scenario.destination_name = destination_name.getOrElse(scenario.destination_name)
+              scenario.destination_count = destination_count.getOrElse(scenario.destination_count)
     
               scenario.consumer_prefix = consumer_prefix.getOrElse(scenario.consumer_prefix)
               scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)

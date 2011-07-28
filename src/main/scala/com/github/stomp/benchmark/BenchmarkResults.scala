@@ -61,18 +61,18 @@ class GroupResults {
     sb ++= indent + "    \"name\": \"" + name + "\",\n"
     sb ++= indent + "    \"description\": \"" + description + "\",\n"
 
-    sb ++= indent + "    \"loop\": {\n"
+    sb ++= indent + "    \"loop\": [\n"
     sb ++=  loop map { loop_var =>
       val values = loop_var.values map { value =>
         indent + "            { \"label\": \"" + value.label + "\", \"description\": \"" + value.description + "\"}"
       } mkString(",\n")
       
-      indent + "        \"" + loop_var.label + "\": [\n" +
+      indent + "        [\"" + loop_var.label + "\", [\n" +
       values + "\n" +
-      indent + "        ]"
+      indent + "        ]]"
     } mkString(",\n")
     sb ++= "\n"
-    sb ++= indent + "    },\n"
+    sb ++= indent + "    ],\n"
     
     sb ++= indent + "    \"scenarios\": [\n"
     sb ++=  scenarios map { scenario =>
@@ -113,6 +113,7 @@ class LoopScenarioResults extends ScenarioResults {
 
 class SingleScenarioResults extends ScenarioResults {
   var name: String = ""
+  var label: String = ""
   var clients: List[ClientResults] = Nil
   
   def to_json(level: Int = 0): String = {
@@ -122,6 +123,7 @@ class SingleScenarioResults extends ScenarioResults {
     
     sb ++= indent + "{\n"
     sb ++= indent + "    \"name\": \"" + name + "\",\n"
+    sb ++= indent + "    \"label\": \"" + label + "\",\n"
     sb ++= indent + "    \"clients\": [\n"
     sb ++=  clients map { client =>
       client.to_json(level + 2)

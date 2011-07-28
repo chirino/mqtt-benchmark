@@ -148,28 +148,49 @@
         
           var data_lines = [];
           for(i in broker_samples) {
-            var benchmark_settings = broker_samples[i].benchmark_settings;
-            try {
-              var data = [];
-              if( broker_samples[i][scenario] !=null ) {
-                var first_ts = null;
-                var samples = broker_samples[i][scenario];
-                for( j in samples ) {
-                  var sample = samples[j]
-                  if( sample instanceof Array ) {
-                    if( first_ts == null ) {
-                      first_ts = sample[0];
+            if (broker_samples[i].benchmark_settings) {
+                var benchmark_settings = broker_samples[i].benchmark_settings;
+                try {
+                  var data = [];
+                  if( broker_samples[i][scenario] !=null ) {
+                    var first_ts = null;
+                    var samples = broker_samples[i][scenario];
+                    for( j in samples ) {
+                      var sample = samples[j]
+                      if( sample instanceof Array ) {
+                        if( first_ts == null ) {
+                          first_ts = sample[0];
+                        }
+                        data.push([(sample[0]-first_ts)/1000, sample[1]]);
+                      } else {
+                        data.push([(benchmark_settings.sample_interval*j)/1000, sample]);
+                      }
                     }
-                    data.push([(sample[0]-first_ts)/1000, sample[1]]);
-                  } else {
-                    data.push([(benchmark_settings.sample_interval*j)/1000, sample]);
                   }
+                  var line = {label: benchmark_settings.broker_name, data:data };
+                  data_lines.push(line);
+                } catch(ignore){
+                  alert(ignore);
                 }
-              }
-              var line = {label: benchmark_settings.broker_name, data:data };
-              data_lines.push(line);
-            } catch(ignore){
-              alert(ignore);
+            } else {
+                try {
+                  var data = [];
+                  if( broker_samples[i][scenario] !=null ) {
+                    var first_ts = null;
+                    var samples = broker_samples[i][scenario];
+                    for( j in samples ) {
+                      var sample = samples[j]
+                      if( first_ts == null ) {
+                        first_ts = sample[0];
+                      }
+                      data.push([(sample[0]-first_ts)/1000, sample[1]]);
+                    }
+                  }
+                  var line = {label: "Test Platform", data:data };
+                  data_lines.push(line);
+                } catch(ignore){
+                  alert(ignore);
+                }
             }
           }
           var placeholder = $(this)
@@ -208,16 +229,52 @@
               broker_samples[i] = data;
             }
             
-            for( scenario in broker_samples[i] ) {
-              if( scenario != "benchmark_settings") {
-                scenarios[scenario] = true;
-              }
+            if (broker_samples[i].benchmark_settings) {
+                for( scenario in broker_samples[i] ) {
+                  if( scenario != "benchmark_settings") {
+                    scenarios[scenario] = true;
+                  }
+                }
+            } else {
+                // Parse the new JSON format
+                for( group_idx in broker_samples[i].groups ) {
+                    for( scenario_idx in broker_samples[i].groups[group_idx].scenarios ) {
+                        scenario = broker_samples[i].groups[group_idx].scenarios[scenario_idx];
+                        function get_scenario_data(s) {
+                            if (s.clients) {
+                                for( client_idx in s.clients ){
+                                    client = s.clients[client_idx];
+                                    if (client.data.producers.length > 0) {
+                                        scenario_name = 'p_'+client.name; 
+                                        scenarios[scenario_name] = true;
+                                        broker_samples[i][scenario_name] = client.data.producers;
+                                    }
+                                    if (client.data.consumers.length > 0) {
+                                        scenario_name = 'c_'+client.name; 
+                                        scenarios[scenario_name] = true;
+                                        broker_samples[i][scenario_name] = client.data.consumers;
+                                    }
+                                    if (client.data.error.length > 0) {
+                                        scenario_name = 'e_'+client.name;
+                                        scenarios[scenario_name] = true;
+                                        broker_samples[i][scenario_name] = client.data.error;
+                                    }
+                                }
+                            } else {
+                                for( s_idx in s ) {
+                                    get_scenario_data(s[s_idx]); 
+                                }
+                            }
+                        };
+                        get_scenario_data(scenario);
+                    }
+                }
             }
             
             i += 1;
           }});
         }
-
+        
         for( scenario in scenarios ) {
           try {
             line_chart(scenario);
