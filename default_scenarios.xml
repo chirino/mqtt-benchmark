@@ -1,8 +1,31 @@
 <scenarios>
+    <broker_name>Test Broker 1234</broker_name>
+    <description>This report provides a comparative benchmark of messaging servers that implement the Stomp 1.0 specification. It covers a wide variety of common usage scenarios. Each scenario is warmed up for 3 seconds before the performance samples are taken.</description>
+    <platform_name>Test Platform 4321</platform_name>
+    <platform_desc>
+        The STOMP server was run on a:
+            &lt;ul&gt; 
+              &lt;li>CPU: 3.4 GHz Intel 2600K&lt;/li&gt; 
+              &lt;li>Memory: 8 GB 2000 MHz DDR3&lt;/li&gt; 
+              &lt;li>OS: Ubuntu 10.10&lt;/li&gt;
+              &lt;li>Disk: SATA 7200 RPM&lt;/li&gt;
+              &lt;li>Java: OpenJDK 64-Bit 1.6.0_20&lt;/li&gt;
+            &lt;/ul&gt;
+        The STOMP clients were run on:
+            &lt;ul> 
+              &lt;li>Mac Pro Model: MacPro3,1&lt;/li&gt; 
+              &lt;li>CPU: 2 x 3 GHz Quad-Core Intel Xeon&lt;/li&gt; 
+              &lt;li>Memory: 8 GB 800 MHz DDR2&lt;/li&gt;
+              &lt;li>OS: Mac OS X 10.6.6&lt;/li&gt;
+              &lt;li>Disk: SATA 7200 RPM&lt;/li&gt;
+              &lt;li>Java: 64-Bit 1.6.0_22&lt;/li&gt;
+            &lt;/ul&gt;
+            The two machines were connected via 1 GigE.
+    </platform_desc>
     <common>
         <sample_interval>1000</sample_interval>
         <blocking_io>false</blocking_io>
-        <warm_up_count>0</warm_up_count>
+        <warm_up_count>3</warm_up_count>
         <drain>true</drain>
     </common>
     <group name="Fast and Slow Consumers">

@@ -848,7 +848,12 @@ class Benchmark extends Action {
     val global_common_xml = scenarios_xml \ "common"
     push_properties(global_common_xml)
     
+    broker_name.push(getStringValue("broker_name", scenarios_xml))
+    
+    benchmark_results.broker_name = broker_name.get
     benchmark_results.description = getStringValue("description", scenarios_xml).getOrElse("")
+    benchmark_results.platform_name = getStringValue("platform_name", scenarios_xml).getOrElse("")
+    benchmark_results.platform_desc = getStringValue("platform_desc", scenarios_xml).getOrElse("").replaceAll("\n", "\\\\n")
     
     for (group_xml <- scenarios_xml \ "group") {
       
