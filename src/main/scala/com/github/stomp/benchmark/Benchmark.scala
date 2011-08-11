@@ -451,6 +451,38 @@ class Benchmark extends Action {
         }
       }
     }
+    
+    if( enable_persistence.get && scenario_queue_loading.get ) {
+      for( persistent <- List(false, true)) {
+        val size = 20
+
+        // Benchmark queue loading
+        val name = "%s_1%s%s_1queue_0".format(mlabel(size), plabel(persistent), slabel(persistent))
+        benchmark(name, false, 30) { g=>
+          g.message_size = 20
+          g.producers = 1
+          g.sync_send = persistent
+          g.persistent = persistent
+          g.destination_count = 1
+          g.destination_type = "queue"
+          g.consumers = 0
+          g.destination_name = "load_me_up"
+        }
+
+        // Benchmark unloading
+        if(persistent) {
+          val name = "%s_0_1queue_1".format(mlabel(size))
+          benchmark(name, true, 30) { g=>
+            g.producers = 0
+            g.destination_count = 1
+            g.destination_type = "queue"
+            g.consumers = 1
+            g.destination_name = "load_me_up"
+          }
+        }
+
+      }
+    }    
 
     // Setup a scenario /w fast and slow consumers
     if(scenario_slow_consumer.get) {
@@ -575,38 +607,6 @@ class Benchmark extends Action {
           g.consumers = load
           g.durable = true
         }
-      }
-    }
-
-    if( enable_persistence.get && scenario_queue_loading.get ) {
-      for( persistent <- List(false, true)) {
-        val size = 20
-
-        // Benchmark queue loading
-        val name = "%s_1%s%s_1queue_0".format(mlabel(size), plabel(persistent), slabel(persistent))
-        benchmark(name, false, 30) { g=>
-          g.message_size = 20
-          g.producers = 1
-          g.sync_send = persistent
-          g.persistent = persistent
-          g.destination_count = 1
-          g.destination_type = "queue"
-          g.consumers = 0
-          g.destination_name = "load_me_up"
-        }
-
-        // Benchmark unloading
-        if(persistent) {
-          val name = "%s_0_1queue_1".format(mlabel(size))
-          benchmark(name, true, 30) { g=>
-            g.producers = 0
-            g.destination_count = 1
-            g.destination_type = "queue"
-            g.consumers = 1
-            g.destination_name = "load_me_up"
-          }
-        }
-
       }
     }
 

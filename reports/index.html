@@ -33,7 +33,7 @@
       //
       var products = [
         'apollo-1.0-SNAPSHOT', 
-        'apollo-1.0-SNAPSHOT-2', 
+        'apollo-1.0-SNAPSHOT-leveldb', 
         'apollo-1.0-beta1', 
         'apollo-1.0-beta3', 
         'activemq-5.4.2', 
@@ -344,15 +344,14 @@
         <div>
           Show data for STOMP server run on:
           <select id="platform">
-            <option value="ubuntu-intel-2600k" selected="selected">Ubuntu Single 4 Core 2600K CPU</option>
+            <option value="osx-8-core" selected="selected">OS X, Dual 4 Core CPUs</option>
+            <option value="ubuntu-intel-2600k">Ubuntu Single 4 Core 2600K CPU</option>
             <option value="win7-intel-2600k">Windows 7 Single 4 Core 2600K CPU</option>
-            <option value="osx-8-core">OS X, Dual 4 Core CPUs</option>
             <option value="ubuntu-4-core">Ubuntu 4 Core CPUs</option>
           </select>
         </div>
         <script>
-          platform = 'ubuntu-intel-2600k';
-          $("select#platform").change(function () {
+          function select_platform() {
             $("select#platform option").each(function () {
                $("#"+$(this).attr("value")).hide();
             });
@@ -361,10 +360,15 @@
               $("#"+platform).show();
               load_charts();
             });
+          }
+          
+          $("select#platform").change(function () {
+            select_platform();
           })
+          select_platform();
         </script>        
         <div style="padding: 1em 1em 0em 3em;">
-          <div id="ubuntu-intel-2600k">
+          <div id="ubuntu-intel-2600k" style="display:none">
             The STOMP server was run on a:
             <ul>
               <li>CPU: 3.4 GHz Intel 2600K</li>
@@ -384,7 +388,7 @@
             </ul>
             The two machines were connected via 1 GigE.
           </div>
-          <div id="win7-intel-2600k" style="display:none"e>
+          <div id="win7-intel-2600k" style="display:none">
             The STOMP server was run on a:
             <ul>
               <li>CPU: 3.4 GHz Intel 2600K</li>
