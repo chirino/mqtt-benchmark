@@ -1,0 +1,604 @@
+<!--
+  Copyright (C) 2009-2010 the original author or authors.
+  See the notice.md file distributed with this work for additional
+  information regarding copyright ownership.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+  <!-- Author: Pablo Guerrero <siriux@gmail.com> -->
+  <!-- Author: Hiram Chirino <hiram@hiramchirino.com> -->
+  <head>
+    
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]--> 
+    <script language="javascript" type="text/javascript" src="./resources/jquery.js"></script> 
+    <script language="javascript" type="text/javascript" src="./resources/jquery.flot.js"></script> 
+    <script language="javascript" type="text/javascript" src="./resources/jquery.flot.crosshair.js"></script> 
+  	
+    <script type='text/javascript'>
+    
+      var products = [
+        'default_scenarios1',
+        'default_scenarios2',
+        'default_scenarios3'
+      ];
+      
+      var platforms = [
+        ['test-platform', 'Test Platform'],
+        ['test-platform2', 'Test Plarform 2']
+      ];
+    
+      var legend_update_timeout = null;
+      var legend_updates = {};
+
+      function trigger_legend_update(event, pos, item) {
+        var state = $(this).data('chart_state');
+        legend_updates[$(this).attr('id')] = state
+        if( pos ) {
+          state.latestPosition =  state.plot.p2c(pos);
+          state.latestPosition.pageX = pos.pageX;
+          state.latestPosition.pageY = pos.pageY;
+        } else {
+          state.latestPosition =  null;
+        }
+        if (!legend_update_timeout) {
+          legend_update_timeout = setTimeout(legend_update, 50);
+        }
+      }
+
+      function legend_update() {
+        var hide_legend = true;
+        var legend_div = $('#legend')
+        var legend_labels = legend_div.find(".legendLabel");
+        
+        for( chart in legend_updates ) {    
+          var state = legend_updates[chart];
+          var pos = state.latestPosition ? state.plot.c2p(state.latestPosition) : null;
+          var plot = state.plot;
+          
+          if( !plot ) {
+            continue;
+          }
+          var axes = plot.getAxes();
+          if (pos==null || pos.x < axes.xaxis.min || pos.x > axes.xaxis.max || pos.y < axes.yaxis.min || pos.y > axes.yaxis.max) {
+            continue;
+          }
+          
+          var i, j, dataset = plot.getData();
+          for (i = 0; i < dataset.length; ++i) {
+            var series = dataset[i];
+
+            // find the nearest points, x-wise
+            for (j = 0; j < series.data.length; ++j)
+              if (series.data[j][0] > pos.x)
+                break;
+
+            // now interpolate
+            var y, p1 = series.data[j - 1], p2 = series.data[j];
+            if (p1 == null)
+                y = p2[1];
+            else if (p2 == null)
+                y = p1[1];
+            else
+                y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
+
+            if( !series.original ) {
+              series.original = series.label;
+            }
+            legend_labels.eq(i).text(series.original + " = "+y.toFixed(2)+" msg/sec");
+          }
+          
+          hide_legend = false;
+          legend_div.css({
+            position: 'absolute',
+            display: 'block',
+            top: state.latestPosition.pageY + 5,
+            left: state.latestPosition.pageX + 5,
+            padding: "10px",
+            'z-index':1,
+            opacity: .8,
+            background: '#F0FAFF', 
+            'border-radius': '8px', 
+            '-webkit-border-radius': '8px',
+            '-moz-border-radius': '8px'
+            });
+        }
+        if( hide_legend ) {
+          legend_div.css('display', 'none');
+        }
+        legend_update_timeout = null;
+        legend_updates = {}
+      }
+    
+      function line_chart(node, chart_class) {
+
+        var data_lines = node.data(chart_class + "_data_lines");
+        
+        if (! $.isEmptyObject(data_lines)) {
+          var placeholder = $("<div class=\"" + chart_class + "\"></div>");
+          placeholder.addClass(chart_class);
+          placeholder.addClass(node.data('size_class'));
+          node.append(placeholder);
+          
+          var options = {
+            legend: {
+              container: $('#legend'),
+              show: true
+            },
+            series: {
+              lines: { show: true }
+            },
+            crosshair: { mode: "x" },
+            lines: { show: true },
+            grid: { hoverable: true, autoHighlight: false }
+          };
+          
+          // Visual hint for producers and consumers
+          var axis_color = '#AA0000';
+          if (chart_class == 'producers') {
+            axis_color = '#00AA00';
+          }
+          options.xaxis = { color:  axis_color };
+          options.yaxis = { color:  axis_color };
+          
+          var state = {
+             plot: $.plot(placeholder, data_lines, options),
+             placeholder:placeholder,
+             latestPosition:null
+          };
+        
+          placeholder.data('chart_state', state);
+          placeholder.bind("plothover",  trigger_legend_update);
+          placeholder.mouseout(trigger_legend_update);
+        }
+        
+      }
+    
+      function merge_samples(clients, property) {
+          
+        var samples = [];
+          
+        function insert_samples(src, sample_interval) {
+        
+          function insert_sample_at(src, dst, src_i, dst_i) {
+            
+            function duration(src, i) {
+              if (i >= src.length) {
+                throw new Error("Index not found");
+              } else if (src[i].length == 3) {
+                // The duration is explicitly set on this sample
+                return src[i][2];
+              } else if (i+1 >= src.length) {
+                return sample_interval;
+              } else {
+                return (src[i+1][0] - src[i][0]);
+              }
+            };
+        
+            function split_sample(src, i, t) {
+              var e = src[i];
+              var t0 = e[0];
+              var c0 = e[1];
+              var d0 = duration(src, i);
+              if ((t > t0) && t < (t0+d0)) {
+                var new_d0 = t-t0;
+                var new_c0 = new_d0*(c0/d0);
+                var new_d1 = t0+d0-t;
+                var new_c1 = new_d1*(c0/d0);
+                e[1] =  new_c0;
+                e[2] =  new_d0;
+                src.splice(i+1, 0, [t, new_c1, new_d1]);
+              } else {
+                throw new Error("Time not in range");
+              }
+            };  
+          
+            var direct_insert = true;
+            
+            var src_e = src[src_i];
+            var src_t = src_e[0];
+            var src_d = duration(src, src_i);
+          
+            if (dst_i >= 0 && dst.length > dst_i) {
+              // Src might overlap with Dst at the beginning of Src
+              var dst_e = dst[dst_i];
+              var dst_t = dst_e[0];
+              var dst_d = duration(dst, dst_i);
+        
+              if(src_t < (dst_t + dst_d)) {
+                direct_insert = false;
+                if (src_t == dst_t) {
+                  if (src_d < dst_d) {
+                    split_sample(dst, dst_i, src_t + src_d);
+                  } else if (src_d > dst_d) {
+                    split_sample(src, src_i, src_t + dst_d);
+                  }
+                  dst_e[1] += src_e[1]; 
+                } else {
+                  split_sample(dst, dst_i, src_t);
+                  insert_sample_at(src, dst, src_i, dst_i + 1);
+                }
+              }
+            }
+            
+            var next_dst_i = dst_i + 1;
+            if (next_dst_i >= 0 && dst.length > next_dst_i && direct_insert) { // direct insert needed so that we only split if it wasn't splited before
+              // Src might overlap with Dst at the end of Src
+              var next_dst_e = dst[next_dst_i];
+              var next_dst_t = next_dst_e[0];
+              var next_dst_d = duration(dst, next_dst_i);
+        
+              if(src_t + src_d > next_dst_t) {
+                direct_insert = false;
+                split_sample(src, src_i, next_dst_t);
+                insert_sample_at(src, dst, src_i, dst_i);
+              }
+            }
+            
+            if (direct_insert) {
+              dst.splice(dst_i+1, 0, [src_t, src_e[1], src_d]); 
+            }
+          };
+            
+          var samples_i = 0;
+          for (var i = 0; i < src.length; i++) {
+              
+            if (samples_i < 0) {
+              samples_i = 0;
+            }
+            
+            // Find the sample that will be the next
+            while (samples_i < samples.length && (samples[samples_i][0] <= src[i][0])) {
+              samples_i += 1;
+            }
+            samples_i -= 1; // We need the previous
+            insert_sample_at(src, samples, i, samples_i);
+          }
+        };
+          
+        for (var i = 0; i < clients.length; i++) {
+          insert_samples(clients[i].data[property], Number(clients[i].settings.sample_interval));
+        }
+        
+        return samples;
+      }
+      
+      function samples_to_data(samples) {
+        try {
+          var data = [];
+          if( samples !=null ) {
+            var first_ts = null;
+            for (var i = 0; i < samples.length; i++) {
+              var sample = samples[i];
+              if( first_ts == null ) {
+                first_ts = sample[0];
+              }
+              data_t = (sample[0]-first_ts)/1000; // Uniform time in seconds
+              data_c = sample[1] / (sample[2] / 1000); // Messages per second
+              data.push([data_t, data_c]);
+            }
+          }
+          return data;
+        } catch(ignore){
+          alert(ignore);
+        }
+      }
+      
+      function create_scenario(node, scenario, with_label, results_legend) {
+        var scenario_node = $("<div class=\"scenario\" id=\"" + scenario.name + "\"></div>");
+        node.append(scenario_node);
+          
+        if (with_label) {
+          scenario_node.append("<h3>" + scenario.label + "</h3>");
+          scenario_node.data('size_class', 'large_chart');
+        } else {
+          scenario_node.data('size_class', 'small_chart');
+        }
+          
+        var producers_samples = merge_samples(scenario.clients, "producers");
+        var producers_data = samples_to_data(producers_samples);
+        var producers_data_lines = [];
+        if (! $.isEmptyObject(producers_samples)) {
+          producers_data_lines.push({ label: results_legend, data: producers_data });
+        }
+        scenario_node.data('producers_data_lines', producers_data_lines);
+        
+        var consumers_samples = merge_samples(scenario.clients, "consumers");
+        var consumers_data = samples_to_data(consumers_samples);
+        var consumers_data_lines = [];
+        if (! $.isEmptyObject(consumers_samples)) {
+          consumers_data_lines.push({ label: results_legend, data:consumers_data });
+        }
+        scenario_node.data('consumers_data_lines', consumers_data_lines);
+      }
+      
+      function create_table_with_loop_variables(node, group, results_legend) {
+
+        function create_subtable(node, vars, group) {
+          var table_node = $("<table class=\"loop_table\"></table>");
+          node.append(table_node);
+          
+          var hheader = $("<thead></thead>");
+          table_node.append(hheader);
+          var htr = $("<tr></tr>");
+          hheader.append(htr);
+          
+          var hvar = vars[0];
+          var vvar = vars[1];
+          
+          if (vvar != undefined) {
+            htr.append("<th></th>");
+          }
+          
+          for(var i = 0;  i<hvar[1].length; i++) {
+            var hvalue = hvar[1][i];
+            htr.append("<th class=\"block\" title=\"" + hvalue.description + "\">" + hvalue.label + "</th>"); 
+          }
+          
+          if (vvar != undefined) {
+            for (var i = 0;  i<vvar[1].length; i++) {
+              var vvalue = vvar[1][i];
+              var tr = $("<tr></tr>");
+              table_node.append(tr);
+              tr.append("<th class=\"block\"><div class=\"r90\" title=\"" + vvalue.description + "\">" + vvalue.label + "</div></th>");
+              
+              for (var j = 0;  j<hvar[1].length; j++) {
+                var hvalue = hvar[1][j];
+                var groupvalue = group[hvalue.label][vvalue.label];
+                var td = $("<td></td>");
+                tr.append(td);
+                if (vars.length > 2) {
+                  create_subtable(td, vars.slice(2), groupvalue);
+                } else {
+                  create_scenario(td, groupvalue, false, results_legend);
+                }
+              }
+            }
+          } else {
+            var tr = $("<tr></tr>");
+            table_node.append(tr);
+            for (var i = 0;  i<hvar[1].length; i++) {
+              var hvalue = hvar[1][i];
+              var scenario = group[hvalue.label];
+              var td = $("<td></td>");
+              tr.append(td);
+              create_scenario(td, scenario, false, results_legend);
+            }
+          }
+          
+        }
+        
+        var vars = group.loop.slice(0); // A copy of the original array
+        create_subtable(node, vars, group.scenarios[0]); // FIXME Accept more than 1 scenario with loop variables
+      }
+    
+      function create_simple_scenarios(node, scenarios, results_legend) {
+        var scenarios_node = $("<div class=\"inline-scenarios\"></div>");
+        node.append(scenarios_node);
+        
+        for (var i = 0; i < scenarios.length; i++) {
+          var scenario = scenarios[i];
+          create_scenario(scenarios_node, scenario, true, results_legend);
+        }
+      }
+      
+      function create_unidimensional_loop_scenarios(node, group, results_legend) {
+        var scenarios_node = $("<div class=\"inline-scenarios\"></div>");
+        node.append(scenarios_node);
+        
+        for (var i = 0; i < group.loop[0][1].length; i++) {
+          var value = group.loop[0][1][i].label;
+          var scenario = group.scenarios[0][value];
+          create_scenario(scenarios_node, scenario, true, results_legend);
+        }
+      }
+      
+      function create_loop_scenarios(node, group, results_legend) {
+        var scenarios_node = $("<div class=\"loop-scenarios\"></div>");
+        node.append(scenarios_node);
+
+        create_table_with_loop_variables(scenarios_node, group, results_legend);
+      }
+    
+      function create_groups(results_node, benchmark_results, results_legend) {
+        $("#toc").empty();  
+        for (var i = 0; i < benchmark_results.groups.length; i++) {
+          var group = benchmark_results.groups[i];
+          
+          var group_node = $("<div class=\"group\"></div>");
+          results_node.append(group_node);
+          
+          group_node.append("<h2 id=\"group_" + i + "\">" + group.name + "</h2>");
+          $("#toc").append("<li><a href=\"#group_" + i + "\">" + group.name + "</a></li>");
+          group_node.append("<p>" + group.description + "</p>");
+          
+          if ($.isEmptyObject(group.loop)) {
+            create_simple_scenarios(group_node, group.scenarios, results_legend);
+          } else if(group.loop.length == 1) {
+            create_unidimensional_loop_scenarios(group_node, group, results_legend);
+          } else {
+            create_loop_scenarios(group_node, group, results_legend);
+          }
+        }
+      }
+      
+      function add_benchmark_results(benchmark_results, results_legend) {
+        for( group_idx in benchmark_results.groups ) {
+          for( scenario_idx in benchmark_results.groups[group_idx].scenarios ) {
+            scenario = benchmark_results.groups[group_idx].scenarios[scenario_idx];
+            
+            function process_scenario_recursively(scenario) {
+              if (scenario.clients) {
+                scenario_node = $("#" + scenario.name);
+                if (scenario_node.length == 1) {
+                  producers_data_lines = scenario_node.data('producers_data_lines');
+                  var producers_samples = merge_samples(scenario.clients, "producers");
+                  var producers_data = samples_to_data(producers_samples);
+                  if (! $.isEmptyObject(producers_samples)) {
+                    producers_data_lines.push({ label: results_legend, data: producers_data });
+                  }
+                
+                  consumers_data_lines = scenario_node.data('consumers_data_lines');
+                  var consumers_samples = merge_samples(scenario.clients, "consumers");
+                  var consumers_data = samples_to_data(consumers_samples);
+                  if (! $.isEmptyObject(consumers_samples)) {
+                    consumers_data_lines.push({ label: results_legend, data: consumers_data });
+                  }
+                }
+              } else {
+                for( s_idx in scenario ) {
+                  process_scenario_recursively(scenario[s_idx]); 
+                }
+              }
+            }
+            
+            process_scenario_recursively(scenario);
+          }
+        }
+      }
+      
+      function load_information(benchmark_results) {
+        var platform_information = $("#platform-information");
+        platform_information.empty();
+        platform_information.append(benchmark_results["platform_desc"]);
+        
+        var description = $("#description");
+        description.empty();
+        description.append(benchmark_results["description"]);
+      }
+    
+      function load_charts(platform) {
+        // Load the first json file, and use it as a template to create the HTML 
+        var first_file = platform + "/" + products[0] + ".json";
+        $.ajax({ url: first_file, async:false, success: function(data) {
+          var benchmark_results = $.parseJSON( data );
+          
+          load_information(benchmark_results);
+          
+          results = $("#results");
+          results.empty();
+          var results_legend = benchmark_results["broker_name"];
+          try {
+            create_groups(results, benchmark_results, results_legend);
+          } catch (err) {
+            alert(err);
+          }
+        }});
+        
+        // Load all the other json files
+        for (var i = 1; i < products.length; i++) {
+          var file = platform + "/" + products[i] + ".json";
+          $.ajax({ url: file, async:false, success: function(data) {
+            var benchmark_results = $.parseJSON( data );
+            var results_legend = benchmark_results["broker_name"];
+            add_benchmark_results(benchmark_results, results_legend);
+          }});
+        }
+        
+        // Draw all the scenario charts
+        $(".scenario").each(function(i) {  
+          line_chart($(this), "producers");
+          line_chart($(this), "consumers");
+        });
+      }
+      
+      function create_platforms() {
+          select_platform = $("#platform");
+          
+          select_platform.change(function () {
+            selected_platform = $("#platform option:selected").attr("value");
+            load_charts(selected_platform);
+          });
+          
+          for (var i = 0; i < platforms.length; i++) {
+              p = platforms[i];
+              option = $("<option value=\"" + p[0] + "\">" + p[1] + "</option>");
+              select_platform.append(option);
+          }
+      }
+      
+      $(function () { 
+        create_platforms();
+        load_charts(platforms[0][0]); 
+      });
+    </script>
+    
+    <style type='text/css'>
+      body { font-family:Verdana; font-size:12px; color:#666666; }
+      td { font-size:12px; }
+      #header {
+        margin: 0; padding: 2em; text-align:center; background: #baccd8;
+        border-radius: 8px; -webkit-border-radius: 8px;  -moz-border-radius: 8px;
+      }
+      #header h1 {
+        margin: 0; padding: 0; font-size: 180%; line-height: 1em; color: #333;
+      }
+      #wrap {
+        margin: 0 auto; padding: 2em;
+      }
+      #content { padding: 2em;  }      
+      .block { background: #baccd8; height:2em;
+        border-radius: 8px; -webkit-border-radius: 8px;  -moz-border-radius: 8px;
+        }
+      .r90 { 
+        width:2em; height:auto; white-space:nowrap;
+        
+        -webkit-transform: rotate(-90deg); -moz-transform:rotate(-90deg);
+        filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+      }
+      table.padded { width: 10px; }
+      .padded td { padding: 20px; }
+      .charts { padding-left: 30px; }
+      .chart-section { clear:both; margin-top: 1em; padding-left:2em; }
+      .overview { padding: 0 2em; }
+      .clear { clear:both; }
+      h2 { margin-top:30px;}
+      .inline-scenarios .scenario { display:inline-block; margin-right: 50px;}
+      .small_chart { width: 200px; height: 150px; }
+      .large_chart { width: 300px; height: 150px; }
+      .scenario { padding: 5px; }
+      
+    </style>
+  </head>
+  <body>
+    
+    <div id='wrap'>
+      <div id='header'>
+        <h1>Stomp Server Performance Comparisons</h1>
+      </div>
+      <div id='content'>
+        <h2>Table of Contents</h2>
+        <ol id="toc">
+        </ol>
+        
+        <h2>Overview</h2>
+        
+        <div id="description"></div>
+        
+        <p>Show data for a benchmark run on the platform: <select id="platform"></select></p>
+
+        <div id="platform-information"></div>
+        
+        <div style="display:none" id="legend"></div>
+        <div id="results">
+        
+        </div>        
+        
+      </div>
+      <div id="footer">
+        <p>This report was generated using the <a href="http://github.com/chirino/stomp-benchmark">stomp-benchmark tool</a>.</p>
+      </div>
+    </div>
+  </body>
+</html>
+
