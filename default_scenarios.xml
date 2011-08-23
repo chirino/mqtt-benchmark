@@ -28,6 +28,44 @@
         <warm_up_count>3</warm_up_count>
         <drain>true</drain>
     </common>
+    <group name="Persistent Queue Load/Unload - Non Persistent Queue Load">
+        <description>
+            Persistent Queue Load/Unload - Non Persistent Queue Load
+        </description>
+        <common>
+            <sample_count>30</sample_count>
+            <destination_type>queue</destination_type>
+            <destination_count>1</destination_count>
+            <destination_name>load_me_up</destination_name>
+        </common>
+        <scenario name="non_persistent_queue_load" label="Non Persistent Queue Load">
+            <clients name="20b_1a_1queue_0">
+                <producers>1</producers>
+                <consumers>0</consumers>
+                <message_size>20</message_size>
+                <persistent>false</persistent>
+                <sync_send>false</sync_send>
+            </clients>
+        </scenario>
+        <scenario name="persistent_queue_load" label="Persistent Queue Load">
+            <common>
+                <drain>false</drain>
+            </common>
+            <clients name="20b_1p_1queue_0">
+                <producers>1</producers>
+                <consumers>0</consumers>
+                <message_size>20</message_size>
+                <persistent>true</persistent>
+                <sync_send>true</sync_send>
+            </clients>
+        </scenario>
+        <scenario name="persistent_queue_unload" label="Persistent Queue Unload">
+            <clients name="20b_0_1queue_1">
+                <producers>0</producers>
+                <consumers>1</consumers>
+            </clients>
+        </scenario>
+    </group>
     <group name="Fast and Slow Consumers">
         <loop>
             <var name="destination_type" label="Destination type">
@@ -224,44 +262,6 @@
                 <destination_type>topic</destination_type>
                 <destination_count>1</destination_count>
                 <durable>true</durable>
-            </clients>
-        </scenario>
-    </group>
-    <group name="Persistent Queue Load/Unload - Non Persistent Queue Load">
-        <description>
-            Persistent Queue Load/Unload - Non Persistent Queue Load
-        </description>
-        <common>
-            <sample_count>30</sample_count>
-            <destination_type>queue</destination_type>
-            <destination_count>1</destination_count>
-            <destination_name>load_me_up</destination_name>
-        </common>
-        <scenario name="non_persistent_queue_load" label="Non Persistent Queue Load">
-            <clients name="20b_1a_1queue_0">
-                <producers>1</producers>
-                <consumers>0</consumers>
-                <message_size>20</message_size>
-                <persistent>false</persistent>
-                <sync_send>false</sync_send>
-            </clients>
-        </scenario>
-        <scenario name="persistent_queue_load" label="Persistent Queue Load">
-            <common>
-                <drain>false</drain>
-            </common>
-            <clients name="20b_1p_1queue_0">
-                <producers>1</producers>
-                <consumers>0</consumers>
-                <message_size>20</message_size>
-                <persistent>true</persistent>
-                <sync_send>true</sync_send>
-            </clients>
-        </scenario>
-        <scenario name="persistent_queue_unload" label="Persistent Queue Unload">
-            <clients name="20b_0_1queue_1">
-                <producers>0</producers>
-                <consumers>1</consumers>
             </clients>
         </scenario>
     </group>
