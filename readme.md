@@ -210,53 +210,41 @@ Press enter to stop the run.
     
     scala>
 
-## Running a custom scenario from XML file
+## Running a custom scenario from XML file and display it using the generic_report.html
 
 Is it possible to run stomp-benchmark using scenarios defined in XML files providing the option `--scenario-file`
 
-An example of scenario in xml:
+Also, to be able to display this scenario results using generic_report.html, you need to provide the option `--new-json`
 
-    <scenarios>
-        <common>
-            <sample_interval>1000</sample_interval> <!-- Not needed, it's the default -->
-            <blocking_io>false</blocking_io> <!-- Not needed, it's the default -->
-            <warm_up_count>0</warm_up_count>
-            <drain>false</drain> <!-- Not needed, it's the default -->
-        </common>
-        <scenario name="Burst producers, slow and fast consumers">
-            <common>
-                <sample_count>80</sample_count>
-            </common>
-            <clients name="1 Burst Producer">
-                <producers>1</producers>
-                <consumers>0</consumers> <!-- Not needed, it's the default -->
-                <destination_type>raw_topic</destination_type>
-                <destination_name>/topic/VirtualTopic.foo</destination_name>
-                <producer_sleep>
-                    <range end="10000">sleep</range>
-                    <range end="70000"><burst fast="0" duration="5000" /></range>
-                    <range end="80000">sleep</range> <!-- Not needed, it's the default -->
-                </producer_sleep>
-            </clients>
-            <clients name="5 Slow Consumers">
-                <producers>0</producers> <!-- Not needed, it's the default -->
-                <consumers>5</consumers>
-                <destination_type>raw_queue</destination_type>
-                <destination_name>/queue/Consumer.1.VirtualTopic.foo</destination_name>
-                <consumer_sleep>100</consumer_sleep>
-            </clients>
-            <clients name="1 Fast Consumer">
-                <producers>0</producers> <!-- Not needed, it's the default -->
-                <consumers>1</consumers>
-                <destination_type>raw_queue</destination_type>
-                <destination_name>/queue/Consumer.2.VirtualTopic.foo</destination_name>
-                <consumer_sleep>
-                    <range end="30000">0</range>
-                    <range end="80000">sleep</range> <!-- Not needed, it's the default -->
-                </consumer_sleep>
-            </clients>
-        </scenario>
-    </scenarios>
+The scenario file has a "scenarios" root element. Inside, first you define some information that will be displayed on the report. 
+Afterwards, you can place a common section, defining values for some properties to be used in all the scenarios (exceptions can be made, redefining the value in a lower level).
+
+After the common section, you can define one or more groups, and give them a name. Also, it can have a description, and a common section as before.
+
+For simple groups, you can just start defining scenarios.
+
+Then you can define one or more scenarios, and give them a name (internal name) and a label (it will be displayed in the report). You can also define a common section here.
+
+Then, you just have to create one or more clients sections, and define the properties for this clients. All clientes in one scenario will run in parallel, but scenarios will run in sequence.
+
+For more complex groups, you can define variables inside a loop section, and give different values to each variable. All the possible combinations of the values for each variable will be generated,
+and a scenario for each combination will be generated using a scenario template. A scenario template is defined as a normal scenario, but you can use placeholders like ${variable_name} that will be substituded with the real value.
+
+The use of multiple scenario templates is supported in stomp-benchmark, but only the first one will be displayed using the generic_report.html. Also note, that if more than 1 variable is defined, a table will be used to display the results.
+The odd variables (in definition order) will be horizontal headers, the even ones, vertical headers.
+
+The last thing to note, is that for the properties producer_sleep and consumer_sleep, a sleep function can be used instead of a value. For example you could define:
+
+<producer_sleep>
+    <range end="10000">sleep</range>
+    <range end="15000">0</range>
+    <range end="70000"><burst fast="0" slow="100" duration="500" period="10000" /></range>
+    <range end="80000">sleep</range>
+</producer_sleep>
+
+That means, form 0ms until 10000ms, don't send any message. From 10000ms to 15000ms, send as fast as possible. From 15000ms to 70000ms, send in bursts, sometimes fast, someties slow.
+The fast value is the sleep time when it's in a burst, the slow value is the sleep time when it isn't in a burst, the duration of the burst, and period is the period of time when, in average, a burst should occur.
+So, in this case, in average, every 10 seconds we will have a burst of 0.5 seconds, sending as fast as possible. The rest of the time, is sending slow.
 
 There are some properties that can only be defined in the common sections: sample_interval, sample_count, drain, blocking_io and warm_up_count.
 
@@ -265,4 +253,94 @@ destination_type, destination_name, consumer_prefix, queue_prefix, topic_prefix,
 drain_timeout, persistent, durable, sync_send, ack, messages_per_connection, producers_per_sample, consumers_per_sample,
 selector, producer_sleep, consumer_sleep
 
-Refer to the example for the use of producer_sleep and consumer_sleep.
+An example from default_scenarios.xml:
+
+<scenarios>
+    <broker_name>Test Broker</broker_name>
+    <description>This is the general description for the scenarios in this file.</description>
+    <platform_name>Test Platform</platform_name>
+    <platform_desc>Platform description</platform_desc>
+    <common>
+        <sample_interval>1000</sample_interval>
+        <blocking_io>false</blocking_io>
+        <warm_up_count>3</warm_up_count>
+        <drain>true</drain>
+    </common>
+    <group name="Persistent Queue Load/Unload - Non Persistent Queue Load">
+        <description>
+            Persistent Queue Load/Unload - Non Persistent Queue Load
+        </description>
+        <common>
+            <sample_count>30</sample_count>
+            <destination_type>queue</destination_type>
+            <destination_count>1</destination_count>
+            <destination_name>load_me_up</destination_name>
+        </common>
+        <scenario name="non_persistent_queue_load" label="Non Persistent Queue Load">
+            <clients name="20b_1a_1queue_0">
+                <producers>1</producers>
+                <consumers>0</consumers>
+                <message_size>20</message_size>
+                <persistent>false</persistent>
+                <sync_send>false</sync_send>
+            </clients>
+        </scenario>
+        <scenario name="persistent_queue_load" label="Persistent Queue Load">
+            <common>
+                <drain>false</drain>
+            </common>
+            <clients name="20b_1p_1queue_0">
+                <producers>1</producers>
+                <consumers>0</consumers>
+                <message_size>20</message_size>
+                <persistent>true</persistent>
+                <sync_send>true</sync_send>
+            </clients>
+        </scenario>
+        <scenario name="persistent_queue_unload" label="Persistent Queue Unload">
+            <clients name="20b_0_1queue_1">
+                <producers>0</producers>
+                <consumers>1</consumers>
+            </clients>
+        </scenario>
+    </group>
+    <group name="Fast and Slow Consumers">
+        <loop>
+            <var name="destination_type" label="Destination type">
+                <value label="Queue">queue</value>
+                <value label="Topic">topic</value>
+            </var>
+        </loop>
+        <description>
+            Scenario with fast and slow consumers
+        </description>
+        <scenario name="fast_slow_consumers_${destination_type}" label="Fast and Slow consumers on a ${destination_type}">
+            <common>
+                <sample_count>15</sample_count>
+                <destination_type>${destination_type}</destination_type>
+                <destination_count>1</destination_count>
+            </common>
+            <clients name="20b_1a_1${destination_type}_1fast">
+                <producers>1</producers>
+                <consumers>1</consumers>
+                <message_size>20</message_size>
+                <persistent>false</persistent>
+                <sync_send>false</sync_send>
+            </clients>
+            <clients name="20b_1a_1${destination_type}_1slow">
+                <producers>0</producers>
+                <consumers>1</consumers>
+                <consumer_sleep>100</consumer_sleep>
+            </clients>
+        </scenario>
+    </group>
+<scenarios>
+
+To display the results on generic_report.html, first you need to serve all the files from the same domain. In google chrome, if you use file:///, the same origin policy wont allow to load the results.
+
+Then, you can create different directories for the different platforms you have and copy the json files to each directory.
+
+Finally, you need to modify the generic_report.html to include the names of your json files (without extension) in the products array, and the names of the platform directories in the platforms array.
+Platform is an array of arrays, each element is an array where the first element it's the name of the directory, and the second, the name we want to display in the report.
+
+Now, you can just open generic_report.html to see the results.
