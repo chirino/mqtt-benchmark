@@ -4,10 +4,11 @@ A benchmarking tool for [Stomp](http://stomp.github.com) servers.
 
 ## Build Prep
 
-* Install [sbt](http://code.google.com/p/simple-build-tool/wiki/Setup) but instead 
+* Install [sbt 0.7.7](http://code.google.com/p/simple-build-tool/downloads/detail?name=sbt-launch-0.7.7.jar&can=2&q=)
+  and follow the [setup instructions](http://code.google.com/p/simple-build-tool/wiki/Setup) but instead 
   of setting up the sbt script to use `sbt-launch.jar "$@"` please use `sbt-launch.jar "$*"` instead.
   
-* run: `sbt update` in the stomp-benchmark project directory
+* run: `sbt update` in the stomp-benchmark directory
 
 ## Running the Benchmark
 
