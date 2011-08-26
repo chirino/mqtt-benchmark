@@ -35,6 +35,7 @@
     <maven-scala-plugin-version>2.15.0</maven-scala-plugin-version>
     <karaf-version>2.2.1</karaf-version>
     <slf4j-version>1.6.0</slf4j-version>
+    <maven-assembly-plugin-version>2.2.1</maven-assembly-plugin-version>
 
   </properties>
 
@@ -120,9 +121,33 @@
           <scalaVersion>${scala-version}</scalaVersion>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven-assembly-plugin-version}</version>
+        <configuration>
+          <finalName>${project.build.finalName}-standalone</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>com.github.stomp.benchmark.Benchmark</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       
     </plugins>
   </build>
-
       
 </project>

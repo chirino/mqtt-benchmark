@@ -21,7 +21,10 @@ import scala.collection.mutable.LinkedHashMap
 import scala.collection.mutable.StringBuilder
 
 class BenchmarkResults {
+  var broker_name: String = ""
   var description: String = ""
+  var platform_name: String = ""
+  var platform_desc: String = ""
   var groups: List[GroupResults] = Nil
   
   def to_json(level: Int = 0): String = {
@@ -30,7 +33,10 @@ class BenchmarkResults {
     val indent = "    " * level
     
     sb ++= indent + "{\n"
+    sb ++= indent + "    \"broker_name\": \"" + broker_name + "\",\n"
     sb ++= indent + "    \"description\": \"" + description + "\",\n"
+    sb ++= indent + "    \"platform_name\": \"" + platform_name + "\",\n"
+    sb ++= indent + "    \"platform_desc\": \"" + platform_desc + "\",\n"
     sb ++= indent + "    \"groups\": [\n"
     sb ++=  groups map { group =>
       group.to_json(level + 2)
