@@ -851,8 +851,8 @@ class Benchmark extends Action {
     broker_name.push(getStringValue("broker_name", scenarios_xml))
     
     benchmark_results.broker_name = broker_name.get
-    benchmark_results.description = getStringValue("description", scenarios_xml).getOrElse("")
-    benchmark_results.platform_name = getStringValue("platform_name", scenarios_xml).getOrElse("")
+    benchmark_results.description = getStringValue("description", scenarios_xml).getOrElse("").replaceAll("\n", "\\\\n")
+    benchmark_results.platform_name = getStringValue("platform_name", scenarios_xml).getOrElse("").replaceAll("\n", "\\\\n")
     benchmark_results.platform_desc = getStringValue("platform_desc", scenarios_xml).getOrElse("").replaceAll("\n", "\\\\n")
     
     for (group_xml <- scenarios_xml \ "group") {
@@ -863,7 +863,7 @@ class Benchmark extends Action {
       var group_results = new GroupResults()
       benchmark_results.groups :+= group_results
       group_results.name = getStringValue("@name", group_xml).get
-      group_results.description = getStringValue("description", group_xml).getOrElse("")
+      group_results.description = getStringValue("description", group_xml).getOrElse("").replaceAll("\n", "\\\\n")
       
       // Parse the loop variables
       var loop_vars = (group_xml \ "loop" \ "var") map { var_xml =>
