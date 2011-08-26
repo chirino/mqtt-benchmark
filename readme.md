@@ -35,6 +35,10 @@ it and updating to the line which defines the `products` variable (around line 3
         'activemq-5.4.2'
       ];
 
+
+Note: To display the results of `reports/report.html`, first you need to serve all the files from the same domain. In google chrome, if you use file:///, the same origin policy wont allow to load the results.
+You can relax that restriction in Chrome by starting it with the `--allow-file-access-from-files` argument.  On OS X you can do that with the following command: `open -a 'Google Chrome' --args --allow-file-access-from-files`
+
 ### Running against Apollo 1.0-beta1
 
 [Apollo](http://activemq.apache.org/apollo) is a new Stomp based 
@@ -338,6 +342,7 @@ An example from default_scenarios.xml:
     <scenarios>
 
 To display the results on generic_report.html, first you need to serve all the files from the same domain. In google chrome, if you use file:///, the same origin policy wont allow to load the results.
+You can relax that restriction in Chrome by starting it with the `--allow-file-access-from-files` argument.  On OS X you can do that with the following command: `open -a 'Google Chrome' --args --allow-file-access-from-files`
 
 Then, you can create different directories for the different platforms you have and copy the json files to each directory.
 
