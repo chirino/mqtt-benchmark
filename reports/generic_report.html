@@ -411,7 +411,8 @@
       }
     
       function create_groups(results_node, benchmark_results, results_legend) {
-        $("#toc").empty();  
+        $("#toc").empty();
+        $("#toc").append("<li><a href=\"#overview\">Overview</a></li>");
         for (var i = 0; i < benchmark_results.groups.length; i++) {
           var group = benchmark_results.groups[i];
           
@@ -581,7 +582,7 @@
         <ol id="toc">
         </ol>
         
-        <h2>Overview</h2>
+        <h2 id="overview">Overview</h2>
         
         <div id="description"></div>
         
