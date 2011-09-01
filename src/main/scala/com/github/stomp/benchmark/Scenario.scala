@@ -68,7 +68,12 @@ trait Scenario {
   var host = "127.0.0.1"
   var port = 61613
   var buffer_size = 32*1024
-  var message_size = 1024
+  
+  private var _message_size: { def apply(): Int; def init(time: Long) } = new { def apply() = 1024; def init(time: Long) {}  }
+  def message_size = _message_size()
+  def message_size_= (new_value: Int) = _message_size = new { def apply() = new_value; def init(time: Long) {}  }
+  def message_size_= (new_func: { def apply(): Int; def init(time: Long) }) = _message_size = new_func
+  
   var content_length=true
   var persistent = false
   var persistent_header = "persistent:true"
@@ -78,7 +83,12 @@ trait Scenario {
   var selector:String = null
   var durable = false
   var consumer_prefix = "consumer-"
-  var messages_per_connection = -1L
+  
+  private var _messages_per_connection: { def apply(): Int; def init(time: Long) } = new { def apply() = -1; def init(time: Long) {}  }
+  def messages_per_connection = _messages_per_connection()
+  def messages_per_connection_= (new_value: Int) = _messages_per_connection = new { def apply() = new_value; def init(time: Long) {}  }
+  def messages_per_connection_= (new_func: { def apply(): Int; def init(time: Long) }) = _messages_per_connection = new_func
+  
   var display_errors = false
 
   var destination_type = "queue"
@@ -288,8 +298,11 @@ trait Scenario {
   def with_load[T](func: =>T ):T = {
     done.set(false)
 
-    _producer_sleep.init(System.currentTimeMillis())
-    _consumer_sleep.init(System.currentTimeMillis())
+    val now = System.currentTimeMillis()
+    _producer_sleep.init(now)
+    _consumer_sleep.init(now)
+    _message_size.init(now)
+    _messages_per_connection.init(now)
 
     for (i <- 0 until producers) {
       val client = createProducer(i)

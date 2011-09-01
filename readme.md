@@ -211,7 +211,7 @@ Press enter to stop the run.
     
     scala>
 
-## Running a custom scenario from XML file and display it using the generic_report.html
+## Running a custom scenario from XML file
 
 Is it possible to run stomp-benchmark using scenarios defined in XML files providing the option `--scenario-file`
 
@@ -226,24 +226,30 @@ For simple groups, you can just start defining scenarios.
 
 Then you can define one or more scenarios, and give them a name (internal name) and a label (it will be displayed in the report). You can also define a common section here.
 
-Then, you just have to create one or more clients sections, and define the properties for this clients. All clientes in one scenario will run in parallel, but scenarios will run in sequence.
+Then, you just have to create one or more clients sections, and define the properties for this clients. All clients in one scenario will run in parallel, but scenarios will run in sequence.
 
 For more complex groups, you can define variables inside a loop section, and give different values to each variable. All the possible combinations of the values for each variable will be generated,
-and a scenario for each combination will be generated using a scenario template. A scenario template is defined as a normal scenario, but you can use placeholders like ${variable_name} that will be substituded with the real value.
+and a scenario for each combination will be generated using a scenario template. A scenario template is defined as a normal scenario, but you can use placeholders like ${variable_name} that will be substituted with the real value.
 
-The use of multiple scenario templates is supported in stomp-benchmark, but only the first one will be displayed using the generic_report.html. Also note, that if more than 1 variable is defined, a table will be used to display the results.
+The use of multiple scenario templates in one group with loop variables is supported in stomp-benchmark, but only the first one will be displayed using the generic_report.html. Also note, that if more than 1 variable is defined, a table will be used to display the results.
 The odd variables (in definition order) will be horizontal headers, the even ones, vertical headers.
 
-The last thing to note, is that for the properties producer_sleep and consumer_sleep, a sleep function can be used instead of a value. For example you could define:
+The last thing to note, is that for the properties producer_sleep and consumer_sleep, message_size and messages_per_connection, instead of providing a single value, different values or functions for different time ranges can be provided.
+
+In a range, you can specify the value to be used up to the millisecond specified in the `end` attribute. The `end` attribute can take positive values, negative values counting from the end, or the word "end". This way, it's possible to write scenarios that are independent from the scenario duration.
+
+For the values, it's possible to provide three different functions: burst (with fast value, slow value, duration of the fast period, and period of bursts), random (with min and max values) and normal(with mean and variance values).
+
+For example you could define:
 
     <producer_sleep>
         <range end="10000">sleep</range>
         <range end="15000">0</range>
-        <range end="70000"><burst fast="0" slow="100" duration="500" period="10000" /></range>
-        <range end="80000">sleep</range>
+        <range end="-10000"><burst fast="0" slow="100" duration="500" period="10000" /></range>
+        <range end="end">sleep</range>
     </producer_sleep>
 
-That means, form 0ms until 10000ms, don't send any message. From 10000ms to 15000ms, send as fast as possible. From 15000ms to 70000ms, send in bursts, sometimes fast, someties slow.
+That means, form 0ms until 10000ms, don't send any message. From 10000ms to 15000ms, send as fast as possible. From 15000ms to 70000ms, send in bursts, sometimes fast, sometimes slow.
 The fast value is the sleep time when it's in a burst, the slow value is the sleep time when it isn't in a burst, the duration of the burst, and period is the period of time when, in average, a burst should occur.
 So, in this case, in average, every 10 seconds we will have a burst of 0.5 seconds, sending as fast as possible. The rest of the time, is sending slow.
 
@@ -337,7 +343,11 @@ An example from default_scenarios.xml:
         </group>
     <scenarios>
 
+## Display the results of a custom XML scenario using the generic_report.html    
+    
 To display the results on generic_report.html, first you need to serve all the files from the same domain. In google chrome, if you use file:///, the same origin policy wont allow to load the results.
+
+Please note that, to be able to display the scenario results using generic_report.html, you need to provide the option `--new-json` when you run the benchmark.
 
 Then, you can create different directories for the different platforms you have and copy the json files to each directory.
 

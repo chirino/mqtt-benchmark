@@ -17,6 +17,7 @@
  */
 package com.github.stomp.benchmark
 
+import scala.collection.mutable.HashMap
 import java.net._
 import java.io._
 
@@ -147,15 +148,9 @@ class BlockingScenario extends Scenario {
 
   class ProducerClient(val id: Int) extends BlockingClient {
     val name: String = "producer " + id
-    val content = ("SEND\n" +
-              "destination:"+destination(id)+"\n"+
-               { if(persistent) persistent_header+"\n" else "" } +
-               { if(sync_send) "receipt:xxx\n" else "" } +
-               { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
-               { if(content_length) "content-length:"+message_size+"\n" else "" } +
-              "\n"+message(name)).getBytes("UTF-8")
-
-
+    
+    val message_frame_cache = HashMap.empty[Int, Array[Byte]]
+    
     override def run() {
       while (!done.get) {
         connect {
@@ -163,14 +158,15 @@ class BlockingScenario extends Scenario {
           while (!done.get && !reconnect) {
             val p_sleep = producer_sleep
             if ( p_sleep >= 0 ) {
-              write(content)
+              write(get_message_frame)
               if( sync_send ) {
                 // waits for the reply..
                 skip
               }
               producer_counter.incrementAndGet()
               message_counter += 1
-              if( messages_per_connection > 0 && message_counter >= messages_per_connection ) {
+              val m_p_connection = messages_per_connection.toLong
+              if( m_p_connection > 0 && message_counter >= m_p_connection ) {
                 message_counter = 0
                 reconnect = true
               }
@@ -182,20 +178,36 @@ class BlockingScenario extends Scenario {
         }
       }
     }
-  }
-
-  def message(name:String) = {
-    val buffer = new StringBuffer(message_size)
-    buffer.append("Message from " + name+"\n")
-    for( i <- buffer.length to message_size ) {
-      buffer.append(('a'+(i%26)).toChar)
+    
+    def message(name:String, message_size:Int) = {
+      val buffer = new StringBuffer(message_size)
+      buffer.append("Message from " + name+"\n")
+      for( i <- buffer.length to message_size ) {
+        buffer.append(('a'+(i%26)).toChar)
+      }
+      var rc = buffer.toString
+      if( rc.length > message_size ) {
+        rc.substring(0, message_size)
+      } else {
+        rc
+      }
     }
-    var rc = buffer.toString
-    if( rc.length > message_size ) {
-      rc.substring(0, message_size)
-    } else {
-      rc
+    
+    def get_message_frame():Array[Byte] = {
+      val m_s = message_size
+      if (! message_frame_cache.contains(m_s)) {
+        message_frame_cache(m_s) = "SEND\n" +
+        "destination:"+destination(id)+"\n"+
+        { if(persistent) persistent_header+"\n" else "" } +
+        { if(sync_send) "receipt:xxx\n" else "" } +
+        { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
+        { if(content_length) "content-length:"+m_s+"\n" else "" } +
+        "\n"+message(name, m_s).getBytes("UTF-8")
+      }
+      
+      return message_frame_cache(m_s);
     }
+  
   }
 
   class ConsumerClient(val id: Int) extends BlockingClient {
