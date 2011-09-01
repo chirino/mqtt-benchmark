@@ -35,6 +35,10 @@ it and updating to the line which defines the `products` variable (around line 3
         'activemq-5.4.2'
       ];
 
+
+Note: To display the results of `reports/report.html`, first you need to serve all the files from the same domain. In google chrome, if you use file:///, the same origin policy wont allow to load the results.
+You can relax that restriction in Chrome by starting it with the `--allow-file-access-from-files` argument.  On OS X you can do that with the following command: `open -a 'Google Chrome' --args --allow-file-access-from-files`
+
 ### Running against Apollo 1.0-beta1
 
 [Apollo](http://activemq.apache.org/apollo) is a new Stomp based 
@@ -346,6 +350,7 @@ An example from default_scenarios.xml:
 ## Display the results of a custom XML scenario using the generic_report.html    
     
 To display the results on generic_report.html, first you need to serve all the files from the same domain. In google chrome, if you use file:///, the same origin policy wont allow to load the results.
+You can relax that restriction in Chrome by starting it with the `--allow-file-access-from-files` argument.  On OS X you can do that with the following command: `open -a 'Google Chrome' --args --allow-file-access-from-files`
 
 Please note that, to be able to display the scenario results using generic_report.html, you need to provide the option `--new-json` when you run the benchmark.
 
