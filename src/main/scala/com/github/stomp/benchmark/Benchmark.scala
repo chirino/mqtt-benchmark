@@ -412,10 +412,20 @@ class Benchmark extends Action {
     
     /* Returns random numbers uniformly distributed between min (included) and max (not included) */
     def random (min: Int, max: Int) = {
-      new Function1[Long, Int] {
-        def apply(time: Long): Int = {
-          return Random.nextInt(max) + min 
+      if (min == max) {
+        new Function1[Long, Int] {
+          def apply(time: Long): Int = {
+            return min
+          }
         }
+      } else if (max > min) {
+        new Function1[Long, Int] {
+          def apply(time: Long): Int = {
+            return Random.nextInt(max-min) + min
+          }
+        }
+      } else {
+        throw new Exception("Error in random function, min bigger than max.")
       }
     }
     
