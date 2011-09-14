@@ -517,16 +517,17 @@ class NonBlockingScenario extends Scenario {
       val m_s = message_size
       
       if (! message_frame_cache.contains(m_s)) {
-        message_frame_cache(m_s) = "SEND\n" +
-        "destination:"+destination(id)+"\n"+
-        { if(persistent) persistent_header+"\n" else "" } +
-        { if(sync_send) "receipt:xxx\n" else "" } +
-        { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
-        { if(content_length) "content-length:"+m_s+"\n" else "" } +
-        "\n"+message(name, m_s)
+        val frame = "SEND\n" +
+          "destination:"+destination(id)+"\n"+
+          { if(persistent) persistent_header+"\n" else "" } +
+          { if(sync_send) "receipt:xxx\n" else "" } +
+          { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
+          { if(content_length) "content-length:"+m_s+"\n" else "" } +
+          "\n"+message(name, m_s)
+        message_frame_cache(m_s) = frame.toCharArray.map(_.toByte)
       }
       
-      return message_frame_cache(m_s);
+      return message_frame_cache(m_s)
     }
 
   } 
@@ -587,12 +588,13 @@ class NonBlockingScenario extends Scenario {
           receive { msg=>
             val start = index_of(msg, MESSAGE_ID)
             assert( start >= 0 )
-            val end = msg.indexOf("\n", start)
+            val end = msg.indexOf(10:Byte, start) // Byte 10 is \n 
             val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
+            
             write("""|ACK
                      |message-id:%s
                      |
-                     |""".stripMargin.format(msgId)) {
+                     |""".stripMargin.format(new String(msgId.map(_.toChar)))) {
               consumer_counter.incrementAndGet()
               receive_completed
             }
