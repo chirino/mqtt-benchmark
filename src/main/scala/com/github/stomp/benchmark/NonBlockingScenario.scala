@@ -587,8 +587,9 @@ class NonBlockingScenario extends Scenario {
         if( clientAck ) {
           receive { msg=>
             val start = index_of(msg, MESSAGE_ID)
+
             assert( start >= 0 )
-            val end = msg.indexOf(10:Byte, start) // Byte 10 is \n 
+            val end = msg.indexOf(NEWLINE, start)
             val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
             
             write("""|ACK

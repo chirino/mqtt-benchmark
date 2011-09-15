@@ -195,17 +195,19 @@ class BlockingScenario extends Scenario {
     
     def get_message_frame():Array[Byte] = {
       val m_s = message_size
+      
       if (! message_frame_cache.contains(m_s)) {
-        message_frame_cache(m_s) = "SEND\n" +
-        "destination:"+destination(id)+"\n"+
-        { if(persistent) persistent_header+"\n" else "" } +
-        { if(sync_send) "receipt:xxx\n" else "" } +
-        { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
-        { if(content_length) "content-length:"+m_s+"\n" else "" } +
-        "\n"+message(name, m_s).getBytes("UTF-8")
+        val frame = "SEND\n" +
+          "destination:"+destination(id)+"\n"+
+          { if(persistent) persistent_header+"\n" else "" } +
+          { if(sync_send) "receipt:xxx\n" else "" } +
+          { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
+          { if(content_length) "content-length:"+m_s+"\n" else "" } +
+          "\n"+message(name, m_s)
+        message_frame_cache(m_s) = frame.toCharArray.map(_.toByte)
       }
       
-      return message_frame_cache(m_s);
+      return message_frame_cache(m_s)
     }
   
   }
@@ -254,14 +256,15 @@ class BlockingScenario extends Scenario {
           if( clientAck ) {
             val msg = receive()
             val start = index_of(msg, MESSAGE_ID)
-            assert( start >= 0 )
-            val end = msg.indexOf("\n", start)
-            val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
-            write("""
-ACK
-message-  id:""", msgId,"""
 
-""")
+            assert( start >= 0 )
+            val end = msg.indexOf(NEWLINE, start)
+            val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
+
+            write("""|ACK
+                     |message-id:%s
+                     |
+                     |""".stripMargin.format(new String(msgId.map(_.toChar))))
 
           } else {
             skip
