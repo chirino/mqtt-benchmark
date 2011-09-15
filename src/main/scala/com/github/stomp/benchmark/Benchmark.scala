@@ -703,14 +703,14 @@ class Benchmark extends Action {
     def getPropertyFunction(property_name: String, clients_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[propertyFunction] = { 
       val format_catcher = catching(classOf[NumberFormatException])
       val property_function_nodeset = clients_xml \ property_name
-      val property_function_value: Option[Int] = format_catcher.opt(property_function_nodeset.text.toInt)
+      val property_function_value: Option[Int] = format_catcher.opt(substituteVariables(property_function_nodeset.text.trim, vars).toInt)
       if (property_function_nodeset.length == 1 && property_function_value.isDefined) {
         Some(new propertyFunction { override def apply() = property_function_value.get })
       } else if ((property_function_nodeset \ "range").length > 0) {
         Some(new propertyFunction {
           var ranges: List[Tuple2[Int, (Long) => Int]] = Nil 
           for (range_node <- property_function_nodeset \ "range") {
-            val range_value =  format_catcher.opt(range_node.text.toInt)
+            val range_value =  format_catcher.opt(substituteVariables(range_node.text.trim, vars).toInt)
             val range_end =  getStringValue("@end", range_node, vars).
               map((x:String) => x.toLowerCase().replace("end", Int.MaxValue.toString).toInt).
               map((x: Int) => if (x >= 0) x else sample_count.get*sample_interval.get + x)
