@@ -69,7 +69,6 @@ trait Scenario {
   var port = 61613
   var buffer_size = 32*1024
   var message_size = 1024
-  var content_length=true
   var persistent = false
   var persistent_header = "persistent:true"
   var sync_send = false
@@ -182,7 +181,6 @@ trait Scenario {
     "  message_size          = "+message_size+"\n"+
     "  persistent            = "+persistent+"\n"+
     "  sync_send             = "+sync_send+"\n"+
-    "  content_length        = "+content_length+"\n"+
     "  producer_sleep (ms)   = "+producer_sleep+"\n"+
     "  headers               = "+headers.map( _.mkString(", ") ).mkString("(", "), (", ")")+"\n"+
     "  \n"+
@@ -212,7 +210,6 @@ trait Scenario {
     s :+= ("message_size", message_size.toString)
     s :+= ("persistent", persistent.toString)
     s :+= ("sync_send", sync_send.toString)
-    s :+= ("content_length", content_length.toString)
     s :+= ("producer_sleep", producer_sleep.toString)
     s :+= ("headers", headers.map( _.mkString(", ") ).mkString("(", "), (", ")"))
     s :+= ("consumers", consumers.toString)

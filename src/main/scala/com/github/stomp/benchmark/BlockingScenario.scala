@@ -152,7 +152,7 @@ class BlockingScenario extends Scenario {
                { if(persistent) persistent_header+"\n" else "" } +
                { if(sync_send) "receipt:xxx\n" else "" } +
                { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
-               { if(content_length) "content-length:"+message_size+"\n" else "" } +
+               "content-length:"+message_size+"\n"+
               "\n"+message(name)).getBytes("UTF-8")
 
 

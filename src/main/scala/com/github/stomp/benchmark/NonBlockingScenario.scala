@@ -23,6 +23,10 @@ import org.fusesource.hawtdispatch._
 import java.nio.channels.{SelectionKey, SocketChannel}
 import java.nio.ByteBuffer
 import java.util.concurrent.{CountDownLatch, TimeUnit}
+import org.fusesource.stompjms.client.callback._
+import java.lang.Throwable
+import org.fusesource.hawtbuf.Buffer._
+import org.fusesource.stompjms.client.{StompFrame, Stomp}
 
 /**
  * <p>
@@ -54,43 +58,25 @@ class NonBlockingScenario extends Scenario {
     case class INIT() extends State
 
     case class CONNECTING(host: String, port: Int, on_complete: ()=>Unit) extends State {
-
-      val channel = SocketChannel.open
-      ignore_failure(channel.socket.setReceiveBufferSize(buffer_size))
-      ignore_failure(channel.socket.setSoLinger(true, 0))
-      ignore_failure(channel.socket.setTcpNoDelay(false))
       
-      channel.configureBlocking(false)
-      val source: DispatchSource = createSource(channel, SelectionKey.OP_CONNECT, queue)
-      source.onEvent {
-        if ( this == state ) {
-          if(done.get) {
-            close
-          } else {
-            try {
-              if( channel.finishConnect ) {
-                source.cancel
-                state = CONNECTED(channel)
+      def connect() = {
+        val cb = Stomp.callback(host, port)
+        login.foreach(cb.login(_))
+        passcode.foreach(cb.passcode(_))
+        cb.connect(new Callback[Connection](){
+          override def success(connection: Connection) {
+            state match {
+              case x:CONNECTING =>
+                state = CONNECTED(connection)
                 on_complete()
-              }
-            } catch {
-              case e:Exception=>
-                on_failure(e)
+              case _ => 
+                connection.close(null)
             }
           }
-        }
-      }
-      source.resume
-
-      def connect() = {
-        channel.connect(new InetSocketAddress(host, port))
-        // Times out the connect after 5 seconds...
-        queue.after(5, TimeUnit.SECONDS) {
-          if ( this == state ) {
-            source.cancel
-            on_failure(new Exception("Connect timed out"))
+          override def failure(value: Throwable) {
+            on_failure(value)
           }
-        }
+        })
       }
 
       // We may need to delay the connection attempt.
@@ -106,8 +92,6 @@ class NonBlockingScenario extends Scenario {
       }
 
       def close() = {
-        source.cancel
-        channel.close
         state = DISCONNECTED()
       }
 
@@ -122,48 +106,16 @@ class NonBlockingScenario extends Scenario {
 
     }
 
-    case class CONNECTED(val channel:SocketChannel) extends State {
+    case class CONNECTED(val connection:Connection) extends State {
 
-      var write_stream = new ByteArrayOutputStream(buffer_size*2)
-      var pending_write:ByteBuffer = _
-      var on_flushed: ()=>Unit = null
-      var on_fill: ()=>Unit = null
-
-      val read_buffer = ByteBuffer.allocate(buffer_size)
-      read_buffer.clear.flip
-
-      val read_source = createSource(channel, SelectionKey.OP_READ, queue)
-      read_source.onEvent {
-        if(state == this) {
-          if(done.get) {
-            close
-          } else {
-            fill
-          }
-        }
-      }
-
-      val write_source = createSource(channel, SelectionKey.OP_WRITE, queue)
-      write_source.onEvent {
-        if(state == this) {
-          if(done.get) {
-            close
-          } else {
-            write_source.suspend; flush
-          }
-        }
-      }
+      connection.receive(new Callback[StompFrame](){
+        override def failure(value: Throwable) = on_failure(value)
+        override def success(value: StompFrame) = on_receive(value)
+      })
 
       def close() = {
         state = CLOSING()
-        read_source.onCancel {
-          write_source.onCancel {
-            channel.close
-            state = DISCONNECTED()
-          }
-          write_source.cancel
-        }
-        read_source.cancel
+        connection.close(null)
       }
 
       def on_failure(e:Throwable) = {
@@ -175,125 +127,125 @@ class NonBlockingScenario extends Scenario {
         close
       }
 
-      def offer_write(data:Array[Byte])(func: =>Unit):Boolean = {
-        if( write_stream.size > buffer_size ) {
-          on_flushed = func _
-          false
-        } else {
-          write_stream.write(data)
-          write_stream.write(0)
-          write_stream.write('\n')
-          if( write_stream.size > buffer_size ) {
-            flush
-          }
-          true
-        }
-      }
-
-      def flush(func: =>Unit):Unit = {
-        on_flushed = func _
-        flush
-      }
-
-      def flush:Unit = {
-        try {
-          while(pending_write!=null || write_stream.size()!=0 ) {
-            if( pending_write!=null ) {
-              channel.write(pending_write)
-              if( pending_write.hasRemaining ) {
-                if( write_source.isSuspended ) {
-                  write_source.resume
-                }
-                return
-              } else {
-                pending_write = null
-              }
-            }
-            if( pending_write==null && write_stream.size()!=0  ) {
-              pending_write = ByteBuffer.wrap(write_stream.toByteArray)
-              write_stream.reset
-            }
-          }
-          if(on_flushed!=null) {
-            val t = on_flushed
-            on_flushed = null
-            t()
-          }
-        } catch {
-          case e:Throwable =>
-            on_failure(e)
-            return
-        }
-      }
-
-      def skip(func: =>Unit):Unit = {
-        queue_check
-        def do_it:Unit = {
-          while( read_buffer.hasRemaining ) {
-            if( read_buffer.get==0 ) {
-              func
-              return
-            }
-          }
-          on_fill = ()=> { do_it }
-          refill
-        }
-        do_it
-      }
-
-      def receive(func: Array[Byte]=>Unit) = {
-        var start = true;
-        val buffer = new ByteArrayOutputStream()
-
-        def do_it:Unit = {
-          while( read_buffer.hasRemaining ) {
-            val c = read_buffer.get
-            if( c==0 ) {
-              func(buffer.toByteArray)
-              return
-            }
-            if( !start || c!= NEWLINE) {
-              start = false
-              buffer.write(c)
-            }
-          }
-          on_fill = ()=> { do_it }
-          refill
-        }
-        do_it
-      }
-
-
-      def refill:Unit = {
-        read_buffer.compact
-        read_source.resume
-        queue {
-          fill
-        }
-      }
-
-      def fill:Unit = {
-        if( !read_buffer.hasRemaining ) {
-          on_fill()
-          return
-        }
-        try {
-          val c = channel.read(read_buffer)
-          if( c == -1 ) {
-            throw new IOException("Server disconnected")
-          }
-          if( c > 0 ) {
-            read_source.suspend
-            read_buffer.flip
-            if( on_fill!=null ){
-              on_fill()
-            }
-          }
-        } catch {
-          case e:Exception=>
-            on_failure(e)
-        }
-      }
+//      def offer_write(data:Array[Byte])(func: =>Unit):Boolean = {
+//        if( write_stream.size > buffer_size ) {
+//          on_flushed = func _
+//          false
+//        } else {
+//          write_stream.write(data)
+//          write_stream.write(0)
+//          write_stream.write('\n')
+//          if( write_stream.size > buffer_size ) {
+//            flush
+//          }
+//          true
+//        }
+//      }
+//
+//      def flush(func: =>Unit):Unit = {
+//        on_flushed = func _
+//        flush
+//      }
+//
+//      def flush:Unit = {
+//        try {
+//          while(pending_write!=null || write_stream.size()!=0 ) {
+//            if( pending_write!=null ) {
+//              channel.write(pending_write)
+//              if( pending_write.hasRemaining ) {
+//                if( write_source.isSuspended ) {
+//                  write_source.resume
+//                }
+//                return
+//              } else {
+//                pending_write = null
+//              }
+//            }
+//            if( pending_write==null && write_stream.size()!=0  ) {
+//              pending_write = ByteBuffer.wrap(write_stream.toByteArray)
+//              write_stream.reset
+//            }
+//          }
+//          if(on_flushed!=null) {
+//            val t = on_flushed
+//            on_flushed = null
+//            t()
+//          }
+//        } catch {
+//          case e:Throwable =>
+//            on_failure(e)
+//            return
+//        }
+//      }
+//
+//      def skip(func: =>Unit):Unit = {
+//        queue_check
+//        def do_it:Unit = {
+//          while( read_buffer.hasRemaining ) {
+//            if( read_buffer.get==0 ) {
+//              func
+//              return
+//            }
+//          }
+//          on_fill = ()=> { do_it }
+//          refill
+//        }
+//        do_it
+//      }
+//
+//      def receive(func: Array[Byte]=>Unit) = {
+//        var start = true;
+//        val buffer = new ByteArrayOutputStream()
+//
+//        def do_it:Unit = {
+//          while( read_buffer.hasRemaining ) {
+//            val c = read_buffer.get
+//            if( c==0 ) {
+//              func(buffer.toByteArray)
+//              return
+//            }
+//            if( !start || c!= NEWLINE) {
+//              start = false
+//              buffer.write(c)
+//            }
+//          }
+//          on_fill = ()=> { do_it }
+//          refill
+//        }
+//        do_it
+//      }
+//
+//
+//      def refill:Unit = {
+//        read_buffer.compact
+//        read_source.resume
+//        queue {
+//          fill
+//        }
+//      }
+//
+//      def fill:Unit = {
+//        if( !read_buffer.hasRemaining ) {
+//          on_fill()
+//          return
+//        }
+//        try {
+//          val c = channel.read(read_buffer)
+//          if( c == -1 ) {
+//            throw new IOException("Server disconnected")
+//          }
+//          if( c > 0 ) {
+//            read_source.suspend
+//            read_buffer.flip
+//            if( on_fill!=null ){
+//              on_fill()
+//            }
+//          }
+//        } catch {
+//          case e:Exception=>
+//            on_failure(e)
+//        }
+//      }
 
     }
     case class CLOSING() extends State
@@ -325,7 +277,7 @@ class NonBlockingScenario extends Scenario {
       state = DISCONNECTED()
     }
 
-    def queue_check = assert(getCurrentQueue == queue)
+    def queue_check = queue.assertExecuting()
 
     def open(host: String, port: Int)(on_complete: =>Unit) = {
       assert ( state.isInstanceOf[DISCONNECTED] )
@@ -350,91 +302,80 @@ class NonBlockingScenario extends Scenario {
       has_shutdown.await()
     }
 
-    def offer_write(data:Array[Byte])(func: =>Unit):Boolean = {
+    def send(frame:StompFrame)(func: =>Unit) = {
       queue_check
       state match {
-        case state:CONNECTED => state.offer_write(data)(func)
-        case _ => true
-      }
-    }
-
-    def write(data:Array[Byte])(func: =>Unit):Unit = {
-      def retry:Unit = {
-        if( offer_write(data)(retry) ) {
-          flush(func)
-        }
-      }
-      retry
-    }
-
-    def flush(func: =>Unit):Unit = {
-      queue_check
-      state match {
-        case state:CONNECTED => state.flush(func)
-        case _ =>
-      }
-    }
-
-    def skip(func: =>Unit):Unit = {
-      queue_check
-      state match {
-        case state:CONNECTED => state.skip(func)
-        case _ =>
-      }
-    }
-
-    def receive(func: Array[Byte]=>Unit) = {
-      queue_check
-      state match {
-        case state:CONNECTED => state.receive(func)
-        case _ =>
-      }
-    }
-
-    def expecting(expect:String)(func: Array[Byte]=>Unit):Unit = {
-      queue_check
-      receive { rc=>
-        if( !rc.startsWith(expect) ) {
-          val data = new String(rc)
-          if( data.startsWith("ERROR") && display_errors ) {
-            println(data)
+        case state:CONNECTED => state.connection.send(frame, new Callback[Void](){
+          override def success(value: Void) {
+            func
           }
-          on_failure(new Exception("Expected "+expect))
-        } else {
-          func(rc)
-        }
+          override def failure(value: Throwable) = on_failure(value)
+        })
+        case _ =>
       }
+    }
+
+    def request(frame:StompFrame)(func: (StompFrame)=>Unit) = {
+      queue_check
+      state match {
+        case state:CONNECTED => state.connection.request(frame, new Callback[StompFrame](){
+          override def success(value: StompFrame) {
+            func(value)
+          }
+          override def failure(value: Throwable) = on_failure(value)
+        })
+        case _ =>
+      }
+    }
+
+    def receive_suspend = {
+      queue_check
+      state match {
+        case state:CONNECTED => state.connection.suspend()
+        case _ =>
+      }
+    }
+
+    def receive_resume = {
+      queue_check
+      state match {
+        case state:CONNECTED => state.connection.resume()
+        case _ =>
+      }
+    }
+
+    def on_receive(e:StompFrame) = {
     }
 
     def connect(proc: =>Unit) = {
       queue_check
       if( !done.get ) {
         open(host, port) {
-          write("CONNECT\n%s%s\n".format(
-            login.map("login:%s\n".format(_)).getOrElse(""),
-            passcode.map("passcode:%s\n".format(_)).getOrElse("")
-          )) {
-            expecting("CONNECTED") { frame =>
-              proc
-            }
-          }
+          proc
         }
       }
     }
 
     def name:String
   }
+  
+  def header_key(v:String) = ascii(v.split(":")(0))
+  def header_value(v:String) = ascii(v.split(":")(1))
+  
+  val persistent_header_key = header_key(persistent_header)
+  val persistent_header_value = header_value(persistent_header)
 
   class ProducerClient(val id: Int) extends NonBlockingClient {
     val name: String = "producer " + id
     queue.setLabel(name)
-    val message_frame:Array[Byte] = "SEND\n" +
-              "destination:"+destination(id)+"\n"+
-               { if(persistent) persistent_header+"\n" else "" } +
-               { if(sync_send) "receipt:xxx\n" else "" } +
-               { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
-               { if(content_length) "content-length:"+message_size+"\n" else "" } +
-              "\n"+message(name)
+    val message_frame = new StompFrame(ascii("SEND"))
+    message_frame.addHeader(ascii("destination"),ascii(destination(id)))
+    if(persistent) message_frame.addHeader(persistent_header_key,persistent_header_value)
+    if(sync_send) message_frame.addHeader(ascii("receipt"), ascii("xxx"))
+    headers_for(id).foreach{ x=>
+      message_frame.addHeader(header_key(x), header_value(x))
+    }
+    message_frame.content(message(name))
 
     override def reconnect_action = {
       connect {
@@ -447,24 +388,18 @@ class NonBlockingScenario extends Scenario {
         if(done.get) {
           close
         } else {
-          if(producer_sleep >= 0) {
-            if (offer_write(message_frame)(retry)) {
-              if( sync_send ) {
-                flush {
-                  skip {
-                    producer_counter.incrementAndGet()
-                    message_counter += 1
-                    write_completed_action
-                  }
-                }
-              } else {
-                producer_counter.incrementAndGet()
-                message_counter += 1
-                write_completed_action
-              }
+          if( sync_send ) {
+            request(message_frame) { resp =>
+              producer_counter.incrementAndGet()
+              message_counter += 1
+              write_completed_action
             }
           } else {
+            send(message_frame) {
+              producer_counter.incrementAndGet()
+              message_counter += 1
               write_completed_action
+            }
           }
         }
       }
@@ -472,32 +407,24 @@ class NonBlockingScenario extends Scenario {
     }
 
     def write_completed_action:Unit = {
+      def doit = {
+        if(messages_per_connection > 0 && message_counter >= messages_per_connection  ) {
+          message_counter = 0
+          close
+        } else {
+          write_action
+        }
+      }
+
       if(done.get) {
         close
       } else {
-        val p_sleep = producer_sleep
-        if(p_sleep != 0) {
-          flush {
-            queue.after(math.abs(p_sleep), TimeUnit.MILLISECONDS) {
-              if(messages_per_connection > 0 && message_counter >= messages_per_connection  ) {
-                message_counter = 0
-                close
-              } else {
-                write_action
-              }
-            }
+        if(producer_sleep != 0) {
+          queue.after(math.abs(producer_sleep), TimeUnit.MILLISECONDS) {
+            doit
           }
         } else {
-          queue {
-            if(messages_per_connection > 0 && message_counter >= messages_per_connection  ) {
-              message_counter = 0
-              flush {
-                close
-              }
-            } else {
-              write_action
-            }
-          }
+          queue { doit }
         }
       }
     }
@@ -516,6 +443,7 @@ class NonBlockingScenario extends Scenario {
     } else {
       rc
     }
+    ascii(rc)
   }
 
   class ConsumerClient(val id: Int) extends NonBlockingClient {
@@ -525,20 +453,17 @@ class NonBlockingScenario extends Scenario {
 
     override def reconnect_action = {
       connect {
-        write("""|SUBSCRIBE
-                 |id:%s
-                 |ack:%s
-                 |destination:%s
-                 |%s%s
-                 |""".stripMargin.format(
-              consumer_prefix+id,
-              ack,
-              destination(id),
-              if(!durable) {""} else {"persistent:true\n"},
-              if(selector==null) {""} else {"selector: "+selector+"\n"}
-            )
-        ) {
-          receive_action
+        val sub = new StompFrame(ascii("SUBSCRIBE"))
+        sub.addHeader(ascii("id"), ascii(consumer_prefix+id))
+        sub.addHeader(ascii("ack"), ascii(ack))
+        sub.addHeader(ascii("destination"), ascii(destination(id)))
+        if(durable) {
+          sub.addHeader(ascii("persistent"), ascii("true"))
+        }
+        if(selector!=null) {
+          sub.addHeader(ascii("selector"), ascii(selector))
+        }
+        send(sub) {
         }
       }
     }
@@ -554,47 +479,37 @@ class NonBlockingScenario extends Scenario {
       return -1
     }
 
-    def receive_action:Unit = {
 
-      def receive_completed = {
-        val c_sleep = consumer_sleep
-        if( c_sleep != 0 ) {
-          queue.after(math.abs(c_sleep), TimeUnit.MILLISECONDS) {
-            receive_action
+    override def on_receive(msg: StompFrame) = {
+
+      def process_message = {
+        if( clientAck ) {
+          val msgId = msg.getHeader(ascii("message-id"))
+          val ack = new StompFrame(ascii("ACK"))
+          ack.addHeader(ascii("message-id"), msgId)
+          send(ack){
+            consumer_counter.incrementAndGet()
           }
         } else {
-          queue {
-            receive_action
-          }
+          consumer_counter.incrementAndGet()
         }
       }
 
-      if (consumer_sleep >= 0) {
-        if( clientAck ) {
-          receive { msg=>
-            val start = index_of(msg, MESSAGE_ID)
-            assert( start >= 0 )
-            val end = msg.indexOf("\n", start)
-            val msgId = msg.slice(start+MESSAGE_ID.length+1, end)
-            write("""|ACK
-                     |message-id:%s
-                     |
-                     |""".stripMargin.format(msgId)) {
-              consumer_counter.incrementAndGet()
-              receive_completed
-            }
+      if( consumer_sleep != 0 ) {
+        if( !clientAck ) {
+          receive_suspend
+        }
+        queue.after(math.abs(consumer_sleep), TimeUnit.MILLISECONDS) {
+          if( !clientAck ) {
+            receive_resume
           }
-
-        } else {
-          skip {
-            consumer_counter.incrementAndGet()
-            receive_completed
-          }
+          process_message
         }
       } else {
-        receive_completed
+        process_message
       }
     }
+
   }
 
 }

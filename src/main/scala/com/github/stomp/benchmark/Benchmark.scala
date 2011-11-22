@@ -937,7 +937,6 @@ class Benchmark extends Action {
               scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)
               scenario.topic_prefix = topic_prefix.getOrElse(scenario.topic_prefix)
               scenario.message_size = message_size.getOrElse(scenario.message_size)
-              scenario.content_length = content_length.getOrElse(scenario.content_length)
               scenario.drain_timeout = drain_timeout.getOrElse(scenario.drain_timeout)
               scenario.persistent = persistent.getOrElse(scenario.persistent)
               scenario.durable = durable.getOrElse(scenario.durable)
