@@ -70,6 +70,7 @@ class NonBlockingScenario extends Scenario {
               case x:CONNECTING =>
                 state = CONNECTED(connection)
                 on_complete()
+                connection.resume()
               case _ => 
                 connection.close(null)
             }
@@ -116,7 +117,9 @@ class NonBlockingScenario extends Scenario {
 
       def close() = {
         state = CLOSING()
-        connection.close(null)
+        connection.close(^{
+          state = DISCONNECTED()
+        })
       }
 
       def on_failure(e:Throwable) = {
@@ -127,126 +130,6 @@ class NonBlockingScenario extends Scenario {
         reconnect_delay = 1000
         close
       }
-
-//      def offer_write(data:Array[Byte])(func: =>Unit):Boolean = {
-//        if( write_stream.size > buffer_size ) {
-//          on_flushed = func _
-//          false
-//        } else {
-//          write_stream.write(data)
-//          write_stream.write(0)
-//          write_stream.write('\n')
-//          if( write_stream.size > buffer_size ) {
-//            flush
-//          }
-//          true
-//        }
-//      }
-//
-//      def flush(func: =>Unit):Unit = {
-//        on_flushed = func _
-//        flush
-//      }
-//
-//      def flush:Unit = {
-//        try {
-//          while(pending_write!=null || write_stream.size()!=0 ) {
-//            if( pending_write!=null ) {
-//              channel.write(pending_write)
-//              if( pending_write.hasRemaining ) {
-//                if( write_source.isSuspended ) {
-//                  write_source.resume
-//                }
-//                return
-//              } else {
-//                pending_write = null
-//              }
-//            }
-//            if( pending_write==null && write_stream.size()!=0  ) {
-//              pending_write = ByteBuffer.wrap(write_stream.toByteArray)
-//              write_stream.reset
-//            }
-//          }
-//          if(on_flushed!=null) {
-//            val t = on_flushed
-//            on_flushed = null
-//            t()
-//          }
-//        } catch {
-//          case e:Throwable =>
-//            on_failure(e)
-//            return
-//        }
-//      }
-//
-//      def skip(func: =>Unit):Unit = {
-//        queue_check
-//        def do_it:Unit = {
-//          while( read_buffer.hasRemaining ) {
-//            if( read_buffer.get==0 ) {
-//              func
-//              return
-//            }
-//          }
-//          on_fill = ()=> { do_it }
-//          refill
-//        }
-//        do_it
-//      }
-//
-//      def receive(func: Array[Byte]=>Unit) = {
-//        var start = true;
-//        val buffer = new ByteArrayOutputStream()
-//
-//        def do_it:Unit = {
-//          while( read_buffer.hasRemaining ) {
-//            val c = read_buffer.get
-//            if( c==0 ) {
-//              func(buffer.toByteArray)
-//              return
-//            }
-//            if( !start || c!= NEWLINE) {
-//              start = false
-//              buffer.write(c)
-//            }
-//          }
-//          on_fill = ()=> { do_it }
-//          refill
-//        }
-//        do_it
-//      }
-//
-//
-//      def refill:Unit = {
-//        read_buffer.compact
-//        read_source.resume
-//        queue {
-//          fill
-//        }
-//      }
-//
-//      def fill:Unit = {
-//        if( !read_buffer.hasRemaining ) {
-//          on_fill()
-//          return
-//        }
-//        try {
-//          val c = channel.read(read_buffer)
-//          if( c == -1 ) {
-//            throw new IOException("Server disconnected")
-//          }
-//          if( c > 0 ) {
-//            read_source.suspend
-//            read_buffer.flip
-//            if( on_fill!=null ){
-//              on_fill()
-//            }
-//          }
-//        } catch {
-//          case e:Exception=>
-//            on_failure(e)
-//        }
-//      }
 
     }
     case class CLOSING() extends State
