@@ -61,6 +61,7 @@ class NonBlockingScenario extends Scenario {
       
       def connect() = {
         val cb = Stomp.callback(host, port)
+        cb.dispatchQueue(queue)
         login.foreach(cb.login(_))
         passcode.foreach(cb.passcode(_))
         cb.connect(new Callback[Connection](){
