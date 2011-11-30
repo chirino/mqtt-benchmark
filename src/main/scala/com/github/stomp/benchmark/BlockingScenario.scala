@@ -150,7 +150,7 @@ class BlockingScenario extends Scenario {
     val name: String = "producer " + id
     
     val message_frame_cache = HashMap.empty[Int, Array[Byte]]
-    
+
     override def run() {
       while (!done.get) {
         connect {
@@ -202,7 +202,7 @@ class BlockingScenario extends Scenario {
           { if(persistent) persistent_header+"\n" else "" } +
           { if(sync_send) "receipt:xxx\n" else "" } +
           { headers_for(id).foldLeft("") { case (sum, v)=> sum+v+"\n" } } +
-          { if(content_length) "content-length:"+m_s+"\n" else "" } +
+          "content-length:"+m_s+"\n" +
           "\n"+message(name, m_s)
         message_frame_cache(m_s) = frame.toCharArray.map(_.toByte)
       }

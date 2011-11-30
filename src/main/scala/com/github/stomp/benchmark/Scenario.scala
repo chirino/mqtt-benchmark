@@ -73,8 +73,7 @@ trait Scenario {
   def message_size = _message_size()
   def message_size_= (new_value: Int) = _message_size = new { def apply() = new_value; def init(time: Long) {}  }
   def message_size_= (new_func: { def apply(): Int; def init(time: Long) }) = _message_size = new_func
-  
-  var content_length=true
+
   var persistent = false
   var persistent_header = "persistent:true"
   var sync_send = false
@@ -192,7 +191,6 @@ trait Scenario {
     "  message_size          = "+message_size+"\n"+
     "  persistent            = "+persistent+"\n"+
     "  sync_send             = "+sync_send+"\n"+
-    "  content_length        = "+content_length+"\n"+
     "  producer_sleep (ms)   = "+producer_sleep+"\n"+
     "  headers               = "+headers.map( _.mkString(", ") ).mkString("(", "), (", ")")+"\n"+
     "  \n"+
@@ -222,7 +220,6 @@ trait Scenario {
     s :+= ("message_size", message_size.toString)
     s :+= ("persistent", persistent.toString)
     s :+= ("sync_send", sync_send.toString)
-    s :+= ("content_length", content_length.toString)
     s :+= ("producer_sleep", producer_sleep.toString)
     s :+= ("headers", headers.map( _.mkString(", ") ).mkString("(", "), (", ")"))
     s :+= ("consumers", consumers.toString)
