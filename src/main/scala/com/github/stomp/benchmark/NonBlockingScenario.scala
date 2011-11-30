@@ -27,7 +27,8 @@ import org.fusesource.stompjms.client.callback._
 import java.lang.Throwable
 import org.fusesource.hawtbuf.Buffer._
 import org.fusesource.stompjms.client.{StompFrame, Stomp}
-
+import org.fusesource.stompjms.client.Constants
+import org.fusesource.stompjms.client.Constants._
 /**
  * <p>
  * Simulates load on the a stomp broker using non blocking io.
@@ -252,10 +253,9 @@ class NonBlockingScenario extends Scenario {
   class ProducerClient(val id: Int) extends NonBlockingClient {
     val name: String = "producer " + id
     queue.setLabel(name)
-    val message_frame = new StompFrame(ascii("SEND"))
-    message_frame.addHeader(ascii("destination"),ascii(destination(id)))
+    val message_frame = new StompFrame(SEND)
+    message_frame.addHeader(DESTINATION,ascii(destination(id)))
     if(persistent) message_frame.addHeader(persistent_header_key,persistent_header_value)
-    if(sync_send) message_frame.addHeader(ascii("receipt"), ascii("xxx"))
     headers_for(id).foreach{ x=>
       message_frame.addHeader(header_key(x), header_value(x))
     }
@@ -334,18 +334,18 @@ class NonBlockingScenario extends Scenario {
     val name: String = "consumer " + id
     queue.setLabel(name)
     val clientAck = ack == "client"
-
+    val subscriber_id = ascii(consumer_prefix+id)
     override def reconnect_action = {
       connect {
-        val sub = new StompFrame(ascii("SUBSCRIBE"))
-        sub.addHeader(ascii("id"), ascii(consumer_prefix+id))
-        sub.addHeader(ascii("ack"), ascii(ack))
-        sub.addHeader(ascii("destination"), ascii(destination(id)))
+        val sub = new StompFrame(SUBSCRIBE)
+        sub.addHeader(ID, subscriber_id)
+        sub.addHeader(ACK_MODE, ascii(ack))
+        sub.addHeader(DESTINATION, ascii(destination(id)))
         if(durable) {
-          sub.addHeader(ascii("persistent"), ascii("true"))
+          sub.addHeader(PERSISTENT, TRUE)
         }
         if(selector!=null) {
-          sub.addHeader(ascii("selector"), ascii(selector))
+          sub.addHeader(SELECTOR, ascii(selector))
         }
         send(sub) {
         }
@@ -368,9 +368,10 @@ class NonBlockingScenario extends Scenario {
 
       def process_message = {
         if( clientAck ) {
-          val msgId = msg.getHeader(ascii("message-id"))
-          val ack = new StompFrame(ascii("ACK"))
-          ack.addHeader(ascii("message-id"), msgId)
+          val msgId = msg.getHeader(Constants.MESSAGE_ID)
+          val ack = new StompFrame(ACK)
+          ack.addHeader(Constants.MESSAGE_ID, msgId)
+          ack.addHeader(SUBSCRIPTION, subscriber_id)
           send(ack){
             consumer_counter.incrementAndGet()
           }
