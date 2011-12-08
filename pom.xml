@@ -38,7 +38,7 @@
     <maven-assembly-plugin-version>2.2.1</maven-assembly-plugin-version>
 
     <hawtdispatch-version>1.5</hawtdispatch-version>
-    <stompjms-version>1.3</stompjms-version>
+    <stompjms-version>1.4</stompjms-version>
   </properties>
 
   <dependencies>
@@ -50,13 +50,6 @@
       <scope>compile</scope>
       <version>${scala-version}</version>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.scala-lang</groupId>-->
-      <!--<artifactId>scala-compiler</artifactId>-->
-      <!--<version>${scala-version}</version>-->
-      <!--<scope>compile</scope>-->
-      <!--<optional>true</optional>-->
-    <!--</dependency>-->
 
     <dependency>
       <groupId>org.fusesource.hawtdispatch</groupId>
