@@ -5,7 +5,6 @@
 #
 # [1]: http://github.com/chirino/stomp-benchmark
 # [2]: http://activemq.apache.org/apollo
-# [3]: http://aws.amazon.com/amazon-linux-ami/
 #
 
 APOLLO_VERSION=1.0-beta6
@@ -27,12 +26,14 @@ if [ ! -d "${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}" ]; then
   "${BENCHMARK_HOME}/apache-apollo-${APOLLO_VERSION}/bin/apollo" create "apollo-${APOLLO_VERSION}"
 fi
 
+#
+# Sanity Cleanup
+kilall -9 java 2> /dev/null
+kilall -9 apollo 2> /dev/null
 rm -rf ${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/data/*
 rm -rf ${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/tmp/*
 rm -rf ${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/log/*
 
-kilall -9 java 2> /dev/null
-kilall -9 apollo 2> /dev/null
 
 #
 # Start the broker
