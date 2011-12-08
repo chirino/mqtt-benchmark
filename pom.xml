@@ -37,6 +37,8 @@
     <slf4j-version>1.6.0</slf4j-version>
     <maven-assembly-plugin-version>2.2.1</maven-assembly-plugin-version>
 
+    <hawtdispatch-version>1.5</hawtdispatch-version>
+    <stompjms-version>1.3</stompjms-version>
   </properties>
 
   <dependencies>
@@ -48,25 +50,24 @@
       <scope>compile</scope>
       <version>${scala-version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-compiler</artifactId>
-      <version>${scala-version}</version>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.scala-lang</groupId>-->
+      <!--<artifactId>scala-compiler</artifactId>-->
+      <!--<version>${scala-version}</version>-->
+      <!--<scope>compile</scope>-->
+      <!--<optional>true</optional>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>org.fusesource.hawtdispatch</groupId>
       <artifactId>hawtdispatch-scala</artifactId>
-      <version>1.5</version>
+      <version>${hawtdispatch-version}</version>
     </dependency>
     <dependency>
       <groupId>org.fusesource.stompjms</groupId>
       <artifactId>stompjms-client</artifactId>
-      <version>1.3</version>
+      <version>${stompjms-version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.console</artifactId>

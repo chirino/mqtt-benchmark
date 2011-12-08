@@ -21,15 +21,6 @@ import java.util.concurrent.atomic._
 import java.util.concurrent.TimeUnit._
 import scala.collection.mutable.ListBuffer
 
-//object Example {
-//  def main(args:Array[String]):Unit = {
-//    val scenario = new com.github.stomp.benchmark.NonBlockingScenario
-//    scenario.login = Some("admin")
-//    scenario.passcode = Some("password")
-//    scenario.run
-//  }
-//}
-
 object Scenario {
   val MESSAGE_ID:Array[Byte] = "message-id"
   val NEWLINE = '\n'.toByte
@@ -73,10 +64,13 @@ trait Scenario {
   var persistent_header = "persistent:true"
   var sync_send = false
   var headers = Array[Array[String]]()
+  var subscribe_headers = Array[Array[String]]()
   var ack = "auto"
   var selector:String = null
   var durable = false
   var consumer_prefix = "consumer-"
+  var consumer_sleep_modulo = 1
+  var producer_sleep_modulo = 1
   var messages_per_connection = -1L
   var display_errors = false
 
@@ -191,6 +185,7 @@ trait Scenario {
     "  selector              = "+selector+"\n"+
     "  durable               = "+durable+"\n"+
     "  consumer_prefix       = "+consumer_prefix+"\n"+
+    "  subscribe_headers     = "+subscribe_headers.map( _.mkString(", ") ).mkString("(", "), (", ")")+"\n"+
     ""
 
   }
@@ -212,6 +207,7 @@ trait Scenario {
     s :+= ("sync_send", sync_send.toString)
     s :+= ("producer_sleep", producer_sleep.toString)
     s :+= ("headers", headers.map( _.mkString(", ") ).mkString("(", "), (", ")"))
+    s :+= ("subscribe_headers", subscribe_headers.map( _.mkString(", ") ).mkString("(", "), (", ")"))
     s :+= ("consumers", consumers.toString)
     s :+= ("consumer_sleep", consumer_sleep.toString)
     s :+= ("ack", ack)
@@ -235,6 +231,14 @@ trait Scenario {
       Array[String]()
     } else {
       headers(i%headers.size)
+    }
+  }
+
+  protected def subscribe_headers_for(i:Int) = {
+    if ( subscribe_headers.isEmpty ) {
+      Array[String]()
+    } else {
+      subscribe_headers(i%subscribe_headers.size)
     }
   }
 

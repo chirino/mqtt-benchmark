@@ -17,11 +17,7 @@
  */
 package com.github.stomp.benchmark
 
-import java.net._
-import java.io._
 import org.fusesource.hawtdispatch._
-import java.nio.channels.{SelectionKey, SocketChannel}
-import java.nio.ByteBuffer
 import java.util.concurrent.{CountDownLatch, TimeUnit}
 import org.fusesource.stompjms.client.callback._
 import java.lang.Throwable
@@ -29,6 +25,19 @@ import org.fusesource.hawtbuf.Buffer._
 import org.fusesource.stompjms.client.{StompFrame, Stomp}
 import org.fusesource.stompjms.client.Constants
 import org.fusesource.stompjms.client.Constants._
+
+//object NonBlockingScenario {
+//  def main(args:Array[String]):Unit = {
+//    val scenario = new com.github.stomp.benchmark.NonBlockingScenario
+//    scenario.login = Some("admin")
+//    scenario.passcode = Some("password")
+//    scenario.message_size = 50*1024
+//    scenario.destination_type = "topic"
+//    scenario.consumers = 0
+//    scenario.run
+//  }
+//}
+
 /**
  * <p>
  * Simulates load on the a stomp broker using non blocking io.
@@ -38,7 +47,6 @@ import org.fusesource.stompjms.client.Constants._
  */
 class NonBlockingScenario extends Scenario {
 
-  import Scenario._
 
   def createProducer(i:Int) = {
     new ProducerClient(i)
@@ -341,6 +349,9 @@ class NonBlockingScenario extends Scenario {
         sub.addHeader(ID, subscriber_id)
         sub.addHeader(ACK_MODE, ascii(ack))
         sub.addHeader(DESTINATION, ascii(destination(id)))
+        subscribe_headers_for(id).foreach{ x=>
+          sub.addHeader(header_key(x), header_value(x))
+        }
         if(durable) {
           sub.addHeader(PERSISTENT, TRUE)
         }
@@ -380,7 +391,7 @@ class NonBlockingScenario extends Scenario {
         }
       }
 
-      if( consumer_sleep != 0 ) {
+      if( consumer_sleep != 0 && ((consumer_counter.get()%consumer_sleep_modulo) == 0)) {
         if( !clientAck ) {
           receive_suspend
         }
