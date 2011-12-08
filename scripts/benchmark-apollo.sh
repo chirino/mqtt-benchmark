@@ -15,35 +15,38 @@ BENCHMARK_HOME=~/benchmark
 #
 # Install the apollo distro
 #
-if [ ! -d "${BENCHMARK_HOME}/apache-apollo-${APOLLO_VERSION}" ]; then
+APOLLO_HOME="${BENCHMARK_HOME}/apache-apollo-${APOLLO_VERSION}"
+if [ ! -d "${APOLLO_HOME}" ]; then
   cd ${BENCHMARK_HOME}
   wget "$APOLLO_DOWNLOAD"
   tar -zxvf apache-apollo-*.tar.gz
   rm -rf apache-apollo-*.tar.gz
 fi
-if [ ! -d "${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}" ]; then
+
+APOLLO_BASE="${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}"
+if [ ! -d "${APOLLO_BASE}" ]; then
   cd "${BENCHMARK_HOME}"
-  "${BENCHMARK_HOME}/apache-apollo-${APOLLO_VERSION}/bin/apollo" create "apollo-${APOLLO_VERSION}"
+  "${APOLLO_HOME}/bin/apollo" create "apollo-${APOLLO_VERSION}"
 fi
 
 #
 # Sanity Cleanup
 kilall -9 java 2> /dev/null
 kilall -9 apollo 2> /dev/null
-rm -rf ${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/data/*
-rm -rf ${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/tmp/*
-rm -rf ${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/log/*
+rm -rf ${APOLLO_BASE}/data/*
+rm -rf ${APOLLO_BASE}/tmp/*
+rm -rf ${APOLLO_BASE}/log/*
 
 
 #
 # Start the broker
 #
-rm "${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/log/console.log" 2> /dev/null
-"${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/bin/apollo-broker" run 2>&1 > "${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/log/console.log" &
+rm "${APOLLO_BASE}/log/console.log" 2> /dev/null
+"${APOLLO_BASE}/bin/apollo-broker" run 2>&1 > "${APOLLO_BASE}/log/console.log" &
 APOLLO_PID=$!
 echo "Started Apollo with PID: ${APOLLO_PID}"
 sleep 5
-cat ${BENCHMARK_HOME}/apollo-${APOLLO_VERSION}/log/console.log
+cat ${APOLLO_BASE}/log/console.log
 
 #
 # Run the benchmark

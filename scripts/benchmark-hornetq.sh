@@ -10,21 +10,22 @@
 
 
 HORNETQ_VERSION=2.2.5.Final
-HORNETQ_DOWNLOAD='http://downloads.jboss.org/hornetq/hornetq-2.2.5.Final.tar.gz'
+HORNETQ_DOWNLOAD='http://downloads.jboss.org/hornetq/hornetq-${HORNETQ_VERSION}.tar.gz'
 BENCHMARK_HOME=~/benchmark
 . benchmark-setup.sh
 
 #
 # Install the distro
 #
-if [ ! -d "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}" ]; then
+HORNETQ_HOME="${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}"
+if [ ! -d "${HORNETQ_HOME}" ]; then
   cd ${BENCHMARK_HOME}
   wget "$HORNETQ_DOWNLOAD"
   tar -zxvf hornetq-${HORNETQ_VERSION}.tar.gz
   rm -rf hornetq-${HORNETQ_VERSION}.tar.gz
   
   # Adjust the start script so that it execs java.
-  perl -pi -e 's|^java|exec java|' "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}/bin/run.sh"
+  perl -pi -e 's|^java|exec java|' "${HORNETQ_HOME}/bin/run.sh"
   
   #
   # Add the stomp connector to the configuration.
@@ -34,7 +35,7 @@ if [ ! -d "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}" ]; then
       <param key="host"  value="0.0.0.0"/>
       <param key="port"  value="61613"/>
     </acceptor>
-<\/acceptors>|' "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}/config/stand-alone/non-clustered/hornetq-configuration.xml"
+<\/acceptors>|' "${HORNETQ_HOME}/config/stand-alone/non-clustered/hornetq-configuration.xml"
 
   #
   # Add the destinations that the benchmark will be using.
@@ -60,22 +61,22 @@ if [ ! -d "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}" ]; then
     <topic name="loadt-7"><entry name="/topic/loadt-7"/></topic>
     <topic name="loadt-8"><entry name="/topic/loadt-8"/></topic>
     <topic name="loadt-9"><entry name="/topic/loadt-9"/>
-    </topic></configuration>|' "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}/config/stand-alone/non-clustered/hornetq-jms.xml"
+    </topic></configuration>|' "${HORNETQ_HOME}/config/stand-alone/non-clustered/hornetq-jms.xml"
  
 fi
 
 #
 # Sanity Cleanup
 kilall -9 java 2> /dev/null
-rm -rf "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}/data/*"
-rm -rf "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}/logs/*"
+rm -rf "${HORNETQ_HOME}/data/*"
+rm -rf "${HORNETQ_HOME}/logs/*"
 
 #
 # Start the server
 #
-CONSOLE_LOG="${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}/console.log"
+CONSOLE_LOG="${HORNETQ_HOME}/console.log"
 rm "${CONSOLE_LOG}" 2> /dev/null
-cd "${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}/bin"
+cd "${HORNETQ_HOME}/bin"
 ./run.sh 2>&1 > "${CONSOLE_LOG}" &
 HORNETQ_PID=$!
 echo "Started HornetQ with PID: ${HORNETQ_PID}"
