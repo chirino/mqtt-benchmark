@@ -31,3 +31,6 @@ if [ ! -d "${BENCHMARK_HOME}/stomp-benchmark" ] ; then
   sbt update
 fi
 
+kilall -9 java 2> /dev/null
+kilall -9 epmd 2> /dev/null
+kilall -9 apollo 2> /dev/null

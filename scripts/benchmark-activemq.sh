@@ -26,7 +26,6 @@ fi
 
 #
 # Sanity Cleanup
-kilall -9 java 2> /dev/null
 rm -rf ${ACTIVEMQ_HOME}/data/*
 
 

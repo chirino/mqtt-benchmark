@@ -31,8 +31,6 @@ fi
 
 #
 # Sanity Cleanup
-kilall -9 java 2> /dev/null
-kilall -9 apollo 2> /dev/null
 rm -rf ${APOLLO_BASE}/data/*
 rm -rf ${APOLLO_BASE}/tmp/*
 rm -rf ${APOLLO_BASE}/log/*

@@ -10,7 +10,7 @@
 
 
 HORNETQ_VERSION=2.2.5.Final
-HORNETQ_DOWNLOAD='http://downloads.jboss.org/hornetq/hornetq-${HORNETQ_VERSION}.tar.gz'
+HORNETQ_DOWNLOAD="http://downloads.jboss.org/hornetq/hornetq-${HORNETQ_VERSION}.tar.gz"
 BENCHMARK_HOME=~/benchmark
 . benchmark-setup.sh
 
@@ -67,7 +67,6 @@ fi
 
 #
 # Sanity Cleanup
-kilall -9 java 2> /dev/null
 rm -rf "${HORNETQ_HOME}/data/*"
 rm -rf "${HORNETQ_HOME}/logs/*"
 
