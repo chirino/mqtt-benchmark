@@ -10,7 +10,7 @@
 ACTIVEMQ_VERSION=5.5.1
 ACTIVEMQ_DOWNLOAD="http://www.apache.org/dist/activemq/apache-activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz"
 BENCHMARK_HOME=~/benchmark
-. benchmark-setup.sh
+. `dirname "$0"`/benchmark-setup.sh
 
 #
 # Install the apollo distro

@@ -1,16 +1,16 @@
 #!/bin/bash
 #
 # This shell script automates running the stomp-benchmark [1] against the
-# HornetQ project [2].
+# RabbitMQ project [2].
 #
 # [1]: http://github.com/chirino/stomp-benchmark
-# [2]: http://www.jboss.org/hornetq
+# [2]: http://www.rabbitmq.com/
 #
 
 RABBITMQ_VERSION=2.7.0
 RABBITMQ_DOWNLOAD="http://www.rabbitmq.com/releases/rabbitmq-server/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.gz"
 BENCHMARK_HOME=~/benchmark
-. benchmark-setup.sh
+. `dirname "$0"`/benchmark-setup.sh
 
 which erl > /dev/null
 if [ $? -ne 0 ] ; then

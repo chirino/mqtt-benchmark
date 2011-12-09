@@ -7,12 +7,10 @@
 # [2]: http://www.jboss.org/hornetq
 #
 
-
-
 HORNETQ_VERSION=2.2.5.Final
 HORNETQ_DOWNLOAD="http://downloads.jboss.org/hornetq/hornetq-${HORNETQ_VERSION}.tar.gz"
 BENCHMARK_HOME=~/benchmark
-. benchmark-setup.sh
+. `dirname "$0"`/benchmark-setup.sh
 
 #
 # Install the distro

@@ -10,7 +10,7 @@
 APOLLO_VERSION=1.0-beta6
 APOLLO_DOWNLOAD='https://repository.apache.org/content/repositories/orgapacheactivemq-299/org/apache/activemq/apache-apollo/1.0-beta6/apache-apollo-1.0-beta6-unix-distro.tar.gz'
 BENCHMARK_HOME=~/benchmark
-. benchmark-setup.sh
+. `dirname "$0"`/benchmark-setup.sh
 
 #
 # Install the apollo distro
