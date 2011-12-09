@@ -7,17 +7,23 @@
 # [2]: http://activemq.apache.org
 #
 
-ACTIVEMQ_VERSION=5.5.1
-ACTIVEMQ_DOWNLOAD="http://www.apache.org/dist/activemq/apache-activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz"
-BENCHMARK_HOME=~/benchmark
+# Define variables if not yet set...
+true \
+${ACTIVEMQ_VERSION:=5.5.1} \
+${ACTIVEMQ_DOWNLOAD:="http://www.apache.org/dist/activemq/apache-activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz"} \
+${REPORTS_HOME:=$1} \
+${REPORTS_HOME:=`pwd`/report} \
+${WORKSPACE:=$2} \
+${WORKSPACE:=`pwd`/workspace}
+
 . `dirname "$0"`/benchmark-setup.sh
 
 #
 # Install the apollo distro
 #
-ACTIVEMQ_HOME="${BENCHMARK_HOME}/apache-activemq-${ACTIVEMQ_VERSION}"
+ACTIVEMQ_HOME="${WORKSPACE}/apache-activemq-${ACTIVEMQ_VERSION}"
 if [ ! -d "${ACTIVEMQ_HOME}" ]; then
-  cd "${BENCHMARK_HOME}"
+  cd "${WORKSPACE}"
   wget "$ACTIVEMQ_DOWNLOAD"
   tar -zxvf apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz
   rm -rf apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz
@@ -25,7 +31,8 @@ fi
 
 
 #
-# Sanity Cleanup
+# Cleanup preious executions.
+killall -9 java erl epmd apollo > /dev/null 2>&1
 rm -rf ${ACTIVEMQ_HOME}/data/*
 
 #
@@ -35,9 +42,8 @@ export ACTIVEMQ_OPTS="-Xmx4G -Xms1G -Dorg.apache.activemq.UseDedicatedTaskRunner
 #
 # Start the broker
 #
-CONSOLE_LOG="${ACTIVEMQ_HOME}/console.log"
-rm "${CONSOLE_LOG}" 2> /dev/null
-"${ACTIVEMQ_HOME}/bin/activemq" console "xbean:file:${ACTIVEMQ_HOME}/conf/activemq-stomp.xml" 2>&1 > "${CONSOLE_LOG}" &
+CONSOLE_LOG="${REPORTS_HOME}/activemq-${ACTIVEMQ_VERSION}.log"
+"${ACTIVEMQ_HOME}/bin/activemq" console "xbean:file:${ACTIVEMQ_HOME}/conf/activemq-stomp.xml" > "${CONSOLE_LOG}" 2>&1 &
 ACTIVEMQ_PID=$!
 echo "Started ActiveMQ with PID: ${ACTIVEMQ_PID}"
 sleep 5
@@ -46,8 +52,8 @@ cat ${CONSOLE_LOG}
 #
 # Run the benchmark
 #
-cd ${BENCHMARK_HOME}/stomp-benchmark
-"${BENCHMARK_HOME}/bin/sbt" run reports/activemq-${ACTIVEMQ_VERSION}.json
+cd "${WORKSPACE}/stomp-benchmark"
+"${WORKSPACE}/bin/sbt" run "${REPORTS_HOME}/activemq-${ACTIVEMQ_VERSION}.json"
 
 # Kill the broker
 kill -9 ${ACTIVEMQ_PID}

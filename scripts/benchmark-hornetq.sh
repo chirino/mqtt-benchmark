@@ -7,17 +7,22 @@
 # [2]: http://www.jboss.org/hornetq
 #
 
-HORNETQ_VERSION=2.2.5.Final
-HORNETQ_DOWNLOAD="http://downloads.jboss.org/hornetq/hornetq-${HORNETQ_VERSION}.tar.gz"
-BENCHMARK_HOME=~/benchmark
+true \
+${HORNETQ_VERSION:=2.2.5.Final} \
+${HORNETQ_DOWNLOAD:="http://downloads.jboss.org/hornetq/hornetq-${HORNETQ_VERSION}.tar.gz"} \
+${REPORTS_HOME:=$1} \
+${REPORTS_HOME:=`pwd`/report} \
+${WORKSPACE:=$2} \
+${WORKSPACE:=`pwd`/workspace}
+
 . `dirname "$0"`/benchmark-setup.sh
 
 #
 # Install the distro
 #
-HORNETQ_HOME="${BENCHMARK_HOME}/hornetq-${HORNETQ_VERSION}"
+HORNETQ_HOME="${WORKSPACE}/hornetq-${HORNETQ_VERSION}"
 if [ ! -d "${HORNETQ_HOME}" ]; then
-  cd ${BENCHMARK_HOME}
+  cd ${WORKSPACE}
   wget "$HORNETQ_DOWNLOAD"
   tar -zxvf hornetq-${HORNETQ_VERSION}.tar.gz
   rm -rf hornetq-${HORNETQ_VERSION}.tar.gz
@@ -65,17 +70,17 @@ if [ ! -d "${HORNETQ_HOME}" ]; then
 fi
 
 #
-# Sanity Cleanup
-rm -rf "${HORNETQ_HOME}/data/*"
-rm -rf "${HORNETQ_HOME}/logs/*"
+# Cleanup preious executions.
+killall -9 java erl epmd apollo > /dev/null 2>&1
+rm -rf "${HORNETQ_HOME}/data/*" "${HORNETQ_HOME}/logs/*"
 
 #
 # Start the server
 #
-CONSOLE_LOG="${HORNETQ_HOME}/console.log"
+CONSOLE_LOG="${REPORTS_HOME}/hornetq-${HORNETQ_VERSION}.log"
 rm "${CONSOLE_LOG}" 2> /dev/null
 cd "${HORNETQ_HOME}/bin"
-./run.sh 2>&1 > "${CONSOLE_LOG}" &
+./run.sh > "${CONSOLE_LOG}" 2>&1 &
 HORNETQ_PID=$!
 echo "Started HornetQ with PID: ${HORNETQ_PID}"
 sleep 5
@@ -84,8 +89,8 @@ cat "${CONSOLE_LOG}"
 #
 # Run the benchmark
 #
-cd ${BENCHMARK_HOME}/stomp-benchmark
-"${BENCHMARK_HOME}/bin/sbt" run --topic-prefix=jms.topic. --queue-prefix=jms.queue. reports/hornetq-${HORNETQ_VERSION}.json
+cd ${WORKSPACE}/stomp-benchmark
+"${WORKSPACE}/bin/sbt" run --topic-prefix=jms.topic. --queue-prefix=jms.queue. "${REPORTS_HOME}/hornetq-${HORNETQ_VERSION}.json"
 
 # Kill the server
 kill -9 ${HORNETQ_PID}
