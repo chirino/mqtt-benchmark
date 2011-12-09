@@ -28,6 +28,9 @@ fi
 # Sanity Cleanup
 rm -rf ${ACTIVEMQ_HOME}/data/*
 
+#
+# Configuration
+export ACTIVEMQ_OPTS="-Xmx4G -Xms1G -Dorg.apache.activemq.UseDedicatedTaskRunner=true -Djava.util.logging.config.file=logging.properties"
 
 #
 # Start the broker
