@@ -15,8 +15,18 @@ BENCHMARK_HOME=~/benchmark
 which erl > /dev/null
 if [ $? -ne 0 ] ; then
   cd "${BENCHMARK_HOME}"
-  echo "Installing erlang...."
   sudo yum install -y erlang
+  
+  which erl > /dev/null
+  if [ $? -ne 0 ] ; then
+    sudo yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel
+    wget http://www.erlang.org/download/otp_src_R14B04.tar.gz
+    tar -zxvf otp_src_R14B04.tar.gz
+    cd otp_src_R14B04
+    rm otp_src_R14B04.tar.gz
+    ./configure --with-ssl
+    sudo make install
+  fi
 fi 
 
 #

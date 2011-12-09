@@ -1,6 +1,9 @@
 #!/bin/bash
 mkdir -p ${BENCHMARK_HOME}
 
+# Make sure none of our benchmarked processes are running.
+killall -9 java erl epmd apollo 2> /dev/null
+
 #
 # Install SBT
 #
@@ -35,5 +38,4 @@ else
   git pull
 fi
 "${BENCHMARK_HOME}/bin/sbt" update
-
-kilall -9 java erl epmd apollo 2> /dev/null
+  
