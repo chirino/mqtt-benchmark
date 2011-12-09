@@ -7,12 +7,17 @@
 # [2]: http://www.jboss.org/hornetq
 #
 
-
-
 RABBITMQ_VERSION=2.7.0
 RABBITMQ_DOWNLOAD="http://www.rabbitmq.com/releases/rabbitmq-server/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.gz"
 BENCHMARK_HOME=~/benchmark
 . benchmark-setup.sh
+
+which erl > /dev/null
+if [ $? -ne 0 ] ; then
+  cd "${BENCHMARK_HOME}"
+  echo "Installing erlang...."
+  sudo yum install -y erlang
+fi 
 
 #
 # Install the distro
@@ -52,14 +57,14 @@ export RABBITMQ_SERVER_START_ARGS=
 "${RABBITMQ_HOME}/sbin/rabbitmq-server" 2>&1 > "${CONSOLE_LOG}" &
 RABBITMQ_PID=$!
 echo "Started RabbitMQ with PID: ${RABBITMQ_PID}"
-# sleep 5
-# cat "${CONSOLE_LOG}"
+sleep 5
+cat "${CONSOLE_LOG}"
 
-# #
-# # Run the benchmark
-# #
-# cd ${BENCHMARK_HOME}/stomp-benchmark
-# sbt run --login guest --passcode guest reports/rabbitmq-${RABBITMQ_VERSION}.json
-# 
-# # Kill the server
-# kill -9 ${RABBITMQ_PID}
+#
+# Run the benchmark
+#
+cd ${BENCHMARK_HOME}/stomp-benchmark
+sbt run --login guest --passcode guest reports/rabbitmq-${RABBITMQ_VERSION}.json
+
+# Kill the server
+kill -9 ${RABBITMQ_PID}
