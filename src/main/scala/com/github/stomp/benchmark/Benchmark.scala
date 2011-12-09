@@ -20,6 +20,7 @@ package com.github.stomp.benchmark
 import scala.collection.mutable.HashMap
 import scala.xml.{XML, NodeSeq}
 import scala.util.control.Exception.catching
+import scala.util.Random
 
 import java.io.{PrintStream, FileOutputStream, File}
 import collection.JavaConversions
@@ -164,8 +165,16 @@ class Benchmark extends Action {
   var persistent_header = FlexibleProperty(default = Some("persistent:true"), high_priority = () => Option(cl_persistent_header))
 
   @option(name = "--messages-per-connection", description = "The number of messages that are sent before the client reconnect.")
-  var cl_messages_per_connection: java.lang.Long = _
-  var messages_per_connection = FlexibleProperty(default = Some(-1L), high_priority = () => toLongOption(cl_messages_per_connection))
+  var cl_messages_per_connection: java.lang.Integer = _
+  var messages_per_connection = FlexibleProperty(
+    default = Some(new propertyFunction { override def apply() = -1 }), 
+    high_priority = () => {
+      if (cl_messages_per_connection != null)
+        Some(new propertyFunction { override def apply() = cl_messages_per_connection.intValue })
+      else
+        None
+    }
+  )
 
   @option(name = "--display-errors", description = "Should errors get dumped to the screen when they occur?")
   var cl_display_errors: java.lang.Boolean = _
@@ -365,8 +374,8 @@ class Benchmark extends Action {
     }
   }
 
-  trait sleepFunction {
-
+  trait propertyFunction {
+    
     protected val SLEEP = -500
 
     protected var init_time: Long = 0
@@ -377,8 +386,8 @@ class Benchmark extends Action {
 
     def apply() = 0
 
-    /* Sleeps for short periods of time (fast) or long ones (slow) in bursts */
-    def burstSleep(slow: Int, fast: Int, duration: Int, period: Int) = {
+    /* Alternates two values for short periods of time (fast) or long ones (slow) in bursts */
+    def burst(slow: Int, fast: Int, duration: Int, period: Int) = {
       new Function1[Long, Int] {
         var burstLeft: Long = 0
         var previousTime: Long = 0
@@ -397,6 +406,34 @@ class Benchmark extends Action {
             previousTime = time
           }
           if (burstLeft > 0) fast else slow
+        }
+      }
+    }
+    
+    /* Returns random numbers uniformly distributed between min (included) and max (not included) */
+    def random (min: Int, max: Int) = {
+      if (min == max) {
+        new Function1[Long, Int] {
+          def apply(time: Long): Int = {
+            return min
+          }
+        }
+      } else if (max > min) {
+        new Function1[Long, Int] {
+          def apply(time: Long): Int = {
+            return Random.nextInt(max-min) + min
+          }
+        }
+      } else {
+        throw new Exception("Error in random function, min bigger than max.")
+      }
+    }
+    
+    /* Returns random numbers normally (gaussian) distributed with a mean and a variance */
+    def normal (mean: Int, variance: Int) = {
+      new Function1[Long, Int] {
+        def apply(time: Long): Int = {
+          return (Random.nextGaussian*variance + mean).toInt
         }
       }
     }
@@ -621,7 +658,6 @@ class Benchmark extends Action {
     var destination_count = FlexibleProperty[Int]()
     var consumer_prefix = FlexibleProperty[String]()
     
-    var message_size = FlexibleProperty[Int]()
     var content_length = FlexibleProperty[Boolean]()
     
     var drain = FlexibleProperty[Boolean](default = Some(false))
@@ -637,8 +673,9 @@ class Benchmark extends Action {
     var headers = FlexibleProperty[Array[Array[String]]](default = Some(Array[Array[String]]()))
     var selector = FlexibleProperty[String]()
     
-    var producer_sleep = FlexibleProperty[sleepFunction](default = Some(new sleepFunction { override def apply() = 0 }))
-    var consumer_sleep = FlexibleProperty[sleepFunction](default = Some(new sleepFunction { override def apply() = 0 }))
+    var producer_sleep = FlexibleProperty[propertyFunction](default = Some(new propertyFunction { override def apply() = 0 }))
+    var consumer_sleep = FlexibleProperty[propertyFunction](default = Some(new propertyFunction { override def apply() = 0 }))
+    var message_size = FlexibleProperty[propertyFunction](default = Some(new propertyFunction { override def apply() = 1024 }))
 
     def getStringValue(property_name: String, ns_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[String] = {
       val value = ns_xml \ property_name
@@ -663,19 +700,23 @@ class Benchmark extends Action {
       }
     }
 
-    def getPropertySleep(property_name: String, clients_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[sleepFunction] = { 
+    def getPropertyFunction(property_name: String, clients_xml: NodeSeq, vars: Map[String, String] = Map.empty[String, String]): Option[propertyFunction] = { 
       val format_catcher = catching(classOf[NumberFormatException])
-      val property_sleep_nodeset = clients_xml \ property_name
-      val property_sleep_value: Option[Int] = format_catcher.opt(property_sleep_nodeset.text.toInt)
-      if (property_sleep_nodeset.length == 1 && property_sleep_value.isDefined) {
-        Some(new sleepFunction { override def apply() = property_sleep_value.get })
-      } else if ((property_sleep_nodeset \ "range").length > 0) {
-        Some(new sleepFunction {
+      val property_function_nodeset = clients_xml \ property_name
+      val property_function_value: Option[Int] = format_catcher.opt(substituteVariables(property_function_nodeset.text.trim, vars).toInt)
+      if (property_function_nodeset.length == 1 && property_function_value.isDefined) {
+        Some(new propertyFunction { override def apply() = property_function_value.get })
+      } else if ((property_function_nodeset \ "range").length > 0) {
+        Some(new propertyFunction {
           var ranges: List[Tuple2[Int, (Long) => Int]] = Nil 
-          for (range_node <- property_sleep_nodeset \ "range") {
-            val range_value =  format_catcher.opt(range_node.text.toInt)
-            val range_end =  getIntValue("@end", range_node, vars)
+          for (range_node <- property_function_nodeset \ "range") {
+            val range_value =  format_catcher.opt(substituteVariables(range_node.text.trim, vars).toInt)
+            val range_end =  getStringValue("@end", range_node, vars).
+              map((x:String) => x.toLowerCase().replace("end", Int.MaxValue.toString).toInt).
+              map((x: Int) => if (x >= 0) x else sample_count.get*sample_interval.get + x)
             val range_burst = range_node \ "burst"
+            val range_random = range_node \ "random"
+            val range_normal = range_node \ "normal"
             if (range_node.text == "sleep") {
               ranges :+= Tuple2(range_end.get, (time: Long) => SLEEP)
             } else if (range_value.isDefined) {
@@ -686,19 +727,36 @@ class Benchmark extends Action {
               fast = getIntValue("@fast", range_burst, vars).getOrElse(fast)
               duration = getIntValue("@duration", range_burst, vars).getOrElse(duration)
               period = getIntValue("@period", range_burst, vars).getOrElse(period)
-              ranges :+= Tuple2(range_end.get, burstSleep(slow, fast, duration, period))
+              ranges :+= Tuple2(range_end.get, burst(slow, fast, duration, period))
+            } else if (range_random.length == 1) {
+              var (min, max) = (0 , 1024)
+              min = getIntValue("@min", range_random, vars).getOrElse(min)
+              max = getIntValue("@max", range_random, vars).getOrElse(max)
+              ranges :+= Tuple2(range_end.get, random(min, max))
+            } else if (range_normal.length == 1) {
+              var (mean, variance) = (0 , 1)
+              mean = getIntValue("@mean", range_normal, vars).getOrElse(mean)
+              variance = getIntValue("@variance", range_normal, vars).getOrElse(variance)
+              ranges :+= Tuple2(range_end.get, normal(mean, variance))
             } else {
-              throw new Exception("Error in XML scenario, unsuported sleep function: "+range_node.text)
+              throw new Exception("Error in XML scenario, unsuported property function: "+range_node.text)
             }
           }
+          ranges = ranges.sortBy(_._1)
 
           override def apply() = {
             val n = now
             val r = ranges.find( r => n < r._1 )
             if (r.isDefined) {
-                r.get._2(n)
+              r.get._2(n)
             } else {
-                SLEEP
+              // Default values for diferent property names
+              property_name match {
+                case "producer_sleep" => SLEEP
+                case "consumer_sleep" => SLEEP
+                case "message_size" => 1024
+                case "messages_per_connection" => -1
+              }
             }
           }
         })
@@ -742,22 +800,22 @@ class Benchmark extends Action {
       consumer_prefix.push(getStringValue("consumer_prefix", node, vars))
       queue_prefix.push(getStringValue("queue_prefix", node, vars))
       topic_prefix.push(getStringValue("topic_prefix", node, vars))
-      message_size.push(getIntValue("message_size", node, vars))
       content_length.push(getBooleanValue("content_length", node, vars))
       drain_timeout.push(getIntValue("drain_timeout", node, vars).map(_.toLong))
       persistent.push(getBooleanValue("persistent", node, vars))
       durable.push(getBooleanValue("durable", node, vars))
       sync_send.push(getBooleanValue("sync_send", node, vars))
       ack.push(getStringValue("ack", node, vars))
-      messages_per_connection.push(getIntValue("messages_per_connection", node, vars).map(_.toLong))
       producers_per_sample.push(getIntValue("producers_per_sample", node, vars))
       consumers_per_sample.push(getIntValue("consumers_per_sample", node, vars))
       
       headers.push(getPropertyHeaders("headers", node, vars))
       selector.push(getStringValue("selector", node, vars))
 
-      producer_sleep.push(getPropertySleep("producer_sleep", node, vars))
-      consumer_sleep.push(getPropertySleep("consumer_sleep", node, vars))
+      producer_sleep.push(getPropertyFunction("producer_sleep", node, vars))
+      consumer_sleep.push(getPropertyFunction("consumer_sleep", node, vars))
+      message_size.push(getPropertyFunction("message_size", node, vars))
+      messages_per_connection.push(getPropertyFunction("messages_per_connection", node, vars))
     }
     
     def pop_properties() {
@@ -905,7 +963,7 @@ class Benchmark extends Action {
           push_properties(scenario_common_xml, vars)
           
           scenario_results.name = substituteVariables(getStringValue("@name", scenario_xml, vars).get, vars)
-          scenario_results.label = substituteVariables(getStringValue("@label", scenario_xml, vars).get, vars)
+          scenario_results.label = substituteVariables(getStringValue("@label", scenario_xml, vars).getOrElse(scenario_results.name), vars)
           
           val names = (scenario_xml \ "clients").map( client => substituteVariables((client \ "@name").text, vars) ).toList
           
@@ -936,13 +994,11 @@ class Benchmark extends Action {
               scenario.consumer_prefix = consumer_prefix.getOrElse(scenario.consumer_prefix)
               scenario.queue_prefix = queue_prefix.getOrElse(scenario.queue_prefix)
               scenario.topic_prefix = topic_prefix.getOrElse(scenario.topic_prefix)
-              scenario.message_size = message_size.getOrElse(scenario.message_size)
               scenario.drain_timeout = drain_timeout.getOrElse(scenario.drain_timeout)
               scenario.persistent = persistent.getOrElse(scenario.persistent)
               scenario.durable = durable.getOrElse(scenario.durable)
               scenario.sync_send = sync_send.getOrElse(scenario.sync_send)
               scenario.ack = ack.getOrElse(scenario.ack)
-              scenario.messages_per_connection = messages_per_connection.getOrElse(scenario.messages_per_connection)
               scenario.producers_per_sample = producers_per_sample.getOrElse(scenario.producers_per_sample)
               scenario.consumers_per_sample = consumers_per_sample.getOrElse(scenario.consumers_per_sample)
               
@@ -951,6 +1007,8 @@ class Benchmark extends Action {
                 
               scenario.producer_sleep = producer_sleep.get
               scenario.consumer_sleep = consumer_sleep.get
+              scenario.message_size = message_size.get
+              scenario.messages_per_connection = messages_per_connection.get
               
               // Copy the scenario settings to the results
               client_results.settings = scenario.settings

@@ -21,10 +21,12 @@ import org.fusesource.hawtdispatch._
 import java.util.concurrent.{CountDownLatch, TimeUnit}
 import org.fusesource.stompjms.client.callback._
 import java.lang.Throwable
+import org.fusesource.hawtbuf.AsciiBuffer
 import org.fusesource.hawtbuf.Buffer._
 import org.fusesource.stompjms.client.{StompFrame, Stomp}
 import org.fusesource.stompjms.client.Constants
 import org.fusesource.stompjms.client.Constants._
+import scala.collection.mutable.HashMap
 
 //object NonBlockingScenario {
 //  def main(args:Array[String]):Unit = {
@@ -263,13 +265,13 @@ class NonBlockingScenario extends Scenario {
   class ProducerClient(val id: Int) extends NonBlockingClient {
     val name: String = "producer " + id
     queue.setLabel(name)
+    val message_cache = HashMap.empty[Int, AsciiBuffer]
     val message_frame = new StompFrame(SEND)
     message_frame.addHeader(DESTINATION,ascii(destination(id)))
     if(persistent) message_frame.addHeader(persistent_header_key,persistent_header_value)
     headers_for(id).foreach{ x=>
       message_frame.addHeader(header_key(x), header_value(x))
     }
-    message_frame.content(message(name))
 
     override def reconnect_action = {
       connect {
@@ -282,18 +284,23 @@ class NonBlockingScenario extends Scenario {
         if(done.get) {
           close
         } else {
-          if( sync_send ) {
-            request(message_frame) { resp =>
-              producer_counter.incrementAndGet()
-              message_counter += 1
-              write_completed_action
+          if(producer_sleep >= 0) {
+            message_frame.content(get_message())
+            if( sync_send ) {
+              request(message_frame) { resp =>
+                producer_counter.incrementAndGet()
+                message_counter += 1
+                write_completed_action
+              }
+            } else {
+              send(message_frame) {
+                producer_counter.incrementAndGet()
+                message_counter += 1
+                write_completed_action
+              }
             }
           } else {
-            send(message_frame) {
-              producer_counter.incrementAndGet()
-              message_counter += 1
-              write_completed_action
-            }
+            write_completed_action
           }
         }
       }
@@ -302,7 +309,8 @@ class NonBlockingScenario extends Scenario {
 
     def write_completed_action:Unit = {
       def doit = {
-        if(messages_per_connection > 0 && message_counter >= messages_per_connection  ) {
+        val m_p_connection = messages_per_connection.toLong
+        if(m_p_connection > 0 && message_counter >= m_p_connection) {
           message_counter = 0
           close
         } else {
@@ -322,22 +330,32 @@ class NonBlockingScenario extends Scenario {
         }
       }
     }
-
-  }
-
-  def message(name:String) = {
-    val buffer = new StringBuffer(message_size)
-    buffer.append("Message from " + name+"\n")
-    for( i <- buffer.length to message_size ) {
-      buffer.append(('a'+(i%26)).toChar)
+  
+    def get_message() = {
+      val m_s = message_size
+      
+      if(! message_cache.contains(m_s)) {
+        message_cache(m_s) = message(name, m_s)
+      }
+      
+      message_cache(m_s)
     }
-    var rc = buffer.toString
-    if( rc.length > message_size ) {
-      rc.substring(0, message_size)
-    } else {
-      rc
+  
+    def message(name:String, size:Int) = {
+      val buffer = new StringBuffer(size)
+      buffer.append("Message from " + name + "\n")
+      for( i <- buffer.length to size ) {
+        buffer.append(('a'+(i%26)).toChar)
+      }
+      var rc = buffer.toString
+      if( rc.length > size ) {
+        rc.substring(0, size)
+      } else {
+        rc
+      }
+      ascii(rc)
     }
-    ascii(rc)
+  
   }
 
   class ConsumerClient(val id: Int) extends NonBlockingClient {
