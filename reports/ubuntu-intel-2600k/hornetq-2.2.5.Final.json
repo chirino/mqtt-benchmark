@@ -1,6 +1,6 @@
 {
   "benchmark_settings": {
-    "broker_name": "hornetq-2.2.5.Final",
+    "broker_name": "HornetQ 2.2.5.Final",
     "host": "127.0.0.1",
     "port": 61613,
     "sample_count": 15,

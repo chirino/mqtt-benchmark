@@ -338,11 +338,10 @@
         <div>
           Show data for STOMP server run on:
           <select id="platform">
-            <option value="cc28xlarge" selected="selected">EC2 Cluster Compute Eight Extra Large</option>
+            <option value="cc28xlarge" selected="selected">Amazon Linux, EC2 cc2.8xlarge</option>
             <option value="osx-8-core">OS X, Dual 4 Core CPUs</option>
-            <option value="ubuntu-intel-2600k">Ubuntu Single 4 Core 2600K CPU</option>
-            <option value="win7-intel-2600k">Windows 7 Single 4 Core 2600K CPU</option>
-            <option value="ubuntu-4-core">Ubuntu 4 Core CPUs</option>
+            <option value="ubuntu-intel-2600k">Ubuntu, 4 Core 2600K CPU</option>
+            <!-- <option value="win7-intel-2600k">Windows 7 Single 4 Core 2600K CPU</option> -->
           </select>
         </div>
         <script>
@@ -366,73 +365,44 @@
         </script>        
         <div style="padding: 1em 1em 0em 3em;">
           <div id="cc28xlarge" style="display:none">
-            The STOMP server and clients were run on a:
+            The STOMP server and benchmark clients were run on a:
             <ul>
-              <li>EC2 Cluster Compute Eight Extra Large (cc2.8xlarge)</li>
+              <li>EC2 Cluster Compute Eight Extra Large (<a href="http://aws.amazon.com/ec2/instance-types/">EC2 cc2.8xlarge</a>)</li>
               <li>60.5 GB of memory</li>
-              <li>Eight-core 2 x Intel Xeon</li>
+              <li>Eight-core x 2 Intel Xeon with HT</li>
+              <li>OS: Amazon Linux</li>
               <li>Java: OpenJDK 64-Bit 1.6.0_20</li>
             </ul>
           </div>
           <div id="ubuntu-intel-2600k" style="display:none">
-            The STOMP server was run on a:
+            The STOMP server and benchmark clients were run on a:
             <ul>
               <li>CPU: 3.4 GHz Intel 2600K</li>
               <li>Memory: 8 GB 2000 MHz DDR3</li>
-              <li>OS: Ubuntu 10.10</li>
               <li>Disk: SATA 7200 RPM</li>
-              <li>Java: OpenJDK 64-Bit 1.6.0_20</li>
+              <li>OS: Ubuntu 11.10</li>
+              <li>Java: OpenJDK 64-Bit 1.6.0_23</li>
             </ul>
-            The stomp clients were run on:
-            <ul>
-              <li>Mac Pro Model: MacPro3,1</li>
-              <li>CPU: 2 x 3 GHz Quad-Core Intel Xeon</li>
-              <li>Memory: 8 GB 800 MHz DDR2</li>
-              <li>OS: Mac OS X 10.6.6</li>
-              <li>Disk: SATA 7200 RPM</li>
-              <li>Java: 64-Bit 1.6.0_22</li>
-            </ul>
-            The two machines were connected via 1 GigE.
           </div>
           <div id="win7-intel-2600k" style="display:none">
-            The STOMP server was run on a:
+            The STOMP server and benchmark clients were run on a:
             <ul>
               <li>CPU: 3.4 GHz Intel 2600K</li>
               <li>Memory: 8 GB 2000 MHz DDR3</li>
-              <li>OS: Windows 7</li>
               <li>Disk: SATA 6 Gb/s SSD (355MB read/140MB write)</li>
+              <li>OS: Windows 7</li>
               <li>Java: 64-Bit 1.6.0_24-b07</li>
             </ul>
-            The stomp clients were run on:
-            <ul>
-              <li>Mac Pro Model: MacPro3,1</li>
-              <li>CPU: 2 x 3 GHz Quad-Core Intel Xeon</li>
-              <li>Memory: 8 GB 800 MHz DDR2</li>
-              <li>OS: Mac OS X 10.6.6</li>
-              <li>Disk: SATA 7200 RPM</li>
-              <li>Java: 64-Bit 1.6.0_22</li>
-            </ul>
-            The two machines were connected via 1 GigE.
           </div>          
           <div id="osx-8-core" style="display:none">
-            The benchmark load generator and broker was run on a machine with:
+            The STOMP server and benchmark clients were run on a:
             <ul>
               <li>Mac Pro Model: MacPro3,1</li>
               <li>CPU: 2 x 3 GHz Quad-Core Intel Xeon</li>
               <li>Memory: 8 GB 800 MHz DDR2</li>
-              <li>OS: Mac OS X 10.6.6</li>
               <li>Disk: SATA 7200 RPM</li>
-              <li>Java: 64-Bit 1.6.0_22</li>
-            </ul>
-          </div>
-          <div id="ubuntu-4-core" style="display:none">
-            The benchmark load generator and broker was run on a machine with:
-            <ul>
-              <li>CPU: Intel(R) Core(TM)2 Quad CPU @ 2.66GHz</li>
-              <li>Memory: 2 GB</li>
-              <li>OS: Ubuntu 10.04, Linux Kernel 2.6.32 x86_64</li>
-              <li>Disk: SATA 5400 RPM</li>
-              <li>Java: OpenJDK 64-Bit 1.6.0_20</li>
+              <li>OS: Mac OS X 10.7.2</li>
+              <li>Java: 64-Bit 1.6.0_29</li>
             </ul>
           </div>
         </div>

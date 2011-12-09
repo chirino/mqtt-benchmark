@@ -1,6 +1,6 @@
 {
   "benchmark_settings": {
-    "broker_name": "apache-apollo-1.0-beta6",
+    "broker_name": "Apache Apollo 1.0 beta6",
     "host": "127.0.0.1",
     "port": 61613,
     "sample_count": 15,
