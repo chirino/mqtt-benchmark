@@ -36,4 +36,4 @@ else
   sbt update
 fi
 
-kilall -9 java epmd apollo 2> /dev/null
+kilall -9 java erl epmd apollo 2> /dev/null
