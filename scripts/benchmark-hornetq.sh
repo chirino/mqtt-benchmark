@@ -84,7 +84,7 @@ cat "${CONSOLE_LOG}"
 # Run the benchmark
 #
 cd ${BENCHMARK_HOME}/stomp-benchmark
-sbt run --topic-prefix=jms.topic. --queue-prefix=jms.queue. reports/hornetq-${HORNETQ_VERSION}.json
+"${BENCHMARK_HOME}/bin/sbt" run --topic-prefix=jms.topic. --queue-prefix=jms.queue. reports/hornetq-${HORNETQ_VERSION}.json
 
 # Kill the server
 kill -9 ${HORNETQ_PID}

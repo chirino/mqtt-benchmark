@@ -50,7 +50,7 @@ cat ${APOLLO_BASE}/log/console.log
 # Run the benchmark
 #
 cd ${BENCHMARK_HOME}/stomp-benchmark
-sbt run --login admin --passcode password reports/apache-apollo-${APOLLO_VERSION}.json
+"${BENCHMARK_HOME}/bin/sbt" run --login admin --passcode password reports/apache-apollo-${APOLLO_VERSION}.json
 
 # Kill the apollo
 kill -9 ${APOLLO_PID}

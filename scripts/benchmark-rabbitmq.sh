@@ -64,7 +64,7 @@ cat "${CONSOLE_LOG}"
 # Run the benchmark
 #
 cd ${BENCHMARK_HOME}/stomp-benchmark
-sbt run --login guest --passcode guest reports/rabbitmq-${RABBITMQ_VERSION}.json
+"${BENCHMARK_HOME}/bin/sbt" run --login guest --passcode guest reports/rabbitmq-${RABBITMQ_VERSION}.json
 
 # Kill the server
 kill -9 ${RABBITMQ_PID}

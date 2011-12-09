@@ -17,7 +17,7 @@ BENCHMARK_HOME=~/benchmark
 #
 ACTIVEMQ_HOME="${BENCHMARK_HOME}/apache-activemq-${ACTIVEMQ_VERSION}"
 if [ ! -d "${ACTIVEMQ_HOME}" ]; then
-  cd ${BENCHMARK_HOME}
+  cd "${BENCHMARK_HOME}"
   wget "$ACTIVEMQ_DOWNLOAD"
   tar -zxvf apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz
   rm -rf apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz
@@ -44,7 +44,7 @@ cat ${CONSOLE_LOG}
 # Run the benchmark
 #
 cd ${BENCHMARK_HOME}/stomp-benchmark
-sbt run reports/activemq-${ACTIVEMQ_VERSION}.json
+"${BENCHMARK_HOME}/bin/sbt" run reports/activemq-${ACTIVEMQ_VERSION}.json
 
 # Kill the broker
 kill -9 ${ACTIVEMQ_PID}

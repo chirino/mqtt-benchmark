@@ -9,9 +9,10 @@ if [ ! -f "${BENCHMARK_HOME}/bin/sbt" ] ; then
   mkdir "${BENCHMARK_HOME}/bin" 2> /dev/null
   cd "${BENCHMARK_HOME}/bin"
   wget http://simple-build-tool.googlecode.com/files/sbt-launch-0.7.4.jar
-  echo '#!/bin/sh
-  java -server -Xmx4G -XX:MaxPermSize=500m -jar ${BENCHMARK_HOME}/bin/sbt-launch-0.7.4.jar "$*"
-  ' > ${BENCHMARK_HOME}/bin/sbt
+  cat > ${BENCHMARK_HOME}/bin/sbt <<EOF
+#!/bin/sh
+java -server -Xmx2G -XX:MaxPermSize=500m -jar ${BENCHMARK_HOME}/bin/sbt-launch-0.7.4.jar "\$*"
+EOF
   chmod a+x "${BENCHMARK_HOME}/bin/sbt"
 fi
 
@@ -29,11 +30,10 @@ if [ ! -d "${BENCHMARK_HOME}/stomp-benchmark" ] ; then
   cd "${BENCHMARK_HOME}"
   git clone git://github.com/chirino/stomp-benchmark.git
   cd stomp-benchmark
-  sbt update
 else 
   cd "${BENCHMARK_HOME}/stomp-benchmark"
   git pull
-  sbt update
 fi
+"${BENCHMARK_HOME}/bin/sbt" update
 
 kilall -9 java erl epmd apollo 2> /dev/null

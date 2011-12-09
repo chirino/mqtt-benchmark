@@ -2,8 +2,9 @@
 #
 #
 
-. `dirname "$0"`/benchmark-activemq.sh
-. `dirname "$0"`/benchmark-apollo.sh
-. `dirname "$0"`/benchmark-hornetq.sh
-. `dirname "$0"`/benchmark-rabbitmq.sh
+base=`dirname "$0"`
+"${base}/benchmark-activemq.sh"
+"${base}/benchmark-apollo.sh"
+"${base}/benchmark-hornetq.sh"
+"${base}/benchmark-rabbitmq.sh"
 
