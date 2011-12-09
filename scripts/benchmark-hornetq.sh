@@ -24,6 +24,7 @@ if [ ! -d "${HORNETQ_HOME}" ]; then
   
   # Adjust the start script so that it execs java.
   perl -pi -e 's|^java|exec java|' "${HORNETQ_HOME}/bin/run.sh"
+  perl -pi -e 's|-Xms512M -Xmx1024M|-Xmx4G -Xms1G|' "${HORNETQ_HOME}/bin/run.sh"
   
   #
   # Add the stomp connector to the configuration.

@@ -35,10 +35,12 @@ rm -rf ${APOLLO_BASE}/data/*
 rm -rf ${APOLLO_BASE}/tmp/*
 rm -rf ${APOLLO_BASE}/log/*
 
+#
+# Configuration
+export JVM_FLAGS="-server -Xmx4G -Xms1G"
 
 #
-# Start the broker
-#
+# Start the server
 rm "${APOLLO_BASE}/log/console.log" 2> /dev/null
 "${APOLLO_BASE}/bin/apollo-broker" run 2>&1 > "${APOLLO_BASE}/log/console.log" &
 APOLLO_PID=$!
@@ -48,9 +50,9 @@ cat ${APOLLO_BASE}/log/console.log
 
 #
 # Run the benchmark
-#
 cd ${BENCHMARK_HOME}/stomp-benchmark
 "${BENCHMARK_HOME}/bin/sbt" run --login admin --passcode password reports/apollo-${APOLLO_VERSION}.json
 
-# Kill the apollo
+#
+# Kill the server
 kill -9 ${APOLLO_PID}
