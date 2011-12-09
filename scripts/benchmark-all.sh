@@ -17,3 +17,4 @@ base=`dirname "$0"`
 "${base}/benchmark-hornetq.sh"
 "${base}/benchmark-rabbitmq.sh"
 
+"${base}/create-html.sh"

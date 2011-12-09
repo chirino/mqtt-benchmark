@@ -1,0 +1,775 @@
+<!--
+  Copyright (C) 2009-2010 the original author or authors.
+  See the notice.md file distributed with this work for additional
+  information regarding copyright ownership.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+  <!-- Author: Hiram Chirino <hiram@hiramchirino.com> -->
+  <head>
+    
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]--> 
+    <script language="javascript" type="text/javascript" src="./resources/jquery.js"></script> 
+    <script language="javascript" type="text/javascript" src="./resources/jquery.flot.js"></script> 
+    <script language="javascript" type="text/javascript" src="./resources/jquery.flot.crosshair.js"></script> 
+  	
+    <script type='text/javascript'>
+      
+      //
+      // Update the following array to add more
+      // stomp servers to the comparison 
+      //
+      var products = [
+         PRODUCT_LIST
+      ];
+
+      var broker_samples = [];
+      var scenarios = new Object();
+
+      var legend_update_timeout = null;
+      var legend_updates = {};
+
+      function trigger_legend_update(event, pos, item) {
+        var state = $(this).data('chart_state');
+        legend_updates[$(this).attr('id')] = state
+        if( pos ) {
+          state.latestPosition =  state.plot.p2c(pos);
+          state.latestPosition.pageX = pos.pageX;
+          state.latestPosition.pageY = pos.pageY;
+        } else {
+          state.latestPosition =  null;
+        }
+        if (!legend_update_timeout) {
+          legend_update_timeout = setTimeout(legend_update, 50);
+        }
+      }
+
+      function legend_update() {
+        var hide_legend = true;
+        var legend_div = $('#legend')
+        var legend_labels = legend_div.find(".legendLabel");
+        
+        for( chart in legend_updates ) {
+          var state = legend_updates[chart];
+          var pos = state.latestPosition ? state.plot.c2p(state.latestPosition) : null;
+          var plot = state.plot;
+          
+          if( !plot ) {
+            continue;
+          }
+          var axes = plot.getAxes();
+          if (pos==null || pos.x < axes.xaxis.min || pos.x > axes.xaxis.max || pos.y < axes.yaxis.min || pos.y > axes.yaxis.max) {
+            continue;
+          }
+          
+          var i, j, dataset = plot.getData();
+          for (i = 0; i < dataset.length; ++i) {
+            var series = dataset[i];
+
+            // find the nearest points, x-wise
+            for (j = 0; j < series.data.length; ++j)
+              if (series.data[j][0] > pos.x)
+                break;
+
+            // now interpolate
+            var y, p1 = series.data[j - 1], p2 = series.data[j];
+            if (p1 == null)
+                y = p2[1];
+            else if (p2 == null)
+                y = p1[1];
+            else
+                y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
+
+            if( !series.original ) {
+              series.original = series.label;
+            }
+            legend_labels.eq(i).text(series.original + " = "+y.toFixed(2)+" msg/sec");
+          }
+          
+          hide_legend = false;
+          legend_div.css({
+            position: 'absolute',
+            display: 'block',
+            top: state.latestPosition.pageY + 5,
+            left: state.latestPosition.pageX + 5,
+            padding: "10px",
+            'z-index':1,
+            opacity: .8,
+            background: '#F0FAFF', 
+            'border-radius': '8px', 
+            '-webkit-border-radius': '8px',
+            '-moz-border-radius': '8px'
+            });
+        }
+        if( hide_legend ) {
+          legend_div.css('display', 'none');
+        }
+        legend_update_timeout = null;
+        legend_updates = {}
+      }
+
+
+      function line_chart(scenario) {
+        $("#"+scenario).each(function(){
+          var options = {
+              legend: {
+                container: $('#legend'),
+                show: true
+              },
+              series: {
+                lines: { show: true }
+              },
+              crosshair: { mode: "x" },
+              lines: { show: true },
+              grid: { hoverable: true, autoHighlight: false }
+            };
+        
+          var data_lines = [];
+          for(i in broker_samples) {
+            if (broker_samples[i].benchmark_settings) {
+                var benchmark_settings = broker_samples[i].benchmark_settings;
+                try {
+                  var data = [];
+                  if( broker_samples[i][scenario] !=null ) {
+                    var first_ts = null;
+                    var samples = broker_samples[i][scenario];
+                    for( j in samples ) {
+                      var sample = samples[j]
+                      if( sample instanceof Array ) {
+                        if( first_ts == null ) {
+                          first_ts = sample[0];
+                        }
+                        data.push([(sample[0]-first_ts)/1000, sample[1]]);
+                      } else {
+                        data.push([(benchmark_settings.sample_interval*j)/1000, sample]);
+                      }
+                    }
+                  }
+                  var line = {label: benchmark_settings.broker_name, data:data };
+                  data_lines.push(line);
+                } catch(ignore){
+                  alert(ignore);
+                }
+            } else {
+                try {
+                  var data = [];
+                  if( broker_samples[i][scenario] !=null ) {
+                    var first_ts = null;
+                    var samples = broker_samples[i][scenario];
+                    for( j in samples ) {
+                      var sample = samples[j]
+                      if( first_ts == null ) {
+                        first_ts = sample[0];
+                      }
+                      data.push([(sample[0]-first_ts)/1000, sample[1]]);
+                    }
+                  }
+                  var line = {label: "Test Platform", data:data };
+                  data_lines.push(line);
+                } catch(ignore){
+                  alert(ignore);
+                }
+            }
+          }
+          var placeholder = $(this)
+          var state = {
+             plot: $.plot(placeholder, data_lines, options),
+             placeholder:placeholder,
+             latestPosition:null
+          }
+          placeholder.data('chart_state', state);
+          $(this).bind("plothover",  trigger_legend_update);
+          $(this).mouseout(trigger_legend_update);
+        });
+      }
+      
+      function load_charts() {
+        
+        // Clear out the previous charts...
+        for( scenario in scenarios ) {
+          var div = document.getElementById(scenario);
+          if( div!=null ) {
+           div.innerHTML = "";
+          }
+        }
+        
+        // Load the new charts.
+        broker_samples = [];
+        scenarios = new Object();
+        
+        for(i in products) {
+          var file = products[i]+".json";
+          $.ajax({ context:{i:i},  url: file, dataType: "json", async:true, success: function(data) {
+            var i = this.i;
+            if( typeof data == 'string' ) {
+              broker_samples[i] = $.parseJSON( data );
+            } else {
+              broker_samples[i] = data;
+            }
+            
+            if (broker_samples[i].benchmark_settings) {
+                for( scenario in broker_samples[i] ) {
+                  if( scenario != "benchmark_settings") {
+                    scenarios[scenario] = true;
+                  }
+                }
+            } else {
+                // Parse the new JSON format
+                for( group_idx in broker_samples[i].groups ) {
+                    for( scenario_idx in broker_samples[i].groups[group_idx].scenarios ) {
+                        scenario = broker_samples[i].groups[group_idx].scenarios[scenario_idx];
+                        function get_scenario_data(s) {
+                            if (s.clients) {
+                                for( client_idx in s.clients ){
+                                    client = s.clients[client_idx];
+                                    if (client.data.producers.length > 0) {
+                                        scenario_name = 'p_'+client.name; 
+                                        scenarios[scenario_name] = true;
+                                        broker_samples[i][scenario_name] = client.data.producers;
+                                    }
+                                    if (client.data.consumers.length > 0) {
+                                        scenario_name = 'c_'+client.name; 
+                                        scenarios[scenario_name] = true;
+                                        broker_samples[i][scenario_name] = client.data.consumers;
+                                    }
+                                    if (client.data.error.length > 0) {
+                                        scenario_name = 'e_'+client.name;
+                                        scenarios[scenario_name] = true;
+                                        broker_samples[i][scenario_name] = client.data.error;
+                                    }
+                                }
+                            } else {
+                                for( s_idx in s ) {
+                                    get_scenario_data(s[s_idx]); 
+                                }
+                            }
+                        };
+                        get_scenario_data(scenario);
+                    }
+                }
+            }
+            if(broker_samples.length == products.length) {
+              for( scenario in scenarios ) {
+                try {
+                  line_chart(scenario);
+                } catch(e) {
+                  alert("Could not display chart for "+scenario+" due to "+e);
+                }
+              }
+            }
+          }});
+        }
+        
+      }
+      
+      $(function () { load_charts(); });
+    </script>
+    
+    <style type='text/css'>
+      body { font-family:Verdana; font-size:12px; color:#666666; }
+      td { font-size:12px; }
+      #header {
+        margin: 0; padding: 2em; text-align:center; background: #baccd8;
+        border-radius: 8px; -webkit-border-radius: 8px;  -moz-border-radius: 8px;
+      }
+      #header h1 {
+        margin: 0; padding: 0; font-size: 180%; line-height: 1em; color: #333;
+      }
+      #wrap {
+        margin: 0 auto; padding: 2em;
+      }
+      #content { padding: 2em;  }      
+      .block { background: #baccd8; height:2em;
+        border-radius: 8px; -webkit-border-radius: 8px;  -moz-border-radius: 8px;
+        }
+      .r90 { 
+        width:2em; height:auto; white-space:nowrap;
+        
+        -webkit-transform: rotate(-90deg); -moz-transform:rotate(-90deg);
+        filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+      }
+      
+      .chart-title {
+        float: left;
+        position: relative;
+        z-index: 1;
+        margin: .7em;
+      }
+      .small-chart {
+        margin: 3em 5px 5px 5px;
+        width:200px;height:150px;
+      }
+      
+      table.padded { width: 10px; }
+      .padded td { padding: 20px; }
+      .charts { padding-left: 30px; }
+      .chart-section { clear:both; margin-top: 1em; padding-left:2em; }
+      .overview { padding: 0 2em; }
+      .clear { clear:both; }
+      h2 { margin-top:30px;}
+    </style>
+  </head>
+  <body>
+    
+    <div id='wrap'>
+      <div id='header'>
+        <h1>Stomp Server Performance Comparisons</h1>
+      </div>
+      <div id='content'>
+        <h2>Table of Contents</h2>
+        <ol>
+          <li><a href="#throughput_to_topic">Throughput to an Unsubscribed Topic</a></li>
+          <li><a href="#queue_load_unload">Queue Load/Unload</a></li>
+          <li><a href="#partitioned_load">Partitioned Load Scenarios</a></li>
+          <li><a href="#fan_in_out_load">Fan In/Out Load Scenarios</a></li>
+        </ol>
+        
+        <h2 id="throughput_to_topic">Overview</h2>
+        <p>
+          This report was generated using the <a href="http://github.com/chirino/stomp-benchmark">stomp-benchmark tool</a>.  It 
+          provides a comparative benchmark of messaging servers that implement the <a href="http://stomp.github.com/stomp-specification-1-0.html">Stomp 1.0</a> 
+          specification.  It covers a wide variety of common usage scenarios. Each scenario is warmed up for 3 seconds before the performance samples are taken.
+        </p>
+        
+        <div style="padding: 1em 1em 0em 3em;">
+          <div id="server-info">
+          </div>
+        </div>
+        <script>
+        $(function() {
+          $.ajax({ url: "server-info.html", dataType: "html", async:true, success: function(data) {
+            $('#server-info').html(data);
+          }});
+        });
+        </script>          
+        <div style="display:none" id="legend"></div>
+        <h2 id="throughput_to_topic">Throughput to an Unsubscribed Topic</h2>
+        <p>
+          A single producer sending non-persistent messages to a topic that does not have an consumers attached.
+        </p>
+        <div style="padding:1em;">
+          <span class="block" style="padding:1em;"><strong>NOTE:</strong> hover over the graphs to see the legends.</span>
+        </div>
+        <table class="charts padded">
+          <tr>
+            <td>
+              <h3>With a 20 b Playload</h3>
+              <div id='p_20b_1a_1topic_0' style="width:300px;height:150px;"></div>
+            </td><td>
+              <h3>With a 1 k Playload</h3>
+              <div id='p_1k_1a_1topic_0' style="width:300px;height:150px;"></div>
+            </td><td>
+              <h3>With a 256 k Playload</h3>
+              <div id='p_256k_1a_1topic_0' style="width:300px;height:150px;"></div>
+            </td>
+          </tr>
+        </table>
+
+        <h2 id="queue_load_unload">Queue Load/Unload</h2>
+        <table class="charts padded">
+          <tr>
+            <td>
+              <h3>Non Persistent Load</h3>
+              <p>
+                A producer sending non-persistent messages with 20 byte payloads to a queue without any attached consumers.
+              </p>
+              <div id='p_20b_1a_1queue_0' style="width:300px;height:150px;"></div>
+            </td><td>
+              <h3>Persistent Load</h3>
+              <p>
+                A producer sending persistent messages with 20 byte payloads to a queue without any attached consumers.  Each
+                send requests a receipt to achieve guaranteed delivery.
+              </p>
+              <div id='p_20b_1p_1queue_0' style="width:300px;height:150px;"></div>
+            </td><td>
+              <h3>Unload</h3>
+              <p>
+                A consumer receiving the messages previously sent to the queue but without any attached producers.
+              </p>
+              <div id='c_20b_0_1queue_1' style="width:300px;height:150px;"></div>
+            </td>
+          </tr>
+        </table>
+        
+        <h2 id="fan_in_out_load">Fan In/Out Load Scenarios</h2>
+        <p>
+          These scenarios multiple consumers and producers communicate via one shared destination.  All messages sent have 
+          a 20 byte payload.
+        </p><p>
+          The graphs below display the results of all the following scenario combinations:
+          <ul>
+            <li><strong>Queue</strong>: The point to point messaging domain</li>
+            <li><strong>Topic</strong>: The publish subscribe messaging domain</li>
+            <li><strong>Persistent</strong>: Messages are sent persistent and with a receipt request to achieve guaranteed delivery.</li>
+            <li><strong>Non Persistent</strong>: Messages are sent non-persistent and without a receipt request</li>
+          </ul>
+        </p>
+        
+        <table class="charts">
+          <tr><th>&nbsp;</th><th class="block">Non Persistent</th><th class="block">Persistent</th></tr>
+          <tr><th class="block"><div class="r90">Queue</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1a_1queue_1' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1a_1queue_1' class="small-chart"></div> 
+              </td><td>
+                <div id='p_20b_5a_1queue_1' class="small-chart"></div>
+                <div id='c_20b_5a_1queue_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1queue_1' class="small-chart"></div>
+                <div id='c_20b_10a_1queue_1' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1a_1queue_5' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1a_1queue_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1queue_5' class="small-chart"></div>
+                <div id='c_20b_5a_1queue_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1queue_5' class="small-chart"></div>
+                <div id='c_20b_10a_1queue_5' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1a_1queue_10' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1a_1queue_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1queue_10' class="small-chart"></div>
+                <div id='c_20b_5a_1queue_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1queue_10' class="small-chart"></div>
+                <div id='c_20b_10a_1queue_10' class="small-chart"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1p_1queue_1' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1p_1queue_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1queue_1' class="small-chart"></div>
+                <div id='c_20b_5p_1queue_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1queue_1' class="small-chart"></div>
+                <div id='c_20b_10p_1queue_1' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1p_1queue_5' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1p_1queue_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1queue_5' class="small-chart"></div>
+                <div id='c_20b_5p_1queue_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1queue_5' class="small-chart"></div>
+                <div id='c_20b_10p_1queue_5' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1p_1queue_10' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1p_1queue_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1queue_10' class="small-chart"></div>
+                <div id='c_20b_5p_1queue_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1queue_10' class="small-chart"></div>
+                <div id='c_20b_10p_1queue_10' class="small-chart"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+          <tr><th class="block"><div class="r90">Topic</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1a_1topic_1' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1a_1topic_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1topic_1' class="small-chart"></div>
+                <div id='c_20b_5a_1topic_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1topic_1' class="small-chart"></div>
+                <div id='c_20b_10a_1topic_1' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1a_1topic_5' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1a_1topic_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1topic_5' class="small-chart"></div>
+                <div id='c_20b_5a_1topic_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1topic_5' class="small-chart"></div>
+                <div id='c_20b_10a_1topic_5' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1a_1topic_10' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1a_1topic_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5a_1topic_10' class="small-chart"></div>
+                <div id='c_20b_5a_1topic_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10a_1topic_10' class="small-chart"></div>
+                <div id='c_20b_10a_1topic_10' class="small-chart"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1p_1topic_1' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1p_1topic_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1topic_1' class="small-chart"></div>
+                <div id='c_20b_5p_1topic_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1topic_1' class="small-chart"></div>
+                <div id='c_20b_10p_1topic_1' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1p_1topic_5' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1p_1topic_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1topic_5' class="small-chart"></div>
+                <div id='c_20b_5p_1topic_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1topic_5' class="small-chart"></div>
+                <div id='c_20b_10p_1topic_5' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_1p_1topic_10' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_1p_1topic_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_5p_1topic_10' class="small-chart"></div>
+                <div id='c_20b_5p_1topic_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_20b_10p_1topic_10' class="small-chart"></div>
+                <div id='c_20b_10p_1topic_10' class="small-chart"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+        
+        <h2 id="partitioned_load">Partitioned Load Scenarios</h2>
+        <p>
+          These scenarios sample performance as partitioned load is applied.  
+          Each destination only has 1 and only 1 producer and consumer attached.
+        </p><p>
+          The graphs below display the results of all the following scenario combinations:
+          <ul>
+            <li><strong>Queue</strong>: The point to point messaging domain</li>
+            <li><strong>Topic</strong>: The publish subscribe messaging domain</li>
+            <li><strong>Persistent</strong>: Messages are sent persistent and with a receipt request to achieve guaranteed delivery.</li>
+            <li><strong>Non Persistent</strong>: Messages are sent non-persistent and without a receipt request</li>
+            <li><strong>20 b Message</strong>: Messages payloads are 20 bytes in size</li>
+            <li><strong>1 k Message</strong>: Messages payloads are 1 kilobytes in size</li>
+            <li><strong>256 k Message</strong>: Messages payloads are 256 kilobytes in size</li>
+            <li><strong>1x1x1</strong>: 1 producer, 1 destination, 1 consumer</li>
+            <li><strong>5x5x5</strong>: 5 producers, 5 destinations, 5 consumers</li>
+            <li><strong>10x10x10</strong>: 10 producers, 10 destinations, 10 consumers</li>
+          </ul>
+        </p>
+        
+        <table class="charts">
+          <tr><th>&nbsp;</th><th class="block">Non Persistent</th><th class="block">Persistent</th></tr>
+          <tr><th class="block"><div class="r90">Queue</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
+              <tr><th class="block"><div class="r90" style="text-align:left">1x1x1</div></th><td>
+                <!-- <div class="small-chart" id='p_20b_1a_1queue_1'></div>
+                <div class="small-chart" id='c_20b_1a_1queue_1'></div> -->
+              </td><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div class="small-chart" id='p_1k_1a_1queue_1'></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div class="small-chart" id='c_1k_1a_1queue_1'></div>
+              </td><td>
+                <div class="small-chart" id='p_256k_1a_1queue_1'></div>
+                <div class="small-chart" id='c_256k_1a_1queue_1'></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5x5x5</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_5a_5queue_5' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_5a_5queue_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_1k_5a_5queue_5' class="small-chart"></div>
+                <div id='c_1k_5a_5queue_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_5a_5queue_5' class="small-chart"></div>
+                <div id='c_256k_5a_5queue_5' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10x10x10</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_10a_10queue_10' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_10a_10queue_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_1k_10a_10queue_10' class="small-chart"></div>
+                <div id='c_1k_10a_10queue_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_10a_10queue_10' class="small-chart"></div>
+                <div id='c_256k_10a_10queue_10' class="small-chart"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
+              <tr><th class="block"><div class="r90">1x1x1</div></th><td>
+                <!-- <div id='p_20b_1p_1queue_1' class="small-chart"></div>
+                <div id='c_20b_1p_1queue_1' class="small-chart"></div> -->
+              </td><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_1k_1p_1queue_1' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_1k_1p_1queue_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_1p_1queue_1' class="small-chart"></div>
+                <div id='c_256k_1p_1queue_1' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5x5x5</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_5p_5queue_5' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_5p_5queue_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_1k_5p_5queue_5' class="small-chart"></div>
+                <div id='c_1k_5p_5queue_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_5p_5queue_5' class="small-chart"></div>
+                <div id='c_256k_5p_5queue_5' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10x10x10</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_10p_10queue_10' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_10p_10queue_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_1k_10p_10queue_10' class="small-chart"></div>
+                <div id='c_1k_10p_10queue_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_10p_10queue_10' class="small-chart"></div>
+                <div id='c_256k_10p_10queue_10' class="small-chart"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+          <tr><th class="block"><div class="r90">Topic</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
+              <tr><th class="block"><div class="r90">1x1x1</div></th><td>
+                <!-- <div id='p_20b_1a_1topic_1' class="small-chart"></div>
+                <div id='c_20b_1a_1topic_1' class="small-chart"></div> -->
+              </td><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_1k_1a_1topic_1' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_1k_1a_1topic_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_1a_1topic_1' class="small-chart"></div>
+                <div id='c_256k_1a_1topic_1' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5x5x5</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_5a_5topic_5' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_5a_5topic_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_1k_5a_5topic_5' class="small-chart"></div>
+                <div id='c_1k_5a_5topic_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_5a_5topic_5' class="small-chart"></div>
+                <div id='c_256k_5a_5topic_5' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10x10x10</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_10a_10topic_10' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_10a_10topic_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_1k_10a_10topic_10' class="small-chart"></div>
+                <div id='c_1k_10a_10topic_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_10a_10topic_10' class="small-chart"></div>
+                <div id='c_256k_10a_10topic_10' class="small-chart"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
+              <tr><th class="block"><div class="r90">1x1x1</div></th><td>
+                <!-- <div id='p_20b_1p_1topic_1' class="small-chart"></div>
+                <div id='c_20b_1p_1topic_1' class="small-chart"></div> -->
+              </td><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_1k_1p_1topic_1' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_1k_1p_1topic_1' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_1p_1topic_1' class="small-chart"></div>
+                <div id='c_256k_1p_1topic_1' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5x5x5</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_5p_5topic_5' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_5p_5topic_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_1k_5p_5topic_5' class="small-chart"></div>
+                <div id='c_1k_5p_5topic_5' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_5p_5topic_5' class="small-chart"></div>
+                <div id='c_256k_5p_5topic_5' class="small-chart"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10x10x10</div></th><td>
+                <h4 class="chart-title">Producer Rates (msg/s):</h4>
+                <div id='p_20b_10p_10topic_10' class="small-chart"></div>
+                <h4 class="chart-title">Consumer Rates (msg/s):</h4>
+                <div id='c_20b_10p_10topic_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_1k_10p_10topic_10' class="small-chart"></div>
+                <div id='c_1k_10p_10topic_10' class="small-chart"></div>
+              </td><td>
+                <div id='p_256k_10p_10topic_10' class="small-chart"></div>
+                <div id='c_256k_10p_10topic_10' class="small-chart"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+                
+      </div>
+    </div>
+  </body>
+</html>
+
