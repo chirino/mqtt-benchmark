@@ -71,6 +71,8 @@ class NonBlockingScenario extends Scenario {
       def connect() = {
         val cb = Stomp.callback(host, port)
         cb.dispatchQueue(queue)
+        cb.version("1.0")
+        cb.host(null) // RabbitMQ barfs if the host is set.
         login.foreach(cb.login(_))
         passcode.foreach(cb.passcode(_))
         cb.connect(new Callback[Connection](){

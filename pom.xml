@@ -38,7 +38,7 @@
     <maven-assembly-plugin-version>2.2.1</maven-assembly-plugin-version>
 
     <hawtdispatch-version>1.5</hawtdispatch-version>
-    <stompjms-version>1.4</stompjms-version>
+    <stompjms-version>1.5-SNAPSHOT</stompjms-version>
   </properties>
 
   <dependencies>
@@ -149,5 +149,19 @@
       
     </plugins>
   </build>
-      
+  <repositories>
+    <repository>
+      <id>fusesource-public</id>
+      <url>http://repo.fusesource.com/nexus/content/groups/public</url>
+      <releases><enabled>true</enabled></releases>
+      <snapshots><enabled>fals</enabled></snapshots>
+    </repository>  
+    <repository>
+      <id>fusesource-snapshots</id>
+      <url>http://repo.fusesource.com/nexus/content/groups/public-snapshots</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>  
+  </repositories>
+        
 </project>
