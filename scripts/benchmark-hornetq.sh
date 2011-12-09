@@ -47,7 +47,7 @@ if [ ! -d "${HORNETQ_HOME}" ]; then
     <queue name="loadq-7"><entry name="/queue/loadq-7"/></queue>
     <queue name="loadq-8"><entry name="/queue/loadq-8"/></queue>
     <queue name="loadq-9"><entry name="/queue/loadq-9"/></queue>
-    <queue name="loadq-9"><entry name="/queue/load_me_up-0"/></queue>
+    <queue name="load_me_up-0"><entry name="/queue/load_me_up-0"/></queue>
 
     <topic name="loadt-0"><entry name="/topic/loadt-0"/></topic>
     <topic name="loadt-1"><entry name="/topic/loadt-1"/></topic>
