@@ -78,3 +78,4 @@ cd ${BENCHMARK_HOME}/stomp-benchmark
 
 # Kill the server
 kill -9 ${RABBITMQ_PID}
+killall -9 epmd
