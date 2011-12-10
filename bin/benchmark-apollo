@@ -42,8 +42,8 @@ export JVM_FLAGS="-server -Xmx4G -Xms1G"
 
 #
 # Start the server
-CONSOLE_LOG="${REPORTS_HOME}/apollo-${APOLLO_VERSION}.json"
-"${APOLLO_BASE}/bin/apollo-broker" run > "$CONSOLE_LOG}" 2>&1 &
+CONSOLE_LOG="${REPORTS_HOME}/apollo-${APOLLO_VERSION}.log"
+"${APOLLO_BASE}/bin/apollo-broker" run > "${CONSOLE_LOG}" 2>&1 &
 APOLLO_PID=$!
 echo "Started Apollo with PID: ${APOLLO_PID}"
 sleep 5
