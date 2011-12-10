@@ -22,8 +22,21 @@ if [ ! -f "${REPORTS_HOME}/server-info.html" ] ; then
   
   cat > "${REPORTS_HOME}/server-info.html" <<EOF
   <h2>Machine Details</h2>
-  <pre>$(uname -v)</pre>
+  <pre>$(uname -a)</pre>
 EOF
+
+which free -m > /dev/null
+if [ $? -eq 0 ] ; then
+    cat >> "${REPORTS_HOME}/server-info.html" <<EOF
+  <pre>$(free -m)</pre>
+EOF
+fi
+if [ ! -f "/proc/cpuinfo" ] ; then
+    cat >> "${REPORTS_HOME}/server-info.html" <<EOF
+  <pre>$(cat /proc/cpuinfo)</pre>
+EOF
+fi
+
   if [ ! -z "${LOG_FILES}" ] ; then
     cat >> "${REPORTS_HOME}/server-info.html" <<EOF
   <h2>Console logs of the benchmarked servers</h2>
