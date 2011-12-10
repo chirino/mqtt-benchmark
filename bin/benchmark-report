@@ -25,7 +25,13 @@ if [ ! -f "${REPORTS_HOME}/server-info.html" ] ; then
   <pre>$(uname -a)</pre>
 EOF
 
-which free -m > /dev/null
+which lsb_release > /dev/null
+if [ $? -eq 0 ] ; then
+    cat >> "${REPORTS_HOME}/server-info.html" <<EOF
+  <pre>$(lsb_release -sd)</pre>
+EOF
+
+which free > /dev/null
 if [ $? -eq 0 ] ; then
     cat >> "${REPORTS_HOME}/server-info.html" <<EOF
   <pre>$(free -m)</pre>
