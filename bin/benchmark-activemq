@@ -7,16 +7,11 @@
 # [2]: http://activemq.apache.org
 #
 
-# Define variables if not yet set...
 true \
 ${ACTIVEMQ_VERSION:=5.5.1} \
-${ACTIVEMQ_DOWNLOAD:="http://www.apache.org/dist/activemq/apache-activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz"} \
-${REPORTS_HOME:=$1} \
-${REPORTS_HOME:=`pwd`/report} \
-${WORKSPACE:=$2} \
-${WORKSPACE:=`pwd`/workspace}
-
-. `dirname "$0"`/benchmark-setup.sh
+${ACTIVEMQ_DOWNLOAD:="http://www.apache.org/dist/activemq/apache-activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz"}
+BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
+. ${BASEDIR}/bin/benchmark-setup
 
 #
 # Install the apollo distro
@@ -52,7 +47,7 @@ cat ${CONSOLE_LOG}
 #
 # Run the benchmark
 #
-cd "${WORKSPACE}/stomp-benchmark"
+cd "${BASEDIR}"
 "${WORKSPACE}/bin/sbt" run "${REPORTS_HOME}/activemq-${ACTIVEMQ_VERSION}.json"
 
 # Kill the broker

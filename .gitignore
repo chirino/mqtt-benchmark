@@ -6,6 +6,7 @@
 *.ipr
 *.iws
 target
+workspace
 .DS_Store
 .scala_dependencies
 .project

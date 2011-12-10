@@ -1,0 +1,11 @@
+#!/bin/bash
+# Runs all the benchmarks.
+#
+
+BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
+
+"${BASEDIR}/bin/benchmark-activemq" $*
+"${BASEDIR}/bin/benchmark-apollo" $*
+"${BASEDIR}/bin/benchmark-hornetq" $*
+"${BASEDIR}/bin/benchmark-rabbitmq" $*
+"${BASEDIR}/bin/benchmark-report" $*

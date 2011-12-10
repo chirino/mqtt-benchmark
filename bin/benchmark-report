@@ -1,0 +1,41 @@
+#!/bin/bash
+#
+# This shell script creates the html index file which displays
+# results of the benchmarks.
+#
+
+BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
+. ${BASEDIR}/bin/benchmark-setup
+
+# Get a list of the log and json files.
+cd "${REPORTS_HOME}"
+LOG_FILES=`ls *.log 2> /dev/null` 
+JSON_FILES=`ls *.json | sed 's|.json|",|' | sed 's|^|"|'`
+JSON_FILES=`echo $JSON_FILES | sed 's|,$||'` #trim the trailing comma
+cd - > /dev/null
+
+mkdir -p "${REPORTS_HOME}/resources"
+cat "${BASEDIR}/src/main/html/template.html" | sed "s|PRODUCT_LIST|$JSON_FILES|" > "${REPORTS_HOME}/index.html"
+cp "${BASEDIR}/src/main/html/resources/"* "${REPORTS_HOME}/resources"
+
+if [ ! -f "${REPORTS_HOME}/server-info.html" ] ; then
+  
+  cat > "${REPORTS_HOME}/server-info.html" <<EOF
+  <h2>Machine Details</h2>
+  <pre>$(uname -v)</pre>
+EOF
+  if [ ! -z "${LOG_FILES}" ] ; then
+    cat >> "${REPORTS_HOME}/server-info.html" <<EOF
+  <h2>Console logs of the benchmarked servers</h2>
+  <ul>
+EOF
+    
+    for f in ${LOG_FILES} ; do
+      cat >> "${REPORTS_HOME}/server-info.html" <<EOF
+  <li><a href="$f">$f</li>
+EOF
+    done
+  fi
+
+  echo "</ul>" >> "${REPORTS_HOME}/server-info.html" 
+fi

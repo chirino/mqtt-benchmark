@@ -9,13 +9,10 @@
 
 true \
 ${HORNETQ_VERSION:=2.2.5.Final} \
-${HORNETQ_DOWNLOAD:="http://downloads.jboss.org/hornetq/hornetq-${HORNETQ_VERSION}.tar.gz"} \
-${REPORTS_HOME:=$1} \
-${REPORTS_HOME:=`pwd`/report} \
-${WORKSPACE:=$2} \
-${WORKSPACE:=`pwd`/workspace}
+${HORNETQ_DOWNLOAD:="http://downloads.jboss.org/hornetq/hornetq-${HORNETQ_VERSION}.tar.gz"}
 
-. `dirname "$0"`/benchmark-setup.sh
+BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
+. ${BASEDIR}/bin/benchmark-setup
 
 #
 # Install the distro
@@ -89,7 +86,7 @@ cat "${CONSOLE_LOG}"
 #
 # Run the benchmark
 #
-cd ${WORKSPACE}/stomp-benchmark
+cd ${BASEDIR}
 "${WORKSPACE}/bin/sbt" run --topic-prefix=jms.topic. --queue-prefix=jms.queue. "${REPORTS_HOME}/hornetq-${HORNETQ_VERSION}.json"
 
 # Kill the server

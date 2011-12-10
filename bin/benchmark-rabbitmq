@@ -8,13 +8,10 @@
 #
 true \
 ${RABBITMQ_VERSION:=2.7.0} \
-${RABBITMQ_DOWNLOAD:="http://www.rabbitmq.com/releases/rabbitmq-server/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.gz"} \
-${REPORTS_HOME:=$1} \
-${REPORTS_HOME:=`pwd`/report} \
-${WORKSPACE:=$2} \
-${WORKSPACE:=`pwd`/workspace}
+${RABBITMQ_DOWNLOAD:="http://www.rabbitmq.com/releases/rabbitmq-server/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.gz"}
 
-. `dirname "$0"`/benchmark-setup.sh
+BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
+. ${BASEDIR}/bin/benchmark-setup
 
 which erl > /dev/null
 if [ $? -ne 0 ] ; then
@@ -76,7 +73,7 @@ cat "${CONSOLE_LOG}"
 #
 # Run the benchmark
 #
-cd ${WORKSPACE}/stomp-benchmark
+cd ${BASEDIR}
 "${WORKSPACE}/bin/sbt" run --login guest --passcode guest "${REPORTS_HOME}/rabbitmq-${RABBITMQ_VERSION}.json"
 
 # Kill the server

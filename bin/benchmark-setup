@@ -1,6 +1,17 @@
 #!/bin/bash
+
+true \
+${REPORTS_HOME:=$1} \
+${REPORTS_HOME:=`pwd`/reports/`hostname`}
+WORKSPACE="${BASEDIR}/workspace"
+
+echo "=========================================================================="
+echo "Results stored under: ${REPORTS_HOME}"
+echo "=========================================================================="
+
 mkdir -p ${WORKSPACE}
 mkdir -p ${REPORTS_HOME}
+cd "${REPORTS_HOME}" ; REPORTS_HOME=`pwd` ; cd - > /dev/null
 
 #
 # Install SBT
@@ -15,25 +26,8 @@ if [ ! -f "${WORKSPACE}/bin/sbt" ] ; then
 java -server -Xmx2G -XX:MaxPermSize=500m -jar ${WORKSPACE}/bin/sbt-launch-0.7.4.jar "\$*"
 EOF
   chmod a+x "${WORKSPACE}/bin/sbt"
+  cd "${BASEDIR}"
+  "${WORKSPACE}/bin/sbt" update
 fi
 
-#
-# Install git so we can get and run the stomp-benchmark
-#
-which git > /dev/null
-if [ $? -ne 0 ] ; then
-  cd "${WORKSPACE}"
-  echo "Installing git..."
-  sudo yum install -y git
-fi 
-
-if [ ! -d "${WORKSPACE}/stomp-benchmark" ] ; then
-  cd "${WORKSPACE}"
-  git clone git://github.com/chirino/stomp-benchmark.git
-  cd stomp-benchmark
-else 
-  cd "${WORKSPACE}/stomp-benchmark"
-  git pull
-fi
-"${WORKSPACE}/bin/sbt" update
   
