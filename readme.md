@@ -7,8 +7,9 @@ The benchmark covers a wide variety of common usage scenarios.
 
 The numbers look different depending on the Hardware and OS they are run on:
 
-* [EC2 High-CPU Extra Large Instance](http://hiramchirino.com/stomp-benchmark/ec2-c1.xlarge/)
-* [Ubuntu 11.10 and 2600k Intel CPU](http://hiramchirino.com/stomp-benchmark/ubuntu-2600k/)
+* [Amazon Linux: EC2 High-CPU Extra Large Instance](http://hiramchirino.com/stomp-benchmark/ec2-c1.xlarge/index.html)
+* [Ubuntu 11.10: Quad-Core 2600k Intel CPU (3.4 GHz)](http://hiramchirino.com/stomp-benchmark/ubuntu-2600k/index.html)
+* [OS X: 2 x Quad-Core Intel Xeon (3 GHz)](http://hiramchirino.com/stomp-benchmark/osx-8-core/index.html)
 
 ## Servers Currently Benchmarked
 
