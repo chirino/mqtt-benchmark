@@ -39,7 +39,18 @@
 
       var legend_update_timeout = null;
       var legend_updates = {};
-
+      function with_commas(nStr)
+      {
+        nStr += '';
+        x = nStr.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+          x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+      }
       function trigger_legend_update(event, pos, item) {
         var state = $(this).data('chart_state');
         legend_updates[$(this).attr('id')] = state
@@ -94,7 +105,7 @@
             if( !series.original ) {
               series.original = series.label;
             }
-            legend_labels.eq(i).text(series.original + " = "+y.toFixed(2)+" msg/sec");
+            legend_labels.eq(i).text(series.original + " = "+with_commas( y.toFixed(0))+" msg/sec");
           }
           
           hide_legend = false;
@@ -130,6 +141,12 @@
               series: {
                 lines: { show: true }
               },
+              yaxis: {
+                min:0,
+                tickFormatter: function(y, axis) {
+                  return with_commas(y.toFixed(axis.tickDecimals));
+                }
+              },              
               crosshair: { mode: "x" },
               lines: { show: true },
               grid: { hoverable: true, autoHighlight: false }
