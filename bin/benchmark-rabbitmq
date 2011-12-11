@@ -19,7 +19,7 @@ if [ $? -ne 0 ] ; then
   which erl > /dev/null
   if [ $? -ne 0 ] ; then
     # Lets install erlang..
-    if [ ! -f "${WORKSPACE}/erlang-R14B04/bin/erl" ] ; then
+    if [ ! -f "${WORKSPACE}/erlang/bin/erl" ] ; then
       # Download it...
       if [ ! -d "${WORKSPACE}/otp_src_R14B04" ] ; then 
         wget http://www.erlang.org/download/otp_src_R14B04.tar.gz
@@ -32,10 +32,10 @@ if [ $? -ne 0 ] ; then
       which apt-get > /dev/null && sudo apt-get install -y build-essential ncurses-dev libssl-dev
 
       cd "${WORKSPACE}/otp_src_R14B04"
-      ./configure --with-ssl --prefix="${WORKSPACE}/erlang-R14B04"
+      ./configure --with-ssl --prefix="${WORKSPACE}/erlang"
       make install
     fi
-    export PATH="${WORKSPACE}/erlang-R14B04/bin:${PATH}"
+    export PATH="${WORKSPACE}/erlang/bin:${PATH}"
   fi
 fi 
 

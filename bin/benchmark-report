@@ -18,6 +18,9 @@ mkdir -p "${REPORTS_HOME}/resources"
 cat "${BASEDIR}/src/main/html/template.html" | sed "s|PRODUCT_LIST|$JSON_FILES|" > "${REPORTS_HOME}/index.html"
 cp "${BASEDIR}/src/main/html/resources/"* "${REPORTS_HOME}/resources"
 
+#
+# Only create it if it does not exist as it may get 
+# customized by hand later.
 if [ ! -f "${REPORTS_HOME}/server-info.html" ] ; then
   
   cat > "${REPORTS_HOME}/server-info.html" <<EOF
@@ -25,23 +28,37 @@ if [ ! -f "${REPORTS_HOME}/server-info.html" ] ; then
   <pre>$(uname -a)</pre>
 EOF
 
-which lsb_release > /dev/null
-if [ $? -eq 0 ] ; then
-    cat >> "${REPORTS_HOME}/server-info.html" <<EOF
-  <pre>$(lsb_release -sd)</pre>
-EOF
+  DATA=`lsb_release -sd 2>&1`
+  if [ $? -eq 0 ] ; then
+    echo "<pre>${DATA}</pre>" >> "${REPORTS_HOME}/server-info.html" 
+  fi
 
-which free > /dev/null
-if [ $? -eq 0 ] ; then
-    cat >> "${REPORTS_HOME}/server-info.html" <<EOF
-  <pre>$(free -m)</pre>
-EOF
-fi
-if [ ! -f "/proc/cpuinfo" ] ; then
-    cat >> "${REPORTS_HOME}/server-info.html" <<EOF
-  <pre>$(cat /proc/cpuinfo)</pre>
-EOF
-fi
+  DATA=`free -m 2>&1`
+  if [ $? -eq 0 ] ; then
+    echo "<pre>${DATA}</pre>" >> "${REPORTS_HOME}/server-info.html" 
+  fi
+
+  DATA=`cat /proc/cpuinfo 2>&1`
+  if [ $? -eq 0 ] ; then
+    echo "<pre>${DATA}</pre>" >> "${REPORTS_HOME}/server-info.html" 
+  fi
+
+  DATA=`java -version 2>&1`
+  if [ $? -eq 0 ] ; then
+    echo "<pre>${DATA}</pre>" >> "${REPORTS_HOME}/server-info.html" 
+  fi
+
+  which erl > /dev/null
+  if [ $? -eq 0 ] ; then
+    DATA=`erl -version 2>&1`
+  else
+    DATA=`${WORKSPACE}/erlang/bin/erl -version 2>&1`
+  fi
+  if [ $? -eq 0 ] ; then
+    echo "<pre>" >> "${REPORTS_HOME}/server-info.html" 
+    echo "${DATA}" >> "${REPORTS_HOME}/server-info.html" 
+    echo "</pre>" >> "${REPORTS_HOME}/server-info.html" 
+  fi
 
   if [ ! -z "${LOG_FILES}" ] ; then
     cat >> "${REPORTS_HOME}/server-info.html" <<EOF
