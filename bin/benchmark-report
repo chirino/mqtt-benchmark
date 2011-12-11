@@ -68,7 +68,7 @@ EOF
     
     for f in ${LOG_FILES} ; do
       cat >> "${REPORTS_HOME}/server-info.html" <<EOF
-  <li><a href="$f">$f</li>
+  <li><a href="$f">$f</a></li>
 EOF
     done
   fi
