@@ -37,5 +37,5 @@ The benchmark report will be stored in the `reports/$(hostname)` directory.
 
 ## Running Custom Scenarios
 
-See the [custom-scenario.md ][custom-scenario.md] file for more information
+See the [custom-scenario.md ](https://github.com/chirino/stomp-benchmark/blob/master/custom-scenario.md) file for more information
 on how to configure other benchmarking scenarios.
