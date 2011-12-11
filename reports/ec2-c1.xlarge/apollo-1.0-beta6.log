@@ -1,0 +1,21 @@
+
+    _____                .__  .__
+   /  _  \ ______   ____ |  | |  |   ____
+  /  /_\  \\____ \ /  _ \|  | |  |  /  _ \
+ /    |    \  |_> >  <_> )  |_|  |_(  <_> )
+ \____|__  /   __/ \____/|____/____/\____/
+         \/|__|  Apache Apollo (1.0-beta6)
+
+
+Loading configuration file '/home/ec2-user/stomp-benchmark/workspace/apollo-1.0-beta6/etc/apollo.xml'.
+INFO  | OS     : Linux 2.6.35.14-97.44.amzn1.x86_64
+INFO  | JVM    : OpenJDK 64-Bit Server VM 1.6.0_20 (Sun Microsystems Inc.)
+INFO  | Apollo : 1.0-beta6 (at: /home/ec2-user/stomp-benchmark/workspace/apache-apollo-1.0-beta6)
+INFO  | OS is restricting the open file limit to: 1024
+WARN  | Please increase the process file limit using 'ulimit -n 4500' or configure lower connection limits on the broker connectors.
+INFO  | Starting store: leveldb store at /home/ec2-user/stomp-benchmark/workspace/apollo-1.0-beta6/data
+INFO  | Accepting connections at: tls://0.0.0.0:61614
+INFO  | Accepting connections at: tcp://0.0.0.0:61613
+INFO  | Administration interface available at: https://127.0.0.1:61681/
+INFO  | Administration interface available at: http://127.0.0.1:61680/
+WARN  | java.lang.NullPointerException
