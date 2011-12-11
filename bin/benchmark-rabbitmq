@@ -16,17 +16,26 @@ BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
 which erl > /dev/null
 if [ $? -ne 0 ] ; then
   cd "${WORKSPACE}"
-  sudo yum install -y erlang
-  
   which erl > /dev/null
   if [ $? -ne 0 ] ; then
-    sudo yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel
-    wget http://www.erlang.org/download/otp_src_R14B04.tar.gz
-    tar -zxvf otp_src_R14B04.tar.gz
-    cd otp_src_R14B04
-    rm otp_src_R14B04.tar.gz
-    ./configure --with-ssl
-    sudo make install
+    # Lets install erlang..
+    if [ ! -f "${WORKSPACE}/erlang-R14B04/bin/erl" ] ; then
+      # Download it...
+      if [ ! -d "${WORKSPACE}/otp_src_R14B04" ] ; then 
+        wget http://www.erlang.org/download/otp_src_R14B04.tar.gz
+        tar -zxvf otp_src_R14B04.tar.gz
+        rm otp_src_R14B04.tar.gz 
+      fi
+
+      # Need the GCC toolchain to build erlang
+      which yum > /dev/null && sudo yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel
+      which apt-get > /dev/null && sudo apt-get install -y build-essential ncurses-dev libssl-dev
+
+      cd "${WORKSPACE}/otp_src_R14B04"
+      ./configure --with-ssl --prefix="${WORKSPACE}/erlang-R14B04"
+      make install
+    fi
+    export PATH="${WORKSPACE}/erlang-R14B04/bin:${PATH}"
   fi
 fi 
 
