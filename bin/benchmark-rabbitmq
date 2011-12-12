@@ -88,3 +88,6 @@ cd ${BASEDIR}
 # Kill the server
 kill -9 ${RABBITMQ_PID}
 killall -9 epmd
+
+# Create a report.
+"${BASEDIR}/bin/benchmark-report" $*

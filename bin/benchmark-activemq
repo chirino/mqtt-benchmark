@@ -52,3 +52,6 @@ cd "${BASEDIR}"
 
 # Kill the broker
 kill -9 ${ACTIVEMQ_PID}
+
+# Create a report.
+"${BASEDIR}/bin/benchmark-report" $*

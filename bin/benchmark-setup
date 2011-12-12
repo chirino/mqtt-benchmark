@@ -5,10 +5,6 @@ ${REPORTS_HOME:=$1} \
 ${REPORTS_HOME:=`pwd`/reports/`hostname`}
 WORKSPACE="${BASEDIR}/workspace"
 
-echo "=========================================================================="
-echo "Results stored under: ${REPORTS_HOME}"
-echo "=========================================================================="
-
 mkdir -p ${WORKSPACE}
 mkdir -p ${REPORTS_HOME}
 cd "${REPORTS_HOME}" ; REPORTS_HOME=`pwd` ; cd - > /dev/null

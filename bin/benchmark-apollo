@@ -57,3 +57,6 @@ cd ${BASEDIR}
 #
 # Kill the server
 kill -9 ${APOLLO_PID}
+
+# Create a report.
+"${BASEDIR}/bin/benchmark-report" $*

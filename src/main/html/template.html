@@ -362,6 +362,7 @@
         <div style="padding: 0em 1em 0em 3em;">
           <div id="server-info">
           </div>
+          LOGS_HTML
         </div>
         <script>
         $(function() {
@@ -382,13 +383,13 @@
           <tr>
             <td>
               <h3>With a 20 b Playload</h3>
-              <div id='p_20b_1a_1topic_0' style="width:300px;height:150px;"></div>
+              <div id='p_20b_1a_1topic_0' style="width:300px;height:150px;"><img src="./resources/ajax-loader.gif"></div>
             </td><td>
               <h3>With a 1 k Playload</h3>
-              <div id='p_1k_1a_1topic_0' style="width:300px;height:150px;"></div>
+              <div id='p_1k_1a_1topic_0' style="width:300px;height:150px;"><img src="./resources/ajax-loader.gif"></div>
             </td><td>
               <h3>With a 256 k Playload</h3>
-              <div id='p_256k_1a_1topic_0' style="width:300px;height:150px;"></div>
+              <div id='p_256k_1a_1topic_0' style="width:300px;height:150px;"><img src="./resources/ajax-loader.gif"></div>
             </td>
           </tr>
         </table>
@@ -401,20 +402,20 @@
               <p>
                 A producer sending non-persistent messages with 20 byte payloads to a queue without any attached consumers.
               </p>
-              <div id='p_20b_1a_1queue_0' style="width:300px;height:150px;"></div>
+              <div id='p_20b_1a_1queue_0' style="width:300px;height:150px;"><img src="./resources/ajax-loader.gif"></div>
             </td><td>
               <h3>Persistent Load</h3>
               <p>
                 A producer sending persistent messages with 20 byte payloads to a queue without any attached consumers.  Each
                 send requests a receipt to achieve guaranteed delivery.
               </p>
-              <div id='p_20b_1p_1queue_0' style="width:300px;height:150px;"></div>
+              <div id='p_20b_1p_1queue_0' style="width:300px;height:150px;"><img src="./resources/ajax-loader.gif"></div>
             </td><td>
               <h3>Unload</h3>
               <p>
                 A consumer receiving the messages previously sent to the queue but without any attached producers.
               </p>
-              <div id='c_20b_0_1queue_1' style="width:300px;height:150px;"></div>
+              <div id='c_20b_0_1queue_1' style="width:300px;height:150px;"><img src="./resources/ajax-loader.gif"></div>
             </td>
           </tr>
         </table>
@@ -440,39 +441,39 @@
               <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
               <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1a_1queue_1' class="small-chart"></div>
+                <div id='p_20b_1a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1a_1queue_1' class="small-chart"></div> 
+                <div id='c_20b_1a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5a_1queue_1' class="small-chart"></div>
-                <div id='c_20b_5a_1queue_1' class="small-chart"></div>
+                <div id='p_20b_5a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10a_1queue_1' class="small-chart"></div>
-                <div id='c_20b_10a_1queue_1' class="small-chart"></div>
+                <div id='p_20b_10a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1a_1queue_5' class="small-chart"></div>
+                <div id='p_20b_1a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1a_1queue_5' class="small-chart"></div>
+                <div id='c_20b_1a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5a_1queue_5' class="small-chart"></div>
-                <div id='c_20b_5a_1queue_5' class="small-chart"></div>
+                <div id='p_20b_5a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10a_1queue_5' class="small-chart"></div>
-                <div id='c_20b_10a_1queue_5' class="small-chart"></div>
+                <div id='p_20b_10a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1a_1queue_10' class="small-chart"></div>
+                <div id='p_20b_1a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1a_1queue_10' class="small-chart"></div>
+                <div id='c_20b_1a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5a_1queue_10' class="small-chart"></div>
-                <div id='c_20b_5a_1queue_10' class="small-chart"></div>
+                <div id='p_20b_5a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10a_1queue_10' class="small-chart"></div>
-                <div id='c_20b_10a_1queue_10' class="small-chart"></div>
+                <div id='p_20b_10a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
             </table>
           </td><td>
@@ -480,39 +481,39 @@
               <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
               <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1p_1queue_1' class="small-chart"></div>
+                <div id='p_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1p_1queue_1' class="small-chart"></div>
+                <div id='c_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5p_1queue_1' class="small-chart"></div>
-                <div id='c_20b_5p_1queue_1' class="small-chart"></div>
+                <div id='p_20b_5p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10p_1queue_1' class="small-chart"></div>
-                <div id='c_20b_10p_1queue_1' class="small-chart"></div>
+                <div id='p_20b_10p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1p_1queue_5' class="small-chart"></div>
+                <div id='p_20b_1p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1p_1queue_5' class="small-chart"></div>
+                <div id='c_20b_1p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5p_1queue_5' class="small-chart"></div>
-                <div id='c_20b_5p_1queue_5' class="small-chart"></div>
+                <div id='p_20b_5p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10p_1queue_5' class="small-chart"></div>
-                <div id='c_20b_10p_1queue_5' class="small-chart"></div>
+                <div id='p_20b_10p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1p_1queue_10' class="small-chart"></div>
+                <div id='p_20b_1p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1p_1queue_10' class="small-chart"></div>
+                <div id='c_20b_1p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5p_1queue_10' class="small-chart"></div>
-                <div id='c_20b_5p_1queue_10' class="small-chart"></div>
+                <div id='p_20b_5p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10p_1queue_10' class="small-chart"></div>
-                <div id='c_20b_10p_1queue_10' class="small-chart"></div>
+                <div id='p_20b_10p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
             </table>
           </td></tr>
@@ -521,39 +522,39 @@
               <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
               <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1a_1topic_1' class="small-chart"></div>
+                <div id='p_20b_1a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1a_1topic_1' class="small-chart"></div>
+                <div id='c_20b_1a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5a_1topic_1' class="small-chart"></div>
-                <div id='c_20b_5a_1topic_1' class="small-chart"></div>
+                <div id='p_20b_5a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10a_1topic_1' class="small-chart"></div>
-                <div id='c_20b_10a_1topic_1' class="small-chart"></div>
+                <div id='p_20b_10a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1a_1topic_5' class="small-chart"></div>
+                <div id='p_20b_1a_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1a_1topic_5' class="small-chart"></div>
+                <div id='c_20b_1a_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5a_1topic_5' class="small-chart"></div>
-                <div id='c_20b_5a_1topic_5' class="small-chart"></div>
+                <div id='p_20b_5a_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5a_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10a_1topic_5' class="small-chart"></div>
-                <div id='c_20b_10a_1topic_5' class="small-chart"></div>
+                <div id='p_20b_10a_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10a_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1a_1topic_10' class="small-chart"></div>
+                <div id='p_20b_1a_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1a_1topic_10' class="small-chart"></div>
+                <div id='c_20b_1a_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5a_1topic_10' class="small-chart"></div>
-                <div id='c_20b_5a_1topic_10' class="small-chart"></div>
+                <div id='p_20b_5a_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5a_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10a_1topic_10' class="small-chart"></div>
-                <div id='c_20b_10a_1topic_10' class="small-chart"></div>
+                <div id='p_20b_10a_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10a_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
             </table>
           </td><td>
@@ -561,39 +562,39 @@
               <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">10 Producers</th></tr>
               <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1p_1topic_1' class="small-chart"></div>
+                <div id='p_20b_1p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1p_1topic_1' class="small-chart"></div>
+                <div id='c_20b_1p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5p_1topic_1' class="small-chart"></div>
-                <div id='c_20b_5p_1topic_1' class="small-chart"></div>
+                <div id='p_20b_5p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10p_1topic_1' class="small-chart"></div>
-                <div id='c_20b_10p_1topic_1' class="small-chart"></div>
+                <div id='p_20b_10p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1p_1topic_5' class="small-chart"></div>
+                <div id='p_20b_1p_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1p_1topic_5' class="small-chart"></div>
+                <div id='c_20b_1p_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5p_1topic_5' class="small-chart"></div>
-                <div id='c_20b_5p_1topic_5' class="small-chart"></div>
+                <div id='p_20b_5p_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5p_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10p_1topic_5' class="small-chart"></div>
-                <div id='c_20b_10p_1topic_5' class="small-chart"></div>
+                <div id='p_20b_10p_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10p_1topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_1p_1topic_10' class="small-chart"></div>
+                <div id='p_20b_1p_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_1p_1topic_10' class="small-chart"></div>
+                <div id='c_20b_1p_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_5p_1topic_10' class="small-chart"></div>
-                <div id='c_20b_5p_1topic_10' class="small-chart"></div>
+                <div id='p_20b_5p_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_5p_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_20b_10p_1topic_10' class="small-chart"></div>
-                <div id='c_20b_10p_1topic_10' class="small-chart"></div>
+                <div id='p_20b_10p_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_10p_1topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
             </table>
           </td></tr>
@@ -638,67 +639,67 @@
               </td></tr>
               <tr><th class="block"><div class="r90">5x5x5</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_5a_5queue_5' class="small-chart"></div>
+                <div id='p_20b_5a_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_5a_5queue_5' class="small-chart"></div>
+                <div id='c_20b_5a_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_1k_5a_5queue_5' class="small-chart"></div>
-                <div id='c_1k_5a_5queue_5' class="small-chart"></div>
+                <div id='p_1k_5a_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_1k_5a_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_5a_5queue_5' class="small-chart"></div>
-                <div id='c_256k_5a_5queue_5' class="small-chart"></div>
+                <div id='p_256k_5a_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_5a_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10x10x10</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_10a_10queue_10' class="small-chart"></div>
+                <div id='p_20b_10a_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_10a_10queue_10' class="small-chart"></div>
+                <div id='c_20b_10a_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_1k_10a_10queue_10' class="small-chart"></div>
-                <div id='c_1k_10a_10queue_10' class="small-chart"></div>
+                <div id='p_1k_10a_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_1k_10a_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_10a_10queue_10' class="small-chart"></div>
-                <div id='c_256k_10a_10queue_10' class="small-chart"></div>
+                <div id='p_256k_10a_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_10a_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
             </table>
           </td><td>
             <table>
               <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
               <tr><th class="block"><div class="r90">1x1x1</div></th><td>
-                <!-- <div id='p_20b_1p_1queue_1' class="small-chart"></div>
-                <div id='c_20b_1p_1queue_1' class="small-chart"></div> -->
+                <!-- <div id='p_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>-->
               </td><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_1k_1p_1queue_1' class="small-chart"></div>
+                <div id='p_1k_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_1k_1p_1queue_1' class="small-chart"></div>
+                <div id='c_1k_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_1p_1queue_1' class="small-chart"></div>
-                <div id='c_256k_1p_1queue_1' class="small-chart"></div>
+                <div id='p_256k_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5x5x5</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_5p_5queue_5' class="small-chart"></div>
+                <div id='p_20b_5p_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_5p_5queue_5' class="small-chart"></div>
+                <div id='c_20b_5p_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_1k_5p_5queue_5' class="small-chart"></div>
-                <div id='c_1k_5p_5queue_5' class="small-chart"></div>
+                <div id='p_1k_5p_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_1k_5p_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_5p_5queue_5' class="small-chart"></div>
-                <div id='c_256k_5p_5queue_5' class="small-chart"></div>
+                <div id='p_256k_5p_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_5p_5queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10x10x10</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_10p_10queue_10' class="small-chart"></div>
+                <div id='p_20b_10p_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_10p_10queue_10' class="small-chart"></div>
+                <div id='c_20b_10p_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_1k_10p_10queue_10' class="small-chart"></div>
-                <div id='c_1k_10p_10queue_10' class="small-chart"></div>
+                <div id='p_1k_10p_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_1k_10p_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_10p_10queue_10' class="small-chart"></div>
-                <div id='c_256k_10p_10queue_10' class="small-chart"></div>
+                <div id='p_256k_10p_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_10p_10queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
             </table>
           </td></tr>
@@ -706,80 +707,80 @@
             <table>
               <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
               <tr><th class="block"><div class="r90">1x1x1</div></th><td>
-                <!-- <div id='p_20b_1a_1topic_1' class="small-chart"></div>
-                <div id='c_20b_1a_1topic_1' class="small-chart"></div> -->
+                <!-- <div id='p_20b_1a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_1a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>-->
               </td><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_1k_1a_1topic_1' class="small-chart"></div>
+                <div id='p_1k_1a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_1k_1a_1topic_1' class="small-chart"></div>
+                <div id='c_1k_1a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_1a_1topic_1' class="small-chart"></div>
-                <div id='c_256k_1a_1topic_1' class="small-chart"></div>
+                <div id='p_256k_1a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_1a_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5x5x5</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_5a_5topic_5' class="small-chart"></div>
+                <div id='p_20b_5a_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_5a_5topic_5' class="small-chart"></div>
+                <div id='c_20b_5a_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_1k_5a_5topic_5' class="small-chart"></div>
-                <div id='c_1k_5a_5topic_5' class="small-chart"></div>
+                <div id='p_1k_5a_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_1k_5a_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_5a_5topic_5' class="small-chart"></div>
-                <div id='c_256k_5a_5topic_5' class="small-chart"></div>
+                <div id='p_256k_5a_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_5a_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10x10x10</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_10a_10topic_10' class="small-chart"></div>
+                <div id='p_20b_10a_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_10a_10topic_10' class="small-chart"></div>
+                <div id='c_20b_10a_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_1k_10a_10topic_10' class="small-chart"></div>
-                <div id='c_1k_10a_10topic_10' class="small-chart"></div>
+                <div id='p_1k_10a_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_1k_10a_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_10a_10topic_10' class="small-chart"></div>
-                <div id='c_256k_10a_10topic_10' class="small-chart"></div>
+                <div id='p_256k_10a_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_10a_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
             </table>
           </td><td>
             <table>
               <tr><th>&nbsp;</th><th class="block">20 b Message</th><th class="block">1 k Message</th><th class="block">256 k Message</th></tr>
               <tr><th class="block"><div class="r90">1x1x1</div></th><td>
-                <!-- <div id='p_20b_1p_1topic_1' class="small-chart"></div>
-                <div id='c_20b_1p_1topic_1' class="small-chart"></div> -->
+                <!-- <div id='p_20b_1p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_20b_1p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>-->
               </td><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_1k_1p_1topic_1' class="small-chart"></div>
+                <div id='p_1k_1p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_1k_1p_1topic_1' class="small-chart"></div>
+                <div id='c_1k_1p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_1p_1topic_1' class="small-chart"></div>
-                <div id='c_256k_1p_1topic_1' class="small-chart"></div>
+                <div id='p_256k_1p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_1p_1topic_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">5x5x5</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_5p_5topic_5' class="small-chart"></div>
+                <div id='p_20b_5p_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_5p_5topic_5' class="small-chart"></div>
+                <div id='c_20b_5p_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_1k_5p_5topic_5' class="small-chart"></div>
-                <div id='c_1k_5p_5topic_5' class="small-chart"></div>
+                <div id='p_1k_5p_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_1k_5p_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_5p_5topic_5' class="small-chart"></div>
-                <div id='c_256k_5p_5topic_5' class="small-chart"></div>
+                <div id='p_256k_5p_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_5p_5topic_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
               <tr><th class="block"><div class="r90">10x10x10</div></th><td>
                 <h4 class="chart-title">Producer Rates (msg/s):</h4>
-                <div id='p_20b_10p_10topic_10' class="small-chart"></div>
+                <div id='p_20b_10p_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
                 <h4 class="chart-title">Consumer Rates (msg/s):</h4>
-                <div id='c_20b_10p_10topic_10' class="small-chart"></div>
+                <div id='c_20b_10p_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_1k_10p_10topic_10' class="small-chart"></div>
-                <div id='c_1k_10p_10topic_10' class="small-chart"></div>
+                <div id='p_1k_10p_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_1k_10p_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td><td>
-                <div id='p_256k_10p_10topic_10' class="small-chart"></div>
-                <div id='c_256k_10p_10topic_10' class="small-chart"></div>
+                <div id='p_256k_10p_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='c_256k_10p_10topic_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
               </td></tr>
             </table>
           </td></tr>

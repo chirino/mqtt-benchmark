@@ -1,6 +1,6 @@
 # Stomp Benchmark
 
-A benchmarking tool for [Stomp 1.o](http://stomp.github.com) servers.
+A benchmarking tool for [Stomp 1.0](http://stomp.github.com) servers.
 The benchmark covers a wide variety of common usage scenarios.
 
 # Just looking for the Results?
