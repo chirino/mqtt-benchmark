@@ -9,7 +9,7 @@
 
 true \
 ${APOLLO_VERSION:=1.0-beta6} \
-${APOLLO_DOWNLOAD:='https://repository.apache.org/content/repositories/orgapacheactivemq-299/org/apache/activemq/apache-apollo/1.0-beta6/apache-apollo-1.0-beta6-unix-distro.tar.gz'}
+${APOLLO_DOWNLOAD:="http://archive.apache.org/dist/activemq/activemq-apollo/${APOLLO_VERSION}/apache-apollo-${APOLLO_VERSION}-unix-distro.tar.gz"}
 
 BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
 . ${BASEDIR}/bin/benchmark-setup
