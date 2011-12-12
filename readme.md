@@ -36,6 +36,19 @@ Tested to work on:
 
 The benchmark report will be stored in the `reports/$(hostname)` directory.
 
+## Running the Benchmark on an EC2 Amazon Linux 64 bit AMI
+
+If you want to run the benchmark on EC2, we recommend using at least the
+c1.xlarge instance type.  Once you have the instance started just execute
+the following commands on the instance:
+
+    sudo yum install -y screen
+    curl https://nodeload.github.com/chirino/stomp-benchmark/tarball/master | tar -zxv 
+    mv chirino-stomp-benchmark-* stomp-benchmark
+    screen ./stomp-benchmark/bin/benchmark-all
+
+The results will be stored in the ~/reports directory.
+
 ## Running Custom Scenarios
 
 See the [custom-scenario.md ](https://github.com/chirino/stomp-benchmark/blob/master/custom-scenario.md) file for more information
