@@ -18,4 +18,3 @@ INFO  | Accepting connections at: tls://0.0.0.0:61614
 INFO  | Accepting connections at: tcp://0.0.0.0:61613
 INFO  | Administration interface available at: https://127.0.0.1:61681/
 INFO  | Administration interface available at: http://127.0.0.1:61680/
-WARN  | java.lang.NullPointerException
