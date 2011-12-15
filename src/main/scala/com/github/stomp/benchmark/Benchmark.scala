@@ -114,6 +114,11 @@ class Benchmark extends Action {
   var cl_scenario_connection_scale: java.lang.Boolean = _
   var scenario_connection_scale = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_connection_scale))
 
+  @option(name = "--scenario-request-response", description = "enable the request response scenarios")
+  var cl_scenario_request_response: java.lang.Boolean = _
+  var scenario_request_response = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_request_response))
+
+
   @option(name = "--scenario-connection-scale-rate", description = "How many connection to add after each sample")
   var cl_scenario_connection_scale_rate: java.lang.Integer = _
   var scenario_connection_scale_rate = FlexibleProperty(default = Some(50), high_priority = () => toIntOption(cl_scenario_connection_scale_rate))
@@ -357,6 +362,10 @@ class Benchmark extends Action {
               client_results.producers_data = collected.getOrElse("p_"+scenario.name, Nil)
               client_results.consumers_data = collected.getOrElse("c_"+scenario.name, Nil)
               client_results.error_data = collected.getOrElse("e_"+scenario.name, Nil)
+              client_results.request_p90 = collected.getOrElse("p90_"+scenario.name, Nil)
+              client_results.request_p99 = collected.getOrElse("p99_"+scenario.name, Nil)
+              client_results.request_p999 = collected.getOrElse("p999_"+scenario.name, Nil)
+
               if ( client_results.error_data.foldLeft(0L)((a,x) => a + x._2) == 0 ) {
                 // If there are no errors, we keep an empty list
                 client_results.error_data = Nil
@@ -460,7 +469,20 @@ class Benchmark extends Action {
       destination_types ::= "topic"
     }
 
-
+    if(scenario_request_response.get) {
+      for( producers <- List(1, 10, 100); persistent <- List(false, true); consumers <- List(1, 5, 10) ) {
+        val name = "rr_20b_%d%s%s_1queue_%d".format(producers, plabel(persistent), slabel(persistent), consumers)
+        benchmark(name) { g=>
+          g.message_size = 20
+          g.producers = producers
+          g.consumers = consumers
+          g.request_response = true
+          g.persistent = persistent
+          g.destination_type = "queue"
+        }
+      }
+    }
+    
     if(scenario_connection_scale.get ) {
 
       for( messages_per_connection <- List(-1)) {

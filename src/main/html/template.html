@@ -95,17 +95,27 @@
 
             // now interpolate
             var y, p1 = series.data[j - 1], p2 = series.data[j];
-            if (p1 == null)
-                y = p2[1];
-            else if (p2 == null)
-                y = p1[1];
-            else
-                y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
+            if (p1 || p2) {
+              if (p1 == null)
+                  y = p2[1];
+              else if (p2 == null)
+                  y = p1[1];
+              else
+                  y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
 
-            if( !series.original ) {
-              series.original = series.label;
+              if( !series.original ) {
+                series.original = series.label;
+              }
+              if( y < 100 ) {
+                y = y.toFixed(3)
+              } else {
+                y = y.toFixed(0)
+              }
+              legend_labels.eq(i).text(series.original + " = "+with_commas(y)+" "+state.units);
+            } else {
+              legend_labels.eq(i).text(series.original + " = N/A");
             }
-            legend_labels.eq(i).text(series.original + " = "+with_commas( y.toFixed(0))+" msg/sec");
+            
           }
           
           hide_legend = false;
@@ -133,6 +143,10 @@
 
       function line_chart(scenario) {
         $("#"+scenario).each(function(){
+          var units = "msg/sec";
+          if( scenario.indexOf("p9")==0 ) {
+            var units = "ms";
+          }
           var options = {
               legend: {
                 container: $('#legend'),
@@ -166,6 +180,9 @@
                       if( sample instanceof Array ) {
                         if( first_ts == null ) {
                           first_ts = sample[0];
+                        }
+                        if( scenario.indexOf("p9")==0 ) {
+                          sample[1] = sample[1] / 1000000.0
                         }
                         data.push([(sample[0]-first_ts)/1000, sample[1]]);
                       } else {
@@ -201,6 +218,7 @@
           }
           var placeholder = $(this)
           var state = {
+             units: units,
              plot: $.plot(placeholder, data_lines, options),
              placeholder:placeholder,
              latestPosition:null
@@ -419,6 +437,100 @@
             </td>
           </tr>
         </table>
+        
+        <h2 id="request_reply">Request/Reply Scenarios</h2>
+        <p>
+          In this scenario producers send a request message with a 20 byte body to a queue the consumers are subscribed to and then 
+          waits for response on a queue unique to each producer.  The request message has the `reply-to` header
+          set to the queue which the producer is will wait for the response on.  Consumers are receive the request 
+          message and send a response message without a body to the `reply-to` queue specified on the request.  The
+          99.9th percentile latency is measured using the time elapsed from when the producer sends 
+          the request message to when the producer receives the response message.
+        </p>
+        <table class="charts">
+          <tr><th>&nbsp;</th><th class="block">Non Persistent</th><th class="block">Persistent</th></tr>
+          <tr><th class="block"><div class="r90">Queue</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">10 Producers</th><th class="block">100 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">100 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>        
         
         <h2 id="fan_in_out_load">Fan In/Out Load Scenarios</h2>
         <p>

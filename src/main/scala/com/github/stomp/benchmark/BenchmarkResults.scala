@@ -147,6 +147,9 @@ class ClientResults {
   var settings: List[(String, String)] = Nil
   var producers_data: List[(Long,Long)] = Nil
   var consumers_data: List[(Long,Long)] = Nil
+  var request_p90: List[(Long,Long)] = Nil
+  var request_p99: List[(Long,Long)] = Nil
+  var request_p999: List[(Long,Long)] = Nil
   var error_data: List[(Long,Long)] = Nil
   
   def to_json(level: Int = 0): String = {
@@ -165,6 +168,17 @@ class ClientResults {
     sb ++= indent + "    \"data\": {\n"
     sb ++= indent + "        \"producers\": [ " + producers_data.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ],\n"
     sb ++= indent + "        \"consumers\": [ " + consumers_data.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ],\n"
+
+    if( request_p90 != Nil ) {
+      sb ++= indent + "        \"request_p90\": [ " + request_p90.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ],\n"
+    }
+    if( request_p99 != Nil ) {
+      sb ++= indent + "        \"request_p99\": [ " + request_p99.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ],\n"
+    }
+    if( request_p999 != Nil ) {
+      sb ++= indent + "        \"request_p999\": [ " + request_p999.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ],\n"
+    }
+
     sb ++= indent + "        \"error\": [ " + error_data.map(x=> "[%d,%d]".format(x._1,x._2)).mkString(",") + " ]\n"
     sb ++= indent + "    }\n"
     sb ++= indent + "}"

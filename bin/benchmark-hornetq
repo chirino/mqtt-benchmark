@@ -40,29 +40,20 @@ if [ ! -d "${HORNETQ_HOME}" ]; then
 
   #
   # Add the destinations that the benchmark will be using.
- perl -pi -e 's|^</configuration>|<queue name="loadq-0"><entry name="/queue/loadq-0"/></queue>
-    <queue name="loadq-1"><entry name="/queue/loadq-1"/></queue>
-    <queue name="loadq-2"><entry name="/queue/loadq-2"/></queue>
-    <queue name="loadq-3"><entry name="/queue/loadq-3"/></queue>
-    <queue name="loadq-4"><entry name="/queue/loadq-4"/></queue>
-    <queue name="loadq-5"><entry name="/queue/loadq-5"/></queue>
-    <queue name="loadq-6"><entry name="/queue/loadq-6"/></queue>
-    <queue name="loadq-7"><entry name="/queue/loadq-7"/></queue>
-    <queue name="loadq-8"><entry name="/queue/loadq-8"/></queue>
-    <queue name="loadq-9"><entry name="/queue/loadq-9"/></queue>
-    <queue name="load_me_up-0"><entry name="/queue/load_me_up-0"/></queue>
-
-    <topic name="loadt-0"><entry name="/topic/loadt-0"/></topic>
-    <topic name="loadt-1"><entry name="/topic/loadt-1"/></topic>
-    <topic name="loadt-2"><entry name="/topic/loadt-2"/></topic>
-    <topic name="loadt-3"><entry name="/topic/loadt-3"/></topic>
-    <topic name="loadt-4"><entry name="/topic/loadt-4"/></topic>
-    <topic name="loadt-5"><entry name="/topic/loadt-5"/></topic>
-    <topic name="loadt-6"><entry name="/topic/loadt-6"/></topic>
-    <topic name="loadt-7"><entry name="/topic/loadt-7"/></topic>
-    <topic name="loadt-8"><entry name="/topic/loadt-8"/></topic>
-    <topic name="loadt-9"><entry name="/topic/loadt-9"/>
-    </topic></configuration>|' "${HORNETQ_HOME}/config/stand-alone/non-clustered/hornetq-jms.xml"
+  DESTINATION_CONFIGS = "<queue name=\"load_me_up-0\"><entry name=\"/queue/load_me_up-0\"/></queue>"
+  for (( i=0; i < 10 ; i++)) ; do
+    DESTINATION_CONFIGS="${DESTINATION_CONFIGS}
+    <queue name=\"loadq-${i}\"><entry name=\"/queue/loadq-${i}\"/></queue>"
+  done
+  for (( i=0; i < 100 ; i++)) ; do
+    DESTINATION_CONFIGS="${DESTINATION_CONFIGS}
+    <queue name=\"request-${i}\"><entry name=\"/queue/request-${i}\"/></queue>"
+  done
+  for (( i=0; i < 10 ; i++)) ; do
+    DESTINATION_CONFIGS="${DESTINATION_CONFIGS}
+    <topic name=\"loadt-${i}\"><entry name=\"/topic/loadt-${i}\"/></topic>"
+  done
+  perl -pi -e 's|^</configuration>|${DESTINATION_CONFIGS}</configuration>|' "${HORNETQ_HOME}/config/stand-alone/non-clustered/hornetq-jms.xml"
  
 fi
 

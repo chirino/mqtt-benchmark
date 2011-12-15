@@ -20,17 +20,39 @@ package com.github.stomp.benchmark
 import java.util.concurrent.atomic._
 import java.util.concurrent.TimeUnit._
 import scala.collection.mutable.ListBuffer
+import java.util.concurrent.ConcurrentLinkedQueue
 
 object Scenario {
   val MESSAGE_ID:Array[Byte] = "message-id"
   val NEWLINE = '\n'.toByte
   val NANOS_PER_SECOND = NANOSECONDS.convert(1, SECONDS)
+  val NANOS_PER_MS = NANOSECONDS.convert(1, MILLISECONDS)
   
   implicit def toBytes(value: String):Array[Byte] = value.getBytes("UTF-8")
 
   def o[T](value:T):Option[T] = value match {
     case null => None
     case x => Some(x)
+  }
+
+  def percentiles(percentiles:Array[Double], values:Array[Long]) = {
+    if (values.length > 0) {
+      java.util.Arrays.sort(values)
+      percentiles.map { p =>
+        val pos = p * (values.length + 1);
+        if (pos < 1) {
+          values(0)
+        } else if (pos >= values.length) {
+          values(values.length - 1);
+        } else {
+           val lower = values((pos - 1).toInt);
+           val upper = values(pos.toInt);
+           lower + ((pos - pos.floor) * (upper - lower)).toLong;
+        }
+      }
+    } else {
+      percentiles.map(p => 0L)
+    }
   }
 }
 
@@ -39,6 +61,7 @@ trait Scenario {
 
   var login: Option[String] = None
   var passcode: Option[String] = None
+  var request_response = false
 
   private var _producer_sleep: { def apply(): Int; def init(time: Long) } = new { def apply() = 0; def init(time: Long) {}  }
   def producer_sleep = _producer_sleep()
@@ -85,14 +108,22 @@ trait Scenario {
   var display_errors = false
 
   var destination_type = "queue"
-  private var _destination_name: () => String = () => ""
+  private var _destination_name: () => String = () => "load"
   def destination_name = _destination_name()
   def destination_name_=(new_name: String) = _destination_name = () => new_name
   def destination_name_=(new_func: () => String) = _destination_name = new_func
+
+  private var _response_destination_name: () => String = () => "response"
+  def response_destination_name = _response_destination_name()
+  def response_destination_name_=(new_name: String) = _response_destination_name = () => new_name
+  def response_destination_name_=(new_func: () => String) = _response_destination_name = new_func
+
   var destination_count = 1
 
   val producer_counter = new AtomicLong()
   val consumer_counter = new AtomicLong()
+  val request_times = new ConcurrentLinkedQueue[Long]()
+
   val error_counter = new AtomicLong()
   val done = new AtomicBoolean()
 
@@ -116,9 +147,11 @@ trait Scenario {
         override def run() = {
           
           def print_rate(name: String, periodCount:Long, totalCount:Long, nanos: Long) = {
-
             val rate_per_second: java.lang.Float = ((1.0f * periodCount / nanos) * NANOS_PER_SECOND)
             println("%s total: %,d, rate: %,.3f per second".format(name, totalCount, rate_per_second))
+          }
+          def print_percentil(name: String, value:Long, max:Long) = {
+            println("%sth percentile response time: %,.3f ms, max: %,.3f ms".format(name, (1.0f * value / NANOS_PER_MS), (1.0f * max / NANOS_PER_MS)))
           }
 
           try {
@@ -126,6 +159,10 @@ trait Scenario {
             var total_producer_count = 0L
             var total_consumer_count = 0L
             var total_error_count = 0L
+            var max_p90 = 0L
+            var max_p99 = 0L
+            var max_p999 = 0L
+
             collection_start
             while( !done.get ) {
               Thread.sleep(sample_interval)
@@ -135,19 +172,34 @@ trait Scenario {
               samples.get("p_custom").foreach { case (_, count)::Nil =>
                 total_producer_count += count
                 print_rate("Producer", count, total_producer_count, end - start)
-              case _ =>
+                case _ =>
               }
               samples.get("c_custom").foreach { case (_, count)::Nil =>
                 total_consumer_count += count
                 print_rate("Consumer", count, total_consumer_count, end - start)
-              case _ =>
+                case _ =>
+              }
+              samples.get("p90_custom").foreach { case (_, value)::Nil =>
+                max_p90 = max_p90.max(value)
+                print_percentil("90", value, max_p90)
+                case _ =>
+              }
+              samples.get("p99_custom").foreach { case (_, value)::Nil =>
+                max_p99 = max_p99.max(value)
+                print_percentil("99", value, max_p99)
+                case _ =>
+              }
+              samples.get("p999_custom").foreach { case (_, value)::Nil =>
+                max_p999 = max_p999.max(value)
+                print_percentil("99.9", value, max_p999)
+                case _ =>
               }
               samples.get("e_custom").foreach { case (_, count)::Nil =>
                 if( count!= 0 ) {
                   total_error_count += count
                   print_rate("Error", count, total_error_count, end - start)
                 }
-              case _ =>
+                case _ =>
               }
               start = end
             }
@@ -236,6 +288,8 @@ trait Scenario {
     case _ => throw new Exception("Unsuported destination type: "+destination_type)
   }
 
+  protected def response_destination(i:Int) = queue_prefix+response_destination_name+"-"+i
+
   protected def headers_for(i:Int) = {
     if ( headers.isEmpty ) {
       Array[String]()
@@ -256,10 +310,15 @@ trait Scenario {
   var consumer_samples:Option[ListBuffer[(Long,Long)]] = None
   var error_samples = ListBuffer[(Long,Long)]()
 
+  var request_time_p90_samples = ListBuffer[(Long,Long)]()
+  var request_time_p99_samples = ListBuffer[(Long,Long)]()
+  var request_time_p999_samples = ListBuffer[(Long,Long)]()
+
   def collection_start: Unit = {
     producer_counter.set(0)
     consumer_counter.set(0)
     error_counter.set(0)
+    request_times.clear()
 
     producer_samples = if (producers > 0 || producers_per_sample>0 ) {
       Some(ListBuffer[(Long,Long)]())
@@ -271,6 +330,9 @@ trait Scenario {
     } else {
       None
     }
+    request_time_p90_samples = ListBuffer[(Long,Long)]()
+    request_time_p99_samples = ListBuffer[(Long,Long)]()
+    request_time_p999_samples = ListBuffer[(Long,Long)]()
   }
 
   def collection_end: Map[String, scala.List[(Long,Long)]] = {
@@ -285,6 +347,15 @@ trait Scenario {
     }
     rc += "e_"+name -> error_samples.toList
     error_samples.clear
+    if(request_response) {
+      rc += "p90_"+name -> request_time_p90_samples.toList
+      request_time_p90_samples.clear
+      rc += "p99_"+name -> request_time_p99_samples.toList
+      request_time_p99_samples.clear
+      rc += "p999_"+name -> request_time_p999_samples.toList
+      request_time_p999_samples.clear
+    }
+
     rc
   }
 
@@ -374,6 +445,21 @@ trait Scenario {
     val now = System.currentTimeMillis()
     producer_samples.foreach(_.append((now, producer_counter.getAndSet(0))))
     consumer_samples.foreach(_.append((now, consumer_counter.getAndSet(0))))
+
+    if( request_response ) {
+
+      var count = producer_samples.get.last._2.toInt
+      val times = new Array[Long](count)
+      while(count > 0 ) {
+        count -= 1
+        times(count) = request_times.poll()
+      }
+      val p = percentiles(Array(0.9, 0.99, 0.999), times)
+      request_time_p90_samples.append((now, p(0)))
+      request_time_p99_samples.append((now, p(1)))
+      request_time_p999_samples.append((now, p(2)))
+    }
+
     error_samples.append((now, error_counter.getAndSet(0)))
 
     // we might need to increment number the producers..
@@ -391,7 +477,7 @@ trait Scenario {
     }
 
   }
-  
+
   def createProducer(i:Int):Client
   def createConsumer(i:Int):Client
 

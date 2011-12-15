@@ -33,9 +33,10 @@ import scala.collection.mutable.HashMap
 //    val scenario = new com.github.stomp.benchmark.NonBlockingScenario
 //    scenario.login = Some("admin")
 //    scenario.passcode = Some("password")
-//    scenario.message_size = 50*1024
-//    scenario.destination_type = "topic"
-//    scenario.consumers = 0
+//    scenario.message_size = 20
+//    scenario.request_response = true
+//    scenario.producers = 100
+////    scenario.consumers = 0
 //    scenario.run
 //  }
 //}
@@ -49,12 +50,19 @@ import scala.collection.mutable.HashMap
  */
 class NonBlockingScenario extends Scenario {
 
-
   def createProducer(i:Int) = {
-    new ProducerClient(i)
+    if(this.request_response) {
+      new RequestingClient((i))
+    } else {
+      new ProducerClient(i)
+    }
   }
   def createConsumer(i:Int) = {
-    new ConsumerClient(i)
+    if(this.request_response) {
+      new RespondingClient(i)
+    } else {
+      new ConsumerClient(i)
+    }
   }
 
   trait NonBlockingClient extends Client {
@@ -396,21 +404,6 @@ class NonBlockingScenario extends Scenario {
 
 
     override def on_receive(msg: StompFrame) = {
-
-      def process_message = {
-        if( clientAck ) {
-          val msgId = msg.getHeader(Constants.MESSAGE_ID)
-          val ack = new StompFrame(ACK)
-          ack.addHeader(Constants.MESSAGE_ID, msgId)
-          ack.addHeader(SUBSCRIPTION, subscriber_id)
-          send(ack){
-            consumer_counter.incrementAndGet()
-          }
-        } else {
-          consumer_counter.incrementAndGet()
-        }
-      }
-
       if( consumer_sleep != 0 && ((consumer_counter.get()%consumer_sleep_modulo) == 0)) {
         if( !clientAck ) {
           receive_suspend
@@ -419,13 +412,118 @@ class NonBlockingScenario extends Scenario {
           if( !clientAck ) {
             receive_resume
           }
-          process_message
+          process_message(msg)
         }
       } else {
-        process_message
+        process_message(msg)
+      }
+    }
+
+    def process_message(msg: StompFrame) = {
+      if( clientAck ) {
+        val msgId = msg.getHeader(Constants.MESSAGE_ID)
+        val ack = new StompFrame(ACK)
+        ack.addHeader(Constants.MESSAGE_ID, msgId)
+        ack.addHeader(SUBSCRIPTION, subscriber_id)
+        send(ack){
+          consumer_counter.incrementAndGet()
+        }
+      } else {
+        consumer_counter.incrementAndGet()
       }
     }
 
   }
 
+  class RequestingClient(id: Int) extends ProducerClient(id) {
+    override val name: String = "requestor " + id
+    queue.setLabel(name)
+    message_frame.addHeader(REPLY_TO,ascii(response_destination(id)))
+
+
+    val subscriber_id = ascii("requestor-"+id)
+    override def reconnect_action = {
+      connect {
+        val sub = new StompFrame(SUBSCRIBE)
+        sub.addHeader(ID, subscriber_id)
+        sub.addHeader(ACK_MODE, ascii(ack))
+        sub.addHeader(DESTINATION, ascii(response_destination(id)))
+        subscribe_headers_for(id).foreach{ x=>
+          sub.addHeader(header_key(x), header_value(x))
+        }
+        send(sub) {
+        }
+        // give the response queue a chance to drain before doing new requests.
+        queue.after(1000, TimeUnit.MILLISECONDS) {
+          write_action
+        }
+      }
+    }
+
+    var request_start = 0L
+
+    override def write_action:Unit = {
+      def retry:Unit = {
+        if(done.get) {
+          close
+        } else {
+          if(producer_sleep >= 0) {
+            message_frame.content(get_message())
+            request_start = System.nanoTime()
+            send(message_frame) {
+              // don't do anything.. we complete when
+              // on_receive gets called.
+            }
+          } else {
+            write_completed_action
+          }
+        }
+      }
+      retry
+    }
+
+    override def on_receive(msg: StompFrame) = {
+      if(request_start != 0L) {
+        request_times.add(System.nanoTime() - request_start)
+        request_start = 0
+        producer_counter.incrementAndGet()
+        message_counter += 1
+        write_completed_action
+      }
+    }
+
+  }
+
+  class RespondingClient(id: Int) extends ConsumerClient(id) {
+    override def process_message(msg: StompFrame) = {
+
+      def send_ack = {
+        if( clientAck ) {
+          val msgId = msg.getHeader(Constants.MESSAGE_ID)
+          val ack = new StompFrame(ACK)
+          ack.addHeader(Constants.MESSAGE_ID, msgId)
+          ack.addHeader(SUBSCRIPTION, subscriber_id)
+          send(ack) {
+            consumer_counter.incrementAndGet()
+          }
+        } else {
+          consumer_counter.incrementAndGet()
+        }
+      }
+
+      val reply_to = msg.getHeader(REPLY_TO)
+      if( reply_to !=null ) {
+        val response = new StompFrame(SEND)
+        response.addHeader(DESTINATION,reply_to)
+        val p = msg.getHeader(persistent_header_key)
+        if(p!=null) response.addHeader(persistent_header_key,p)
+        send(response) {
+          send_ack
+        }
+      } else {
+        send_ack
+      }
+
+    }
+  }
 }
