@@ -40,20 +40,20 @@ if [ ! -d "${HORNETQ_HOME}" ]; then
 
   #
   # Add the destinations that the benchmark will be using.
-  DESTINATION_CONFIGS = "<queue name=\"load_me_up-0\"><entry name=\"/queue/load_me_up-0\"/></queue>"
+  DESTINATION_CONFIGS="<queue name=\"load_me_up-0\"><entry name=\"/queue/load_me_up-0\"/></queue>"
   for (( i=0; i < 10 ; i++)) ; do
     DESTINATION_CONFIGS="${DESTINATION_CONFIGS}
     <queue name=\"loadq-${i}\"><entry name=\"/queue/loadq-${i}\"/></queue>"
   done
   for (( i=0; i < 100 ; i++)) ; do
     DESTINATION_CONFIGS="${DESTINATION_CONFIGS}
-    <queue name=\"request-${i}\"><entry name=\"/queue/request-${i}\"/></queue>"
+    <queue name=\"response-${i}\"><entry name=\"/queue/response-${i}\"/></queue>"
   done
   for (( i=0; i < 10 ; i++)) ; do
     DESTINATION_CONFIGS="${DESTINATION_CONFIGS}
     <topic name=\"loadt-${i}\"><entry name=\"/topic/loadt-${i}\"/></topic>"
   done
-  perl -pi -e 's|^</configuration>|${DESTINATION_CONFIGS}</configuration>|' "${HORNETQ_HOME}/config/stand-alone/non-clustered/hornetq-jms.xml"
+  perl -pi -e "s|^</configuration>|${DESTINATION_CONFIGS}</configuration>|" "${HORNETQ_HOME}/config/stand-alone/non-clustered/hornetq-jms.xml"
  
 fi
 

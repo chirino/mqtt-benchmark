@@ -108,7 +108,7 @@ trait Scenario {
   var display_errors = false
 
   var destination_type = "queue"
-  private var _destination_name: () => String = () => "load"
+  private var _destination_name: () => String = () => ""
   def destination_name = _destination_name()
   def destination_name_=(new_name: String) = _destination_name = () => new_name
   def destination_name_=(new_func: () => String) = _destination_name = new_func
