@@ -19,14 +19,13 @@ package com.github.stomp.benchmark
 
 import org.fusesource.hawtdispatch._
 import java.util.concurrent.{CountDownLatch, TimeUnit}
-import org.fusesource.stompjms.client.callback._
 import java.lang.Throwable
 import org.fusesource.hawtbuf.AsciiBuffer
 import org.fusesource.hawtbuf.Buffer._
-import org.fusesource.stompjms.client.{StompFrame, Stomp}
-import org.fusesource.stompjms.client.Constants
-import org.fusesource.stompjms.client.Constants._
+import org.fusesource.stomp.client._
+import org.fusesource.stomp.client.Constants._
 import scala.collection.mutable.HashMap
+import org.fusesource.stomp.codec.StompFrame
 
 //object NonBlockingScenario {
 //  def main(args:Array[String]):Unit = {
@@ -79,14 +78,14 @@ class NonBlockingScenario extends Scenario {
     case class CONNECTING(host: String, port: Int, on_complete: ()=>Unit) extends State {
       
       def connect() = {
-        val cb = Stomp.callback(host, port)
-        cb.dispatchQueue(queue)
-        cb.version("1.0")
-        cb.host(null) // RabbitMQ barfs if the host is set.
-        login.foreach(cb.login(_))
-        passcode.foreach(cb.passcode(_))
-        cb.connect(new Callback[Connection](){
-          override def success(connection: Connection) {
+        val stomp = new Stomp(host, port)
+        stomp.setDispatchQueue(queue)
+        stomp.setVersion("1.0")
+        stomp.setHost(null) // RabbitMQ barfs if the host is set.
+        login.foreach(stomp.setLogin(_))
+        passcode.foreach(stomp.setPasscode(_))
+        stomp.connectCallback(new Callback[CallbackConnection](){
+          override def onSuccess(connection: CallbackConnection) {
             state match {
               case x:CONNECTING =>
                 state = CONNECTED(connection)
@@ -96,7 +95,7 @@ class NonBlockingScenario extends Scenario {
                 connection.close(null)
             }
           }
-          override def failure(value: Throwable) {
+          override def onFailure(value: Throwable) {
             on_failure(value)
           }
         })
@@ -129,11 +128,11 @@ class NonBlockingScenario extends Scenario {
 
     }
 
-    case class CONNECTED(val connection:Connection) extends State {
+    case class CONNECTED(val connection:CallbackConnection) extends State {
 
       connection.receive(new Callback[StompFrame](){
-        override def failure(value: Throwable) = on_failure(value)
-        override def success(value: StompFrame) = on_receive(value)
+        override def onFailure(value: Throwable) = on_failure(value)
+        override def onSuccess(value: StompFrame) = on_receive(value)
       })
 
       def close() = {
@@ -211,10 +210,10 @@ class NonBlockingScenario extends Scenario {
       queue_check
       state match {
         case state:CONNECTED => state.connection.send(frame, new Callback[Void](){
-          override def success(value: Void) {
+          override def onSuccess(value: Void) {
             func
           }
-          override def failure(value: Throwable) = on_failure(value)
+          override def onFailure(value: Throwable) = on_failure(value)
         })
         case _ =>
       }
@@ -224,10 +223,10 @@ class NonBlockingScenario extends Scenario {
       queue_check
       state match {
         case state:CONNECTED => state.connection.request(frame, new Callback[StompFrame](){
-          override def success(value: StompFrame) {
+          override def onSuccess(value: StompFrame) {
             func(value)
           }
-          override def failure(value: Throwable) = on_failure(value)
+          override def onFailure(value: Throwable) = on_failure(value)
         })
         case _ =>
       }
