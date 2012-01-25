@@ -368,6 +368,7 @@
           <li><a href="#queue_load_unload">Queue Load/Unload</a></li>
           <li><a href="#partitioned_load">Partitioned Load Scenarios</a></li>
           <li><a href="#fan_in_out_load">Fan In/Out Load Scenarios</a></li>
+          <li><a href="#request_reply">Request/Reply Scenarios</a></li>
         </ol>
         
         <h2 id="throughput_to_topic">Overview</h2>
@@ -437,100 +438,6 @@
             </td>
           </tr>
         </table>
-        
-        <h2 id="request_reply">Request/Reply Scenarios</h2>
-        <p>
-          In this scenario producers send a request message with a 20 byte body to a queue the consumers are subscribed to and then 
-          waits for response on a queue unique to each producer.  The request message has the `reply-to` header
-          set to the queue which the producer is will wait for the response on.  Consumers are receive the request 
-          message and send a response message without a body to the `reply-to` queue specified on the request.  The
-          99.9th percentile latency is measured using the time elapsed from when the producer sends 
-          the request message to when the producer receives the response message.
-        </p>
-        <table class="charts">
-          <tr><th>&nbsp;</th><th class="block">Non Persistent</th><th class="block">Persistent</th></tr>
-          <tr><th class="block"><div class="r90">Queue</div></th><td>
-            <table>
-              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">10 Producers</th><th class="block">100 Producers</th></tr>
-              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
-                <h4 class="chart-title">Request Rates (r/s):</h4>
-                <div id='p_rr_20b_1a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <h4 class="chart-title">99.9th % Latency (ms):</h4>
-                <div id='p999_rr_20b_1a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_10a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_10a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_100a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_100a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td></tr>
-              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
-                <h4 class="chart-title">Request Rates (r/s):</h4>
-                <div id='p_rr_20b_1a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <h4 class="chart-title">99.9th % Latency (ms):</h4>
-                <div id='p999_rr_20b_1a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_10a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_10a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_100a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_100a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td></tr>
-              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
-                <h4 class="chart-title">Request Rates (r/s):</h4>
-                <div id='p_rr_20b_1a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <h4 class="chart-title">99.9th % Latency (ms):</h4>
-                <div id='p999_rr_20b_1a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_10a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_10a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_100a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_100a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td></tr>
-            </table>
-          </td><td>
-            <table>
-              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">100 Producers</th></tr>
-              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
-                <h4 class="chart-title">Request Rates (r/s):</h4>
-                <div id='p_rr_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <h4 class="chart-title">99.9th % Latency (ms):</h4>
-                <div id='p999_rr_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_10p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_10p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_100p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_100p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td></tr>
-              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
-                <h4 class="chart-title">Request Rates (r/s):</h4>
-                <div id='p_rr_20b_1p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <h4 class="chart-title">99.9th % Latency (ms):</h4>
-                <div id='p999_rr_20b_1p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_10p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_10p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_100p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_100p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td></tr>
-              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
-                <h4 class="chart-title">Request Rates (r/s):</h4>
-                <div id='p_rr_20b_1p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <h4 class="chart-title">99.9th % Latency (ms):</h4>
-                <div id='p999_rr_20b_1p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_10p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_10p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td><td>
-                <div id='p_rr_20b_100p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-                <div id='p999_rr_20b_100p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
-              </td></tr>
-            </table>
-          </td></tr>
-        </table>        
         
         <h2 id="fan_in_out_load">Fan In/Out Load Scenarios</h2>
         <p>
@@ -897,6 +804,100 @@
             </table>
           </td></tr>
         </table>
+        
+        <h2 id="request_reply">Request/Reply Scenarios</h2>
+        <p>
+          In this scenario producers send a request message with a 20 byte body to a queue the consumers are subscribed to and then 
+          waits for response on a queue unique to each producer.  The request message has the `reply-to` header
+          set to the queue which the producer is will wait for the response on.  Consumers are receive the request 
+          message and send a response message without a body to the `reply-to` queue specified on the request.  The
+          99.9th percentile latency is measured using the time elapsed from when the producer sends 
+          the request message to when the producer receives the response message.
+        </p>
+        <table class="charts">
+          <tr><th>&nbsp;</th><th class="block">Non Persistent</th><th class="block">Persistent</th></tr>
+          <tr><th class="block"><div class="r90">Queue</div></th><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">10 Producers</th><th class="block">100 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100a_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100a_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100a_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+            </table>
+          </td><td>
+            <table>
+              <tr><th>&nbsp;</th><th class="block">1 Producer</th><th class="block">5 Producers</th><th class="block">100 Producers</th></tr>
+              <tr><th class="block"><div class="r90">1 Consumer</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100p_1queue_1' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">5 Consumers</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100p_1queue_5' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+              <tr><th class="block"><div class="r90">10 Consumers</div></th><td>
+                <h4 class="chart-title">Request Rates (r/s):</h4>
+                <div id='p_rr_20b_1p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <h4 class="chart-title">99.9th % Latency (ms):</h4>
+                <div id='p999_rr_20b_1p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_10p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_10p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td><td>
+                <div id='p_rr_20b_100p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+                <div id='p999_rr_20b_100p_1queue_10' class="small-chart"><img src="./resources/ajax-loader.gif"></div>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>        
                 
       </div>
     </div>
