@@ -8,8 +8,9 @@
 #
 
 true \
-${APOLLO_VERSION:=1.0-beta6} \
-${APOLLO_DOWNLOAD:="http://archive.apache.org/dist/activemq/activemq-apollo/${APOLLO_VERSION}/apache-apollo-${APOLLO_VERSION}-unix-distro.tar.gz"}
+${APOLLO_VERSION:=1.0} \
+${APOLLO_DOWNLOAD:="https://repository.apache.org/content/repositories/orgapacheactivemq-131/org/apache/activemq/apache-apollo/${APOLLO_VERSION}/apache-apollo-${APOLLO_VERSION}-unix-distro.tar.gz"}
+# ${APOLLO_DOWNLOAD:="http://archive.apache.org/dist/activemq/activemq-apollo/${APOLLO_VERSION}/apache-apollo-${APOLLO_VERSION}-unix-distro.tar.gz"}
 
 BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
 . ${BASEDIR}/bin/benchmark-setup
@@ -28,7 +29,8 @@ fi
 APOLLO_BASE="${WORKSPACE}/apollo-${APOLLO_VERSION}"
 if [ ! -d "${APOLLO_BASE}" ]; then
   cd "${WORKSPACE}"
-  "${APOLLO_HOME}/bin/apollo" create "apollo-${APOLLO_VERSION}"
+  "${APOLLO_HOME}/bin/apollo" create --with-ssl=false "apollo-${APOLLO_VERSION}"
+  perl -pi -e 's|<leveldb_store directory="\${apollo.base}/data"/>|<leveldb_store directory="\${apollo.base}/data" log_size="2G"/>|' "${WORKSPACE}/apollo-${APOLLO_VERSION}/etc/apollo.xml"
 fi
 
 #
@@ -38,6 +40,7 @@ rm -rf ${APOLLO_BASE}/data/* ${APOLLO_BASE}/tmp/* ${APOLLO_BASE}/log/*
 
 #
 # Configuration
+export APOLLO_ASSERTIONS="false"
 export JVM_FLAGS="-server -Xmx4G -Xms1G"
 
 #
