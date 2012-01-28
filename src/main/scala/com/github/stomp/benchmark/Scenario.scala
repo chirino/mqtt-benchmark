@@ -147,9 +147,11 @@ trait Scenario {
   var key_managers:Array[KeyManager] = _
 
   def ssl_context:SSLContext = {
-    val rc = SSLContext.getInstance(SslTransport.protocol(protocol))
-    rc.init(get_key_managers, get_trust_managers, null)
-    rc
+    Option(SslTransport.protocol(protocol)).map { protocol =>
+      val rc = SSLContext.getInstance(protocol)
+      rc.init(get_key_managers, get_trust_managers, null)
+      rc
+    }.getOrElse(null)
   }
 
   def get_key_store = {
