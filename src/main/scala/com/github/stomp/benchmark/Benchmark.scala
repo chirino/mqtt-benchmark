@@ -72,6 +72,22 @@ class Benchmark extends Action {
   var cl_broker_name:String = _
   var broker_name = FlexibleProperty(default = None, high_priority = () => Option(cl_broker_name))
 
+  @option(name = "--protocol", description = "protocol to use (tcp, ssl, tls, tlsv2, etc.)")
+  var cl_protocol: String = _
+  var protocol = FlexibleProperty(default = Some("tcp"), high_priority = () => Option(cl_protocol))
+
+  @option(name = "--key-store-file", description = "The JKS keystore file to use for keys and certs when using ssl connections")
+  var cl_key_store_file: String = _
+  var key_store_file = FlexibleProperty(default = None, high_priority = () => Option(cl_key_store_file))
+
+  @option(name = "--key-store-password", description = "The JKS keystore password")
+  var cl_key_store_password: String = _
+  var key_store_password = FlexibleProperty(default = None, high_priority = () => Option(cl_key_store_password))
+
+  @option(name = "--key-password", description = "The password the key in the JKS keystore")
+  var cl_key_password: String = _
+  var key_password = FlexibleProperty(default = None, high_priority = () => Option(cl_key_password))
+
   @option(name = "--host", description = "server host name")
   var cl_host: String = _
   var host = FlexibleProperty(default = Some("127.0.0.1"), high_priority = () => Option(cl_host))
@@ -284,8 +300,12 @@ class Benchmark extends Action {
       val scenario = if(blocking) new BlockingScenario else new NonBlockingScenario
       scenario.name = name
       scenario.sample_interval = sample_interval.get
+      scenario.protocol = protocol.get
       scenario.host = host.get
       scenario.port = port.get
+      scenario.key_store_file = key_store_file.getOption()
+      scenario.key_store_password = key_store_password.getOption()
+      scenario.key_password = key_password.getOption()
       scenario.login = login.getOption
       scenario.passcode = passcode.getOption
       scenario.queue_prefix = queue_prefix.get

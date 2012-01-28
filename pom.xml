@@ -37,8 +37,8 @@
     <slf4j-version>1.6.0</slf4j-version>
     <maven-assembly-plugin-version>2.2.1</maven-assembly-plugin-version>
 
-    <hawtdispatch-version>1.6</hawtdispatch-version>
-    <stompjms-version>1.6</stompjms-version>
+    <hawtdispatch-version>1.8-SNAPSHOT</hawtdispatch-version>
+    <stompjms-version>1.8-SNAPSHOT</stompjms-version>
   </properties>
 
   <dependencies>

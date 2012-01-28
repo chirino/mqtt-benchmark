@@ -9,8 +9,8 @@ class BenchmarkProject(info: ProjectInfo) extends DefaultProject(info) {
   
   lazy val karaf_console = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.2.1"
   lazy val slf4j_nop = "org.slf4j" % "slf4j-nop" % "1.6.0"
-  lazy val hawtdispatch = "org.fusesource.hawtdispatch" % "hawtdispatch-scala" % "1.6"
-  lazy val stompjms = "org.fusesource.stompjms" % "stompjms-client" % "1.5"
+  lazy val hawtdispatch = "org.fusesource.hawtdispatch" % "hawtdispatch-scala" % "1.8-SNAPSHOT"
+  lazy val stompjms = "org.fusesource.stompjms" % "stompjms-client" % "1.8-SNAPSHOT"
 
 }
 

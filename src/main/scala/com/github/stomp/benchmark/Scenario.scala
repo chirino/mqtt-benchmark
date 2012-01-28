@@ -21,6 +21,10 @@ import java.util.concurrent.atomic._
 import java.util.concurrent.TimeUnit._
 import scala.collection.mutable.ListBuffer
 import java.util.concurrent.ConcurrentLinkedQueue
+import java.security.KeyStore
+import java.io.FileInputStream
+import javax.net.ssl._
+import org.fusesource.hawtdispatch.transport.{SslTransport, TcpTransport}
 
 object Scenario {
   val MESSAGE_ID:Array[Byte] = "message-id"
@@ -79,6 +83,7 @@ trait Scenario {
   var consumers = 1
   var consumers_per_sample = 0
   var sample_interval = 1000
+  var protocol = "tcp"
   var host = "127.0.0.1"
   var port = 61613
   var buffer_size = 32*1024
@@ -132,6 +137,52 @@ trait Scenario {
   var name = "custom"
 
   var drain_timeout = 2000L
+
+  var key_store_file:Option[String] = None
+  var key_store_password:Option[String] = None
+  var key_password:Option[String] = None
+
+  var key_store:KeyStore = _
+  var trust_managers:Array[TrustManager] = _
+  var key_managers:Array[KeyManager] = _
+
+  def ssl_context:SSLContext = {
+    val rc = SSLContext.getInstance(SslTransport.protocol(protocol))
+    rc.init(get_key_managers, get_trust_managers, null)
+    rc
+  }
+
+  def get_key_store = {
+    if( key_store==null && key_store_file.isDefined ) {
+      key_store = {
+        val store = KeyStore.getInstance("JKS")
+        store.load(new FileInputStream(key_store_file.get), key_store_password.getOrElse("").toCharArray())
+        store
+      }
+    }
+    key_store
+  }
+
+  def get_trust_managers = {
+    val store = get_key_store
+    if( trust_managers==null && store!=null ) {
+      val factory = TrustManagerFactory.getInstance("SunX509")
+      factory.init(store)
+      trust_managers = factory.getTrustManagers
+    }
+    trust_managers
+  }
+
+  def get_key_managers = {
+    val store = get_key_store
+    if( key_managers==null && store!=null) {
+      val factory = KeyManagerFactory.getInstance("SunX509")
+      factory.init(store, key_password.getOrElse("").toCharArray())
+      key_managers = factory.getKeyManagers
+    }
+    key_managers
+  }
+
 
   def run() = {
     print(toString)

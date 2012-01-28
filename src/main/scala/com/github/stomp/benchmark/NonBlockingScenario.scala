@@ -26,16 +26,25 @@ import org.fusesource.stomp.client._
 import org.fusesource.stomp.client.Constants._
 import scala.collection.mutable.HashMap
 import org.fusesource.stomp.codec.StompFrame
+import java.net.URI
 
 //object NonBlockingScenario {
 //  def main(args:Array[String]):Unit = {
 //    val scenario = new com.github.stomp.benchmark.NonBlockingScenario
 //    scenario.login = Some("admin")
 //    scenario.passcode = Some("password")
+//
+//    scenario.port = 61614
+//    scenario.protocol = "tls"
+//    scenario.key_store_file = Some("/Users/chirino/sandbox/stomp-benchmark/keystore")
+//    scenario.key_store_password = Some("password")
+//    scenario.key_password = Some("password")
+//
 //    scenario.message_size = 20
-//    scenario.request_response = true
-//    scenario.producers = 100
-////    scenario.consumers = 0
+//    scenario.request_response = false
+//    scenario.display_errors = true
+//
+//    scenario.consumers = 0
 //    scenario.run
 //  }
 //}
@@ -78,9 +87,10 @@ class NonBlockingScenario extends Scenario {
     case class CONNECTING(host: String, port: Int, on_complete: ()=>Unit) extends State {
       
       def connect() = {
-        val stomp = new Stomp(host, port)
+        val stomp = new Stomp(new URI(protocol+"://" + host + ":" + port))
         stomp.setDispatchQueue(queue)
         stomp.setVersion("1.0")
+        stomp.setSslContext(ssl_context)
         stomp.setHost(null) // RabbitMQ barfs if the host is set.
         login.foreach(stomp.setLogin(_))
         passcode.foreach(stomp.setPasscode(_))
