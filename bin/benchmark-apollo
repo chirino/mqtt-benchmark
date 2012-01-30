@@ -9,7 +9,7 @@
 
 true \
 ${APOLLO_VERSION:=1.0} \
-${APOLLO_DOWNLOAD:="https://repository.apache.org/content/repositories/orgapacheactivemq-131/org/apache/activemq/apache-apollo/${APOLLO_VERSION}/apache-apollo-${APOLLO_VERSION}-unix-distro.tar.gz"}
+${APOLLO_DOWNLOAD:="https://repository.apache.org/content/repositories/orgapacheactivemq-162/org/apache/activemq/apache-apollo/${APOLLO_VERSION}/apache-apollo-${APOLLO_VERSION}-unix-distro.tar.gz"}
 # ${APOLLO_DOWNLOAD:="http://archive.apache.org/dist/activemq/activemq-apollo/${APOLLO_VERSION}/apache-apollo-${APOLLO_VERSION}-unix-distro.tar.gz"}
 
 BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
