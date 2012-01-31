@@ -1,0 +1,17 @@
+
+    _____                .__  .__
+   /  _  \ ______   ____ |  | |  |   ____
+  /  /_\  \\____ \ /  _ \|  | |  |  /  _ \
+ /    |    \  |_> >  <_> )  |_|  |_(  <_> )
+ \____|__  /   __/ \____/|____/____/\____/
+         \/|__|  Apache Apollo (1.0)
+
+
+Loading configuration file '/mnt/md0/stomp-benchmark/workspace/apollo-1.0/etc/apollo.xml'.
+INFO  | OS     : Linux 3.0.0-15-generic (Ubuntu 11.10)
+INFO  | JVM    : Java HotSpot(TM) 64-Bit Server VM 1.6.0_30 (Sun Microsystems Inc.)
+INFO  | Apollo : 1.0 (at: /mnt/md0/stomp-benchmark/workspace/apache-apollo-1.0)
+INFO  | OS is restricting the open file limit to: 4096
+INFO  | Starting store: leveldb store at /mnt/md0/stomp-benchmark/workspace/apollo-1.0/data
+INFO  | Accepting connections at: tcp://0.0.0.0:61613
+INFO  | Administration interface available at: http://127.0.0.1:61680/

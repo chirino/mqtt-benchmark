@@ -20,13 +20,13 @@ Copyright (C) 2007-2011 VMware, Inc.
 Licensed under the MPL.  See http://www.rabbitmq.com/
 
 node           : rabbit@ubuntu-2600k
-app descriptor : /home/chirino/sandbox/stomp-benchmark/workspace/rabbitmq_server-2.7.0/sbin/../ebin/rabbit.app
+app descriptor : /mnt/md0/stomp-benchmark/workspace/rabbitmq_server-2.7.0/sbin/../ebin/rabbit.app
 home dir       : /home/chirino
 config file(s) : (none)
 cookie hash    : Qv2ZAy6bRj0N8hvD/cf9jQ==
-log            : /home/chirino/sandbox/stomp-benchmark/workspace/rabbitmq-2.7.0/logs/rabbit.log
-sasl log       : /home/chirino/sandbox/stomp-benchmark/workspace/rabbitmq-2.7.0/logs/rabbit-sasl.log
-database dir   : /home/chirino/sandbox/stomp-benchmark/workspace/rabbitmq-2.7.0/mnesia/rabbit
+log            : /mnt/md0/stomp-benchmark/workspace/rabbitmq-2.7.0/logs/rabbit.log
+sasl log       : /mnt/md0/stomp-benchmark/workspace/rabbitmq-2.7.0/logs/rabbit-sasl.log
+database dir   : /mnt/md0/stomp-benchmark/workspace/rabbitmq-2.7.0/mnesia/rabbit
 erlang version : 5.8.5
 
 -- rabbit boot start
@@ -65,6 +65,3 @@ starting notify cluster nodes                                         ...done
 broker running
 starting STOMP Adapter (binding to {[61613],[]})  ...done
 Erlang has closed
-
-Crash dump was written to: erl_crash.dump
-eheap_alloc: Cannot allocate 4454408120 bytes of memory (of type "old_heap").
