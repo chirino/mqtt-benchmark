@@ -1,8 +1,9 @@
 # MQTT Benchmark
 
-A benchmarking tool for [MQTT 1.0](http://mqtt.github.com) servers.
+A benchmarking tool for [MQTT v3.1](http://mqtt.org/) servers.
 The benchmark covers a wide variety of common usage scenarios.
 
+<!--
 # Just looking for the Results?
 
 The numbers look different depending on the Hardware and OS they are run on:
@@ -53,3 +54,4 @@ The results will be stored in the ~/reports directory.
 
 See the [custom-scenario.md ](https://github.com/chirino/mqtt-benchmark/blob/master/custom-scenario.md) file for more information
 on how to configure other benchmarking scenarios.
+-->
