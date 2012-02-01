@@ -1,6 +1,6 @@
-# Stomp Benchmark
+# MQTT Benchmark
 
-A benchmarking tool for [Stomp](http://stomp.github.com) servers.
+A benchmarking tool for [MQTT](http://mqtt.github.com) servers.
 
 ## Build Prep
 
@@ -8,7 +8,7 @@ A benchmarking tool for [Stomp](http://stomp.github.com) servers.
   and follow the [setup instructions](http://code.google.com/p/simple-build-tool/wiki/Setup) but instead 
   of setting up the sbt script to use `sbt-launch.jar "$@"` please use `sbt-launch.jar "$*"` instead.
   
-* run: `sbt update` in the stomp-benchmark directory
+* run: `sbt update` in the mqtt-benchmark directory
 
 ## Running a Custom Scenario
 
@@ -18,8 +18,8 @@ running `sbt console`
 
 Then at the console you execute:
 
-    scala> val scenario = new com.github.stomp.benchmark.NonBlockingScenario
-    scenario: com.github.stomp.benchmark.Scenario = 
+    scala> val scenario = new com.github.mqtt.benchmark.NonBlockingScenario
+    scenario: com.github.mqtt.benchmark.Scenario = 
     --------------------------------------
     Scenario Settings
     --------------------------------------
@@ -99,7 +99,7 @@ Press enter to stop the run.
 
 ## Running a custom scenario from XML file
 
-Is it possible to run stomp-benchmark using scenarios defined in XML files providing the option `--scenario-file`
+Is it possible to run mqtt-benchmark using scenarios defined in XML files providing the option `--scenario-file`
 
 Also, to be able to display this scenario results using generic_report.html, you need to provide the option `--new-json`
 
@@ -117,7 +117,7 @@ Then, you just have to create one or more clients sections, and define the prope
 For more complex groups, you can define variables inside a loop section, and give different values to each variable. All the possible combinations of the values for each variable will be generated,
 and a scenario for each combination will be generated using a scenario template. A scenario template is defined as a normal scenario, but you can use placeholders like ${variable_name} that will be substituted with the real value.
 
-The use of multiple scenario templates in one group with loop variables is supported in stomp-benchmark, but only the first one will be displayed using the generic_report.html. Also note, that if more than 1 variable is defined, a table will be used to display the results.
+The use of multiple scenario templates in one group with loop variables is supported in mqtt-benchmark, but only the first one will be displayed using the generic_report.html. Also note, that if more than 1 variable is defined, a table will be used to display the results.
 The odd variables (in definition order) will be horizontal headers, the even ones, vertical headers.
 
 The last thing to note, is that for the properties producer_sleep and consumer_sleep, message_size and messages_per_connection, instead of providing a single value, different values or functions for different time ranges can be provided.

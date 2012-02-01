@@ -1,15 +1,15 @@
-# Stomp Benchmark
+# MQTT Benchmark
 
-A benchmarking tool for [Stomp 1.0](http://stomp.github.com) servers.
+A benchmarking tool for [MQTT 1.0](http://mqtt.github.com) servers.
 The benchmark covers a wide variety of common usage scenarios.
 
 # Just looking for the Results?
 
 The numbers look different depending on the Hardware and OS they are run on:
 
-* [Amazon Linux: EC2 High-CPU Extra Large Instance](http://hiramchirino.com/stomp-benchmark/ec2-c1.xlarge/index.html)
-* [Ubuntu 11.10: Quad-Core 2600k Intel CPU (3.4 GHz)](http://hiramchirino.com/stomp-benchmark/ubuntu-2600k/index.html)
-* [OS X: 2 x Quad-Core Intel Xeon (3 GHz)](http://hiramchirino.com/stomp-benchmark/osx-8-core/index.html)
+* [Amazon Linux: EC2 High-CPU Extra Large Instance](http://hiramchirino.com/mqtt-benchmark/ec2-c1.xlarge/index.html)
+* [Ubuntu 11.10: Quad-Core 2600k Intel CPU (3.4 GHz)](http://hiramchirino.com/mqtt-benchmark/ubuntu-2600k/index.html)
+* [OS X: 2 x Quad-Core Intel Xeon (3 GHz)](http://hiramchirino.com/mqtt-benchmark/osx-8-core/index.html)
 
 ## Servers Currently Benchmarked
 
@@ -43,13 +43,13 @@ c1.xlarge instance type.  Once you have the instance started just execute
 the following commands on the instance:
 
     sudo yum install -y screen
-    curl https://nodeload.github.com/chirino/stomp-benchmark/tarball/master | tar -zxv 
-    mv chirino-stomp-benchmark-* stomp-benchmark
-    screen ./stomp-benchmark/bin/benchmark-all
+    curl https://nodeload.github.com/chirino/mqtt-benchmark/tarball/master | tar -zxv 
+    mv chirino-mqtt-benchmark-* mqtt-benchmark
+    screen ./mqtt-benchmark/bin/benchmark-all
 
 The results will be stored in the ~/reports directory.
 
 ## Running Custom Scenarios
 
-See the [custom-scenario.md ](https://github.com/chirino/stomp-benchmark/blob/master/custom-scenario.md) file for more information
+See the [custom-scenario.md ](https://github.com/chirino/mqtt-benchmark/blob/master/custom-scenario.md) file for more information
 on how to configure other benchmarking scenarios.

@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# This shell script automates running the stomp-benchmark [1] against the
+# This shell script automates running the mqtt-benchmark [1] against the
 # HornetQ project [2].
 #
-# [1]: http://github.com/chirino/stomp-benchmark
+# [1]: http://github.com/chirino/mqtt-benchmark
 # [2]: http://www.jboss.org/hornetq
 #
 
@@ -29,10 +29,10 @@ if [ ! -d "${HORNETQ_HOME}" ]; then
   perl -pi -e 's|-Xms512M -Xmx1024M|-Xmx4G -Xms1G|' "${HORNETQ_HOME}/bin/run.sh"
   
   #
-  # Add the stomp connector to the configuration.
-  perl -pi -e 's| <\/acceptors>|<acceptor name="stomp-acceptor">
+  # Add the mqtt connector to the configuration.
+  perl -pi -e 's| <\/acceptors>|<acceptor name="mqtt-acceptor">
       <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
-      <param key="protocol"  value="stomp"/>
+      <param key="protocol"  value="mqtt"/>
       <param key="host"  value="0.0.0.0"/>
       <param key="port"  value="61613"/>
     </acceptor>

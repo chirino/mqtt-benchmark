@@ -21,8 +21,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.stomp</groupId>
-  <artifactId>stomp-benchmark</artifactId>
+  <groupId>com.github.mqtt</groupId>
+  <artifactId>mqtt-benchmark</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
 
@@ -37,8 +37,8 @@
     <slf4j-version>1.6.0</slf4j-version>
     <maven-assembly-plugin-version>2.2.1</maven-assembly-plugin-version>
 
-    <hawtdispatch-version>1.8</hawtdispatch-version>
-    <stompjms-version>1.8</stompjms-version>
+    <mqtt-client-version>1.0-SNAPSHOT</mqtt-client-version>
+    <hawtdispatch-version>1.9-SNAPSHOT</hawtdispatch-version>
   </properties>
 
   <dependencies>
@@ -57,9 +57,9 @@
       <version>${hawtdispatch-version}</version>
     </dependency>
     <dependency>
-      <groupId>org.fusesource.stompjms</groupId>
-      <artifactId>stompjms-client</artifactId>
-      <version>${stompjms-version}</version>
+      <groupId>org.fusesource.mqtt-client</groupId>
+      <artifactId>mqtt-client</artifactId>
+      <version>${mqtt-client-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
@@ -133,7 +133,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.github.stomp.benchmark.Benchmark</mainClass>
+              <mainClass>com.github.mqtt.benchmark.Benchmark</mainClass>
             </manifest>
           </archive>
         </configuration>

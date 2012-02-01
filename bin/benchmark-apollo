@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# This shell script automates running the stomp-benchmark [1] against the
+# This shell script automates running the mqtt-benchmark [1] against the
 # Apache Apollo project [2].
 #
-# [1]: http://github.com/chirino/stomp-benchmark
+# [1]: http://github.com/chirino/mqtt-benchmark
 # [2]: http://activemq.apache.org/apollo
 #
 
