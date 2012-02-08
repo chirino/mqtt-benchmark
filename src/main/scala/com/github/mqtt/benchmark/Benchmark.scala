@@ -141,7 +141,7 @@ class Benchmark extends Action {
 
   @option(name = "--scenario-partitioned", description = "enable the partitioned load scenarios")
   var cl_scenario_partitioned: java.lang.Boolean = _
-  var scenario_partitioned = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_partitioned))
+  var scenario_partitioned = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_partitioned))
   @option(name = "--scenario-fan-in-out", description = "enable the fan in/fan out scenarios")
   var cl_scenario_fan_in_out: java.lang.Boolean = _
   var scenario_fan_in_out = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_fan_in_out))
@@ -176,7 +176,7 @@ class Benchmark extends Action {
 
   @option(name = "--display-errors", description = "Should errors get dumped to the screen when they occur?")
   var cl_display_errors: java.lang.Boolean = _
-  var display_errors = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_display_errors))
+  var display_errors = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_display_errors))
 
   var samples = HashMap[String, List[(Long,Long)]]()
   var benchmark_results = new BenchmarkResults()
@@ -446,6 +446,7 @@ class Benchmark extends Action {
 
     val clean_values = List(true, false)
     def clean_text(v:Boolean) = if(v) "clean" else "dirty"
+    def client_text(count:Int, clean:Boolean, qos:Int) = "(%d * %s qos%d)".format(count, clean_text(clean), qos)
 
     if(scenario_request_response.get) {
       for( producers <- List(1, 10, 100); clean <- List(false, true); consumers <- List(1, 5, 10); qos <- List(0,1,2) ) {
@@ -490,7 +491,6 @@ class Benchmark extends Action {
 //    }
     
     if( scenario_subscription_loading.get ) {
-      val size = 20
 
       // Setup the sub
       benchmark("load_setup", false, 1) { g=>
@@ -505,7 +505,7 @@ class Benchmark extends Action {
 
       // Load with the 3 QoSes
       for ( qos <- List(0,1,2)) {
-        val name = "%s:%s_qos%d_%d->1<-%s_qos%d_%d".format(mlabel(size), clean_text(true), qos, 1, clean_text(false), 1, 0)
+        val name = "20b:%s->[1]".format(client_text(1, true, qos))
         benchmark(name, false, 30) { g=>
           g.message_size = 20
           g.producer_clean = true
@@ -519,9 +519,9 @@ class Benchmark extends Action {
       }
 
       // Unload with the 3 QoSes
-      for ( qos <- List(0,1,2)) {
-        val name = "%s:%s_qos%d_%d->1<-%s_qos%d_%d".format(mlabel(size), clean_text(true), 0, 1, clean_text(false), qos, 0)
-        benchmark(name, false, 30) { g=>
+      for ( qos <- List(2,1,0)) {
+        val name = "20b:[1]->%s".format(client_text(1, false, qos))
+        benchmark(name, false, 15) { g=>
           g.producers = 0
           g.destination_count = 1
           g.destination_name = "load_me_up"
@@ -556,10 +556,13 @@ class Benchmark extends Action {
 //      }
 //    }
 
+    var sizes = List(20)
+//    var sizes = List(20, 1024, 1024 * 256)
+
     if( scenario_producer_throughput.get ) {
       // Benchmark for figuring out the max producer throughput
-      for( size <- List(20, 1024, 1024 * 256) ) {
-        val name = "%s:%s_qos%d_%d->1<-%s_qos%d_%d".format(mlabel(size), clean_text(true), 0, 1, clean_text(true), 0, 0)
+      for( size <-  List(20, 1024, 1024 * 256) ) {
+        val name = "%s:%s->[1]".format(mlabel(size), client_text(1, true, 0))
         benchmark(name) { g=>
           g.message_size = size
           g.producer_clean = true
@@ -574,11 +577,9 @@ class Benchmark extends Action {
     // Benchmark for the parallel scenarios
     if( scenario_partitioned.get ) {
 
-      val message_sizes = List(20, 1024, 1024 * 256)
       val destinations = List(1, 5, 10)
-
-      for( clean <- clean_values ; size <- message_sizes  ; load <- destinations ; qos <- List(0,1,2)) {
-        val name = "%s:%s_qos%d_%d->%d<-%s_qos%d_%d".format(mlabel(size), clean_text(true), qos, load, load, clean_text(true), qos, load)
+      for( clean <- clean_values ; size <- sizes; load <- destinations ; qos <- List(0,1,2)) {
+        val name = "%s:%s->[%d]->%s".format(mlabel(size), client_text(load, true, qos), load, client_text(load, true, qos))
         benchmark(name) { g=>
           g.message_size = size
           g.producer_clean = clean
@@ -594,11 +595,9 @@ class Benchmark extends Action {
 
     if( scenario_fan_in_out.get  ) {
       val client_count = List(1, 5, 10)
-      val message_sizes = List(20)
-      
-      for( clean <- clean_values; size <- message_sizes  ; consumers <- client_count; producers <- client_count; qos <- List(0,1,2) ) {
+      for( clean <- clean_values; size <- sizes; consumers <- client_count; producers <- client_count; qos <- List(0,1,2) ) {
         if( !(consumers == 1 && producers == 1) ) {
-          val name = "%s:%s_qos%d_%d->1<-%s_qos%d_%d".format(mlabel(size), clean_text(true), qos, producers, clean_text(true), qos, consumers)
+          val name = "%s:%s->[1]->%s".format(mlabel(size), client_text(producers, true, qos),  client_text(consumers, true, qos))
           benchmark(name) { g=>
             g.message_size = size
             g.producer_clean = clean

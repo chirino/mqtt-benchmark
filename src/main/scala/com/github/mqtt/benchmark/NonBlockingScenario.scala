@@ -26,27 +26,33 @@ import scala.collection.mutable.HashMap
 import java.net.URI
 import org.fusesource.hawtbuf.{Buffer, UTF8Buffer, AsciiBuffer}
 
-object NonBlockingScenario {
-  def main(args:Array[String]):Unit = {
-    val scenario = new com.github.mqtt.benchmark.NonBlockingScenario
-    scenario.user = Some("admin")
-    scenario.password = Some("password")
-
-    scenario.port = 61613
-//    scenario.protocol = "tls"
-//    scenario.key_store_file = Some("/Users/chirino/sandbox/mqtt-benchmark/keystore")
-//    scenario.key_store_password = Some("password")
-//    scenario.key_password = Some("password")
-
-    scenario.message_size = 20
-    scenario.request_response = false
-    scenario.display_errors = true
-    scenario.request_response = true
-    scenario.consumers = 10
-    scenario.producers = 10
-    scenario.run
-  }
-}
+//object NonBlockingScenario {
+//  def main(args:Array[String]):Unit = {
+//    val scenario = new com.github.mqtt.benchmark.NonBlockingScenario
+//    scenario.display_errors = true
+//
+////    scenario.protocol = "tls"
+////    scenario.key_store_file = Some("/Users/chirino/sandbox/mqtt-benchmark/keystore")
+////    scenario.key_store_password = Some("password")
+////    scenario.key_password = Some("password")
+//
+//    scenario.user = Some("admin")
+//    scenario.password = Some("password")
+//    scenario.port = 61613
+//    scenario.message_size = 20
+//
+//    scenario.consumer_clean = false
+//    scenario.consumer_qos = 1
+//    scenario.clear_subscriptions_when_finished = false
+//    scenario.producer_clean = false
+//    scenario.producer_qos = 0
+//
+////    scenario.consumers = 0; scenario.producers = 1
+//    scenario.consumers = 1; scenario.producers = 0
+//
+//    scenario.run
+//  }
+//}
 
 /**
  * <p>
@@ -107,7 +113,6 @@ class NonBlockingScenario extends Scenario {
               case x:CONNECTING =>
                 state = CONNECTED(connection)
                 on_complete()
-                connection.resume()
               case _ =>
                 connection.disconnect(null)
             }
