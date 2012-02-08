@@ -26,26 +26,27 @@ import scala.collection.mutable.HashMap
 import java.net.URI
 import org.fusesource.hawtbuf.{Buffer, UTF8Buffer, AsciiBuffer}
 
-//object NonBlockingScenario {
-//  def main(args:Array[String]):Unit = {
-//    val scenario = new com.github.mqtt.benchmark.NonBlockingScenario
-//    scenario.login = Some("admin")
-//    scenario.passcode = Some("password")
-//
-//    scenario.port = 61614
+object NonBlockingScenario {
+  def main(args:Array[String]):Unit = {
+    val scenario = new com.github.mqtt.benchmark.NonBlockingScenario
+    scenario.user = Some("admin")
+    scenario.password = Some("password")
+
+    scenario.port = 61613
 //    scenario.protocol = "tls"
 //    scenario.key_store_file = Some("/Users/chirino/sandbox/mqtt-benchmark/keystore")
 //    scenario.key_store_password = Some("password")
 //    scenario.key_password = Some("password")
-//
-//    scenario.message_size = 20
-//    scenario.request_response = false
-//    scenario.display_errors = true
-//
-//    scenario.consumers = 0
-//    scenario.run
-//  }
-//}
+
+    scenario.message_size = 20
+    scenario.request_response = false
+    scenario.display_errors = true
+    scenario.request_response = true
+    scenario.consumers = 10
+    scenario.producers = 10
+    scenario.run
+  }
+}
 
 /**
  * <p>
@@ -97,8 +98,8 @@ class NonBlockingScenario extends Scenario {
         mqtt.setReconnectAttemptsMax(0)
         mqtt.setConnectAttemptsMax(0)
 
-        login.foreach(mqtt.setUserName(_))
-        passcode.foreach(mqtt.setPassword(_))
+        user.foreach(mqtt.setUserName(_))
+        password.foreach(mqtt.setPassword(_))
         val connection = mqtt.callbackConnection();
         connection.connect(new Callback[Void](){
           def onSuccess(na: Void) {
@@ -274,6 +275,7 @@ class NonBlockingScenario extends Scenario {
   class ProducerClient(val id: Int) extends NonBlockingClient {
 
     override def client_id = "producer-"+id
+    override def clean = producer_clean
 
     val message_cache = HashMap.empty[Int, AsciiBuffer]
 
@@ -290,7 +292,7 @@ class NonBlockingScenario extends Scenario {
         } else {
           if(producer_sleep >= 0) {
             connection.foreach{ connection=>
-              connection.publish(utf8(destination(id)), get_message(), QoS.values()(producer_qos), producer_retain, new Callback[Void](){
+              connection.publish(utf8(destination(id)), get_message(), QoS.values()(producer_qos), message_retain, new Callback[Void](){
                 def onSuccess(value: Void) = {
                   producer_counter.incrementAndGet()
                   message_counter += 1
@@ -364,7 +366,7 @@ class NonBlockingScenario extends Scenario {
 
     override def client_id = "consumer-"+id
 
-    override def clean = clean_session
+    override def clean = consumer_clean
 
     override def reconnect_action = {
       connect {
@@ -437,7 +439,7 @@ class NonBlockingScenario extends Scenario {
               msg.buffer.moveHead(msg.length-4).bigEndianEditor().writeInt(id) // write the last 4 bytes..
 
               request_start = System.nanoTime()
-              connection.publish(utf8(destination(id)), msg, QoS.values()(producer_qos), producer_retain, new Callback[Void](){
+              connection.publish(utf8(destination(id)), msg, QoS.values()(producer_qos), message_retain, new Callback[Void](){
                 def onSuccess(value: Void) = {
                   // don't do anything.. we complete when
                   // on_receive gets called.
@@ -478,7 +480,7 @@ class NonBlockingScenario extends Scenario {
       connection.foreach{ connection=>
         body.moveHead(body.length-4) //lets read the last 4 bytes
         val rid = body.bigEndianEditor().readInt()
-        connection.publish(utf8(response_destination(rid)), EMPTY, QoS.values()(producer_qos), producer_retain, new Callback[Void](){
+        connection.publish(utf8(response_destination(rid)), EMPTY, QoS.values()(producer_qos), message_retain, new Callback[Void](){
           def onSuccess(value: Void) = {
             ack.run()
             consumer_counter.incrementAndGet()

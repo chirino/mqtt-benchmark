@@ -63,8 +63,8 @@ object Scenario {
 trait Scenario {
   import Scenario._
 
-  var login: Option[String] = None
-  var passcode: Option[String] = None
+  var user: Option[String] = None
+  var password: Option[String] = None
   var request_response = false
 
   private var _producer_sleep: { def apply(): Int; def init(time: Long) } = new { def apply() = 0; def init(time: Long) {}  }
@@ -87,16 +87,19 @@ trait Scenario {
   var host = "127.0.0.1"
   var port = 61613
   var buffer_size = 32*1024
-  
+
+  var consumer_clean = true
+  var consumer_qos = 0
+  var clear_subscriptions_when_finished = true
+
+  var producer_clean = true
+  var producer_qos = 0
+
+  var message_retain = false
   private var _message_size: { def apply(): Int; def init(time: Long) } = new { def apply() = 1024; def init(time: Long) {}  }
   def message_size = _message_size()
   def message_size_= (new_value: Int) = _message_size = new { def apply() = new_value; def init(time: Long) {}  }
   def message_size_= (new_func: { def apply(): Int; def init(time: Long) }) = _message_size = new_func
-
-  var consumer_qos = 0
-  var producer_qos = 0
-  var producer_retain = false
-  var clean_session = true
 
   var consumer_sleep_modulo = 1
   var producer_sleep_modulo = 1
@@ -282,13 +285,13 @@ trait Scenario {
     "  message_size          = "+message_size+"\n"+
     "  producer_sleep (ms)   = "+producer_sleep+"\n"+
     "  producer_qos          = "+producer_qos+"\n"+
-    "  producer_retain       = "+producer_retain+"\n"+
+    "  producer_retain       = "+message_retain+"\n"+
     "  \n"+
     "  --- Consumer Properties ---\n"+
     "  consumers             = "+consumers+"\n"+
     "  consumer_sleep (ms)   = "+consumer_sleep+"\n"+
     "  consumer_qos          = "+consumer_qos+"\n"+
-    "  clean_session         = "+clean_session+"\n"+
+    "  clean_session         = "+producer_clean+"\n"+
     ""
 
   }
@@ -309,8 +312,8 @@ trait Scenario {
     s :+= ("consumer_sleep", consumer_sleep.toString)
     s :+= ("consumer_qos", consumer_qos.toString)
     s :+= ("producer_qos", producer_qos.toString)
-    s :+= ("producer_retain", producer_retain.toString)
-    s :+= ("durable", clean_session.toString)
+    s :+= ("producer_retain", message_retain.toString)
+    s :+= ("durable", producer_clean.toString)
 
     s
   }
@@ -419,11 +422,12 @@ trait Scenario {
 
   def drain = {
     done.set(false)
-    if( destination_prefix=="queue" || destination_prefix=="raw_queue" || clean_session==true ) {
-      print("draining")
+    if( clear_subscriptions_when_finished && !consumer_clean ) {
+      consumer_clean=true
+      print("clearing subscriptions")
       consumer_counter.set(0)
       var consumer_clients = List[Client]()
-      for (i <- 0 until destination_count) {
+      for (i <- 0 until destination_count.max(consumers)) {
         val client = createConsumer(i)
         consumer_clients ::= client
         client.start()
@@ -449,6 +453,7 @@ trait Scenario {
         }
         println(". (drained %d)".format(drained))
       }
+      consumer_clean=false
     }
   }
 
