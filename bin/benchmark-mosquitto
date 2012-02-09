@@ -25,6 +25,11 @@ if [ ! -d "${MOSQUITTO_HOME}" ]; then
 fi
 if [ ! -f "${MOSQUITTO_HOME}/src/mosquitto" ]; then
   cd "${MOSQUITTO_HOME}"
+  
+  # Need the GCC toolchain to build
+  which yum > /dev/null && sudo yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel
+  which apt-get > /dev/null && sudo apt-get install -y build-essential ncurses-dev libssl-dev
+  
   make || exit 1
 fi
 if [ ! -f "${MOSQUITTO_HOME}/benchmark.conf" ]; then
