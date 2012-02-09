@@ -18,6 +18,7 @@ The numbers look different depending on the Hardware and OS they are run on:
 * Apache ActiveMQ Apollo
 * RabbitMQ
 * HornetQ
+-->
 
 ## Running the Benchmark
 
@@ -27,13 +28,15 @@ Just run:
     
 or one of the server specific benchmark scripts like:
 
-    ./bin/benchmark-activemq
+    ./bin/benchmark-apollo
 
+<!--
 Tested to work on:
 
 * Ubuntu 11.10
 * Amazon Linux
 * OS X
+-->
 
 The benchmark report will be stored in the `reports/$(hostname)` directory.
 
@@ -50,6 +53,7 @@ the following commands on the instance:
 
 The results will be stored in the ~/reports directory.
 
+<!--
 ## Running Custom Scenarios
 
 See the [custom-scenario.md ](https://github.com/chirino/mqtt-benchmark/blob/master/custom-scenario.md) file for more information
