@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# This shell script automates running the mqtt-benchmark [1] against the
+# Mosquitto server [2].
+#
+# [1]: http://github.com/chirino/mqtt-benchmark
+# [2]: http://mosquitto.org/
+#
+true \
+${MOSQUITTO_VERSION:=0.15} \
+${MOSQUITTO_DOWNLOAD:="http://mosquitto.org/files/source/mosquitto-${MOSQUITTO_VERSION}.tar.gz"}
+
+BASEDIR=`dirname "$0"`/.. ; cd "${BASEDIR}" ; BASEDIR=`pwd` ; cd - > /dev/null
+. ${BASEDIR}/bin/benchmark-setup
+
+#
+# Install the distro
+#
+MOSQUITTO_HOME="${WORKSPACE}/mosquitto-${MOSQUITTO_VERSION}"
+if [ ! -d "${MOSQUITTO_HOME}" ]; then
+  cd ${WORKSPACE}
+  wget "$MOSQUITTO_DOWNLOAD" -O "mosquitto-${MOSQUITTO_VERSION}.tar.gz"
+  tar -zxvf "mosquitto-${MOSQUITTO_VERSION}.tar.gz"
+  rm -rf "mosquitto-${MOSQUITTO_VERSION}.tar.gz"
+fi
+if [ ! -f "${MOSQUITTO_HOME}/src/mosquitto" ]; then
+  cd "${MOSQUITTO_HOME}"
+  make || exit 1
+fi
+if [ ! -f "${MOSQUITTO_HOME}/benchmark.conf" ]; then
+  cat > "${MOSQUITTO_HOME}/benchmark.conf" <<EOF
+# With this config, you can have up to 10 seconds of data loss.
+autosave_interval 10
+persistence true
+persistence_file mosquitto.db
+EOF
+fi
+
+#
+# Cleanup preious executions.
+killall -9 java mosquitto apollo > /dev/null 2>&1
+rm -rf "${MOSQUITTO_HOME}/mosquitto.db"
+
+
+# Start the server
+#
+cd "${MOSQUITTO_HOME}"
+CONSOLE_LOG="${REPORTS_HOME}/mosquitto-${MOSQUITTO_VERSION}.log"
+"${MOSQUITTO_HOME}/src/mosquitto" -c "${MOSQUITTO_HOME}/benchmark.conf" > "${CONSOLE_LOG}" 2>&1 &
+MOSQUITTO_PID=$!
+echo "Started Mosquitto with PID: ${MOSQUITTO_PID}"
+sleep 5
+cat "${CONSOLE_LOG}"
+
+#
+# Run the benchmark
+#
+cd ${BASEDIR}
+"${WORKSPACE}/bin/sbt" run "${REPORTS_HOME}/mosquitto-${MOSQUITTO_VERSION}.json"
+
+# Kill the server
+kill -9 ${MOSQUITTO_PID}
+
+# Create a report.
+"${BASEDIR}/bin/benchmark-report" $*

@@ -93,7 +93,7 @@ class Benchmark extends Action {
   var host = FlexibleProperty(default = Some("127.0.0.1"), high_priority = () => Option(cl_host))
   @option(name = "--port", description = "server port")
   var cl_port: java.lang.Integer = _
-  var port = FlexibleProperty(default = Some(61613), high_priority = () => toIntOption(cl_port))
+  var port = FlexibleProperty(default = Some(1883), high_priority = () => toIntOption(cl_port))
 
   @option(name = "--user", description = "user name to connect with")
   var cl_user:String = _

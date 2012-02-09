@@ -69,7 +69,7 @@ cat "${CONSOLE_LOG}"
 #
 # Run the benchmark
 cd ${BASEDIR}
-"${WORKSPACE}/bin/sbt" run --user admin --password password "${REPORTS_HOME}/apollo-${APOLLO_VERSION}.json"
+"${WORKSPACE}/bin/sbt" run --port 61613 --user admin --password password "${REPORTS_HOME}/apollo-${APOLLO_VERSION}.json"
 
 #
 # Kill the server
