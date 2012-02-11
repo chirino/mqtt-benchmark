@@ -49,7 +49,7 @@ fi
 
 #
 # Cleanup preious executions.
-killall -9 java erl epmd apollo > /dev/null 2>&1
+killall -9 java erl epmd apollo mosquitto > /dev/null 2>&1
 rm -rf ${APOLLO_BASE}/data/* ${APOLLO_BASE}/tmp/* ${APOLLO_BASE}/log/*
 
 #
