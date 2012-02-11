@@ -196,7 +196,7 @@ class Benchmark extends Action {
     }
     val os = new PrintStream(new FileOutputStream(out.get))
     
-    if( false ) { // scenario_file.getOption.isEmpty || (!new_json.get)) {
+    if( scenario_file.getOption.isEmpty ) {
       os.println("{")
       os.println("""  "benchmark_settings": {""")
       os.println("""    "broker_name": "%s",""".format(broker_name.get))
