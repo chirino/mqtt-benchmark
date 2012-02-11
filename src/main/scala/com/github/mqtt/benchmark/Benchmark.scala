@@ -505,7 +505,7 @@ class Benchmark extends Action {
 
       // Load with the 3 QoSes
       for ( qos <- List(0,1,2)) {
-        val name = "20b:%s->[1]".format(client_text(1, true, qos))
+        val name = "load_20b:%s->[1]".format(client_text(1, true, qos))
         benchmark(name, false, 30) { g=>
           g.message_size = 20
           g.producer_clean = true
@@ -520,7 +520,7 @@ class Benchmark extends Action {
 
       // Unload with the 3 QoSes
       for ( qos <- List(2,1,0)) {
-        val name = "20b:[1]->%s".format(client_text(1, false, qos))
+        val name = "load_20b:[1]->%s".format(client_text(1, false, qos))
         benchmark(name, false, 15) { g=>
           g.producers = 0
           g.destination_count = 1
@@ -556,9 +556,6 @@ class Benchmark extends Action {
 //      }
 //    }
 
-    var sizes = List(20)
-//    var sizes = List(20, 1024, 1024 * 256)
-
     if( scenario_producer_throughput.get ) {
       // Benchmark for figuring out the max producer throughput
       for( size <-  List(20, 1024, 1024 * 256) ) {
@@ -577,9 +574,10 @@ class Benchmark extends Action {
     // Benchmark for the parallel scenarios
     if( scenario_partitioned.get ) {
 
+      var sizes = List(20, 1024, 1024 * 256)
       val destinations = List(1, 5, 10)
       for( clean <- clean_values ; size <- sizes; load <- destinations ; qos <- List(0,1,2)) {
-        val name = "%s:%s->[%d]->%s".format(mlabel(size), client_text(load, true, qos), load, client_text(load, true, qos))
+        val name = "%s:%s->[%d]->%s".format(mlabel(size), client_text(load, clean, qos), load, client_text(load, clean, qos))
         benchmark(name) { g=>
           g.message_size = size
           g.producer_clean = clean
@@ -595,9 +593,10 @@ class Benchmark extends Action {
 
     if( scenario_fan_in_out.get  ) {
       val client_count = List(1, 5, 10)
+      var sizes = List(20)
       for( clean <- clean_values; size <- sizes; consumers <- client_count; producers <- client_count; qos <- List(0,1,2) ) {
         if( !(consumers == 1 && producers == 1) ) {
-          val name = "%s:%s->[1]->%s".format(mlabel(size), client_text(producers, true, qos),  client_text(consumers, true, qos))
+          val name = "%s:%s->[1]->%s".format(mlabel(size), client_text(producers, clean, qos),  client_text(consumers, clean, qos))
           benchmark(name) { g=>
             g.message_size = size
             g.producer_clean = clean
