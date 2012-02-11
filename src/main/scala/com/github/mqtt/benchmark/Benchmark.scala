@@ -122,7 +122,7 @@ class Benchmark extends Action {
 
   @option(name = "--scenario-request-response", description = "enable the request response scenarios")
   var cl_scenario_request_response: java.lang.Boolean = _
-  var scenario_request_response = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_request_response))
+  var scenario_request_response = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_request_response))
 
   @option(name = "--scenario-connection-scale-rate", description = "How many connection to add after each sample")
   var cl_scenario_connection_scale_rate: java.lang.Integer = _
@@ -141,7 +141,7 @@ class Benchmark extends Action {
 
   @option(name = "--scenario-partitioned", description = "enable the partitioned load scenarios")
   var cl_scenario_partitioned: java.lang.Boolean = _
-  var scenario_partitioned = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_partitioned))
+  var scenario_partitioned = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_partitioned))
   @option(name = "--scenario-fan-in-out", description = "enable the fan in/fan out scenarios")
   var cl_scenario_fan_in_out: java.lang.Boolean = _
   var scenario_fan_in_out = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_fan_in_out))
