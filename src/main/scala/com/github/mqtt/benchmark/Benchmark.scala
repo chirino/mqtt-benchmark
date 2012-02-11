@@ -559,7 +559,7 @@ class Benchmark extends Action {
     if( scenario_producer_throughput.get ) {
       // Benchmark for figuring out the max producer throughput
       for( size <-  List(20, 1024, 1024 * 256) ) {
-        val name = "%s:%s->[1]".format(mlabel(size), client_text(1, true, 0))
+        val name = "pt_%s:%s->[1]".format(mlabel(size), client_text(1, true, 0))
         benchmark(name) { g=>
           g.message_size = size
           g.producer_clean = true
@@ -577,7 +577,7 @@ class Benchmark extends Action {
       var sizes = List(20, 1024, 1024 * 256)
       val destinations = List(1, 5, 10)
       for( clean <- clean_values ; size <- sizes; load <- destinations ; qos <- List(0,1,2)) {
-        val name = "%s:%s->[%d]->%s".format(mlabel(size), client_text(load, clean, qos), load, client_text(load, clean, qos))
+        val name = "par_%s:%s->[%d]->%s".format(mlabel(size), client_text(load, clean, qos), load, client_text(load, clean, qos))
         benchmark(name) { g=>
           g.message_size = size
           g.producer_clean = clean
@@ -595,18 +595,16 @@ class Benchmark extends Action {
       val client_count = List(1, 5, 10)
       var sizes = List(20)
       for( clean <- clean_values; size <- sizes; consumers <- client_count; producers <- client_count; qos <- List(0,1,2) ) {
-        if( !(consumers == 1 && producers == 1) ) {
-          val name = "%s:%s->[1]->%s".format(mlabel(size), client_text(producers, clean, qos),  client_text(consumers, clean, qos))
-          benchmark(name) { g=>
-            g.message_size = size
-            g.producer_clean = clean
-            g.producer_qos = qos
-            g.producers = producers
-            g.destination_count = 1
-            g.consumer_clean = clean
-            g.consumer_qos = qos
-            g.consumers = consumers
-          }
+        val name = "fan_%s:%s->[1]->%s".format(mlabel(size), client_text(producers, clean, qos),  client_text(consumers, clean, qos))
+        benchmark(name) { g=>
+          g.message_size = size
+          g.producer_clean = clean
+          g.producer_qos = qos
+          g.producers = producers
+          g.destination_count = 1
+          g.consumer_clean = clean
+          g.consumer_qos = qos
+          g.consumers = consumers
         }
       }
     }
