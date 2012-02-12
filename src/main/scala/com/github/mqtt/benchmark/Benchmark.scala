@@ -122,7 +122,7 @@ class Benchmark extends Action {
 
   @option(name = "--scenario-request-response", description = "enable the request response scenarios")
   var cl_scenario_request_response: java.lang.Boolean = _
-  var scenario_request_response = FlexibleProperty(default = Some(true), high_priority = () => toBooleanOption(cl_scenario_request_response))
+  var scenario_request_response = FlexibleProperty(default = Some(false), high_priority = () => toBooleanOption(cl_scenario_request_response))
 
   @option(name = "--scenario-connection-scale-rate", description = "How many connection to add after each sample")
   var cl_scenario_connection_scale_rate: java.lang.Integer = _
