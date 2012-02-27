@@ -38,7 +38,7 @@
     <maven-assembly-plugin-version>2.2.1</maven-assembly-plugin-version>
 
     <mqtt-client-version>1.0-SNAPSHOT</mqtt-client-version>
-    <hawtdispatch-version>1.9-SNAPSHOT</hawtdispatch-version>
+    <hawtdispatch-version>1.9</hawtdispatch-version>
   </properties>
 
   <dependencies>
