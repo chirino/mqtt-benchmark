@@ -55,7 +55,7 @@ object Scenario {
         }
       }
     } else {
-      percentiles.map(p => 0L)
+      percentiles.map(p => -1L)
     }
   }
 }

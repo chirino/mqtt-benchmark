@@ -1,0 +1,3096 @@
+1329078338: mosquitto version 0.15 (build date 2012-02-08 21:43:25-0500) starting
+1329078338: Opening ipv4 listen socket on port 1883.
+1329078338: Opening ipv6 listen socket on port 1883.
+1329078346: New connection from 127.0.0.1.
+1329078346: New client connected from 127.0.0.1 as consumer-0.
+1329078350: Saving in-memory database to mosquitto.db.
+1329078350: New connection from 127.0.0.1.
+1329078350: New client connected from 127.0.0.1 as producer-0.
+1329078361: Saving in-memory database to mosquitto.db.
+1329078373: Saving in-memory database to mosquitto.db.
+1329078383: New connection from 127.0.0.1.
+1329078383: New client connected from 127.0.0.1 as producer-0.
+1329078386: Saving in-memory database to mosquitto.db.
+1329078398: Saving in-memory database to mosquitto.db.
+1329078409: Saving in-memory database to mosquitto.db.
+1329078416: New connection from 127.0.0.1.
+1329078416: New client connected from 127.0.0.1 as producer-0.
+1329078420: Saving in-memory database to mosquitto.db.
+1329078431: Saving in-memory database to mosquitto.db.
+1329078442: Saving in-memory database to mosquitto.db.
+1329078449: New connection from 127.0.0.1.
+1329078449: New client connected from 127.0.0.1 as consumer-0.
+1329078454: Saving in-memory database to mosquitto.db.
+1329078466: Saving in-memory database to mosquitto.db.
+1329078467: New connection from 127.0.0.1.
+1329078467: New client connected from 127.0.0.1 as consumer-0.
+1329078478: Saving in-memory database to mosquitto.db.
+1329078485: New connection from 127.0.0.1.
+1329078485: New client connected from 127.0.0.1 as consumer-0.
+1329078490: Saving in-memory database to mosquitto.db.
+1329078502: Saving in-memory database to mosquitto.db.
+1329078503: New connection from 127.0.0.1.
+1329078503: New client connected from 127.0.0.1 as producer-0.
+1329078513: Saving in-memory database to mosquitto.db.
+1329078521: New connection from 127.0.0.1.
+1329078521: New client connected from 127.0.0.1 as producer-0.
+1329078525: Saving in-memory database to mosquitto.db.
+1329078538: Saving in-memory database to mosquitto.db.
+1329078545: New connection from 127.0.0.1.
+1329078545: New client connected from 127.0.0.1 as producer-0.
+1329078555: Saving in-memory database to mosquitto.db.
+1329078615: Client producer-0 has exceeded timeout, disconnecting.
+1329078617: New connection from 127.0.0.1.
+1329078617: New connection from 127.0.0.1.
+1329078617: New client connected from 127.0.0.1 as consumer-0.
+1329078617: New client connected from 127.0.0.1 as producer-0.
+1329078626: Saving in-memory database to mosquitto.db.
+1329078635: New connection from 127.0.0.1.
+1329078635: New connection from 127.0.0.1.
+1329078635: New client connected from 127.0.0.1 as consumer-0.
+1329078635: New client connected from 127.0.0.1 as producer-0.
+1329078637: Saving in-memory database to mosquitto.db.
+1329078648: Saving in-memory database to mosquitto.db.
+1329078653: New connection from 127.0.0.1.
+1329078653: New connection from 127.0.0.1.
+1329078653: New client connected from 127.0.0.1 as producer-0.
+1329078653: New client connected from 127.0.0.1 as consumer-0.
+1329078659: Saving in-memory database to mosquitto.db.
+1329078670: Saving in-memory database to mosquitto.db.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New connection from 127.0.0.1.
+1329078671: New client connected from 127.0.0.1 as producer-0.
+1329078671: New client connected from 127.0.0.1 as producer-2.
+1329078671: New client connected from 127.0.0.1 as producer-3.
+1329078671: New client connected from 127.0.0.1 as producer-1.
+1329078671: New client connected from 127.0.0.1 as producer-4.
+1329078671: New client connected from 127.0.0.1 as consumer-0.
+1329078671: New client connected from 127.0.0.1 as consumer-2.
+1329078671: New client connected from 127.0.0.1 as consumer-1.
+1329078671: New client connected from 127.0.0.1 as consumer-4.
+1329078671: New client connected from 127.0.0.1 as consumer-3.
+1329078681: Saving in-memory database to mosquitto.db.
+1329078689: New connection from 127.0.0.1.
+1329078689: New connection from 127.0.0.1.
+1329078689: New connection from 127.0.0.1.
+1329078689: New connection from 127.0.0.1.
+1329078689: New connection from 127.0.0.1.
+1329078689: New connection from 127.0.0.1.
+1329078689: New connection from 127.0.0.1.
+1329078689: New connection from 127.0.0.1.
+1329078689: New client connected from 127.0.0.1 as producer-3.
+1329078689: New client connected from 127.0.0.1 as producer-0.
+1329078689: New connection from 127.0.0.1.
+1329078689: New client connected from 127.0.0.1 as producer-2.
+1329078689: New client connected from 127.0.0.1 as consumer-0.
+1329078689: New client connected from 127.0.0.1 as producer-4.
+1329078689: New client connected from 127.0.0.1 as producer-1.
+1329078689: New client connected from 127.0.0.1 as consumer-4.
+1329078689: New connection from 127.0.0.1.
+1329078689: New client connected from 127.0.0.1 as consumer-3.
+1329078689: New client connected from 127.0.0.1 as consumer-1.
+1329078689: New client connected from 127.0.0.1 as consumer-2.
+1329078693: Saving in-memory database to mosquitto.db.
+1329078704: Saving in-memory database to mosquitto.db.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New connection from 127.0.0.1.
+1329078707: New client connected from 127.0.0.1 as producer-0.
+1329078707: New client connected from 127.0.0.1 as consumer-4.
+1329078707: New client connected from 127.0.0.1 as producer-1.
+1329078707: New client connected from 127.0.0.1 as producer-4.
+1329078707: New client connected from 127.0.0.1 as consumer-0.
+1329078707: New client connected from 127.0.0.1 as producer-2.
+1329078707: New client connected from 127.0.0.1 as consumer-1.
+1329078707: New client connected from 127.0.0.1 as consumer-3.
+1329078707: New client connected from 127.0.0.1 as producer-3.
+1329078707: New client connected from 127.0.0.1 as consumer-2.
+1329078715: Saving in-memory database to mosquitto.db.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New connection from 127.0.0.1.
+1329078725: New client connected from 127.0.0.1 as producer-0.
+1329078725: New client connected from 127.0.0.1 as consumer-5.
+1329078725: New connection from 127.0.0.1.
+1329078725: New client connected from 127.0.0.1 as consumer-0.
+1329078725: New client connected from 127.0.0.1 as producer-3.
+1329078725: New client connected from 127.0.0.1 as producer-1.
+1329078725: New client connected from 127.0.0.1 as consumer-2.
+1329078725: New client connected from 127.0.0.1 as producer-2.
+1329078725: New client connected from 127.0.0.1 as producer-4.
+1329078725: New client connected from 127.0.0.1 as producer-5.
+1329078725: New client connected from 127.0.0.1 as producer-9.
+1329078725: New client connected from 127.0.0.1 as consumer-1.
+1329078725: New client connected from 127.0.0.1 as consumer-6.
+1329078725: New connection from 127.0.0.1.
+1329078725: New client connected from 127.0.0.1 as producer-7.
+1329078725: New client connected from 127.0.0.1 as consumer-8.
+1329078725: New client connected from 127.0.0.1 as producer-8.
+1329078725: New client connected from 127.0.0.1 as consumer-4.
+1329078725: New client connected from 127.0.0.1 as consumer-9.
+1329078725: New client connected from 127.0.0.1 as consumer-3.
+1329078725: New client connected from 127.0.0.1 as consumer-7.
+1329078725: New client connected from 127.0.0.1 as producer-6.
+1329078726: Saving in-memory database to mosquitto.db.
+1329078737: Saving in-memory database to mosquitto.db.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New client connected from 127.0.0.1 as producer-4.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New connection from 127.0.0.1.
+1329078743: New client connected from 127.0.0.1 as producer-6.
+1329078743: New client connected from 127.0.0.1 as producer-0.
+1329078743: New client connected from 127.0.0.1 as producer-3.
+1329078743: New client connected from 127.0.0.1 as producer-1.
+1329078743: New client connected from 127.0.0.1 as producer-9.
+1329078743: New client connected from 127.0.0.1 as consumer-0.
+1329078743: New client connected from 127.0.0.1 as consumer-3.
+1329078743: New client connected from 127.0.0.1 as consumer-5.
+1329078743: New client connected from 127.0.0.1 as consumer-2.
+1329078743: New client connected from 127.0.0.1 as consumer-4.
+1329078743: New client connected from 127.0.0.1 as consumer-6.
+1329078743: New client connected from 127.0.0.1 as producer-2.
+1329078743: New client connected from 127.0.0.1 as producer-7.
+1329078743: New client connected from 127.0.0.1 as consumer-1.
+1329078743: New client connected from 127.0.0.1 as producer-5.
+1329078743: New client connected from 127.0.0.1 as consumer-8.
+1329078743: New client connected from 127.0.0.1 as consumer-9.
+1329078743: New client connected from 127.0.0.1 as producer-8.
+1329078743: New client connected from 127.0.0.1 as consumer-7.
+1329078748: Saving in-memory database to mosquitto.db.
+1329078759: Saving in-memory database to mosquitto.db.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New connection from 127.0.0.1.
+1329078761: New client connected from 127.0.0.1 as producer-9.
+1329078761: New client connected from 127.0.0.1 as consumer-1.
+1329078761: New client connected from 127.0.0.1 as consumer-0.
+1329078761: New client connected from 127.0.0.1 as consumer-4.
+1329078761: New connection from 127.0.0.1.
+1329078761: New client connected from 127.0.0.1 as consumer-3.
+1329078761: New client connected from 127.0.0.1 as producer-0.
+1329078761: New connection from 127.0.0.1.
+1329078761: New client connected from 127.0.0.1 as producer-2.
+1329078761: New client connected from 127.0.0.1 as consumer-7.
+1329078761: New client connected from 127.0.0.1 as consumer-5.
+1329078761: New client connected from 127.0.0.1 as producer-8.
+1329078761: New client connected from 127.0.0.1 as consumer-2.
+1329078761: New client connected from 127.0.0.1 as producer-1.
+1329078761: New client connected from 127.0.0.1 as producer-3.
+1329078761: New connection from 127.0.0.1.
+1329078761: New client connected from 127.0.0.1 as producer-7.
+1329078761: New client connected from 127.0.0.1 as consumer-6.
+1329078761: New client connected from 127.0.0.1 as consumer-8.
+1329078761: New client connected from 127.0.0.1 as consumer-9.
+1329078761: New client connected from 127.0.0.1 as producer-4.
+1329078761: New client connected from 127.0.0.1 as producer-6.
+1329078761: New client connected from 127.0.0.1 as producer-5.
+1329078770: Saving in-memory database to mosquitto.db.
+1329078779: New connection from 127.0.0.1.
+1329078779: New connection from 127.0.0.1.
+1329078779: New client connected from 127.0.0.1 as producer-0.
+1329078779: New client connected from 127.0.0.1 as consumer-0.
+1329078781: Saving in-memory database to mosquitto.db.
+1329078792: Saving in-memory database to mosquitto.db.
+1329078797: New connection from 127.0.0.1.
+1329078797: New connection from 127.0.0.1.
+1329078797: New client connected from 127.0.0.1 as producer-0.
+1329078797: New client connected from 127.0.0.1 as consumer-0.
+1329078807: Saving in-memory database to mosquitto.db.
+1329078815: New connection from 127.0.0.1.
+1329078815: New connection from 127.0.0.1.
+1329078815: New client connected from 127.0.0.1 as producer-0.
+1329078815: New client connected from 127.0.0.1 as consumer-0.
+1329078818: Saving in-memory database to mosquitto.db.
+1329078829: Saving in-memory database to mosquitto.db.
+1329078833: New connection from 127.0.0.1.
+1329078833: New connection from 127.0.0.1.
+1329078833: New connection from 127.0.0.1.
+1329078833: New connection from 127.0.0.1.
+1329078833: New connection from 127.0.0.1.
+1329078833: New connection from 127.0.0.1.
+1329078833: New connection from 127.0.0.1.
+1329078833: New client connected from 127.0.0.1 as producer-1.
+1329078833: New client connected from 127.0.0.1 as producer-3.
+1329078833: New client connected from 127.0.0.1 as consumer-0.
+1329078833: New connection from 127.0.0.1.
+1329078833: New connection from 127.0.0.1.
+1329078833: New connection from 127.0.0.1.
+1329078833: New client connected from 127.0.0.1 as producer-0.
+1329078833: New client connected from 127.0.0.1 as producer-4.
+1329078833: New client connected from 127.0.0.1 as producer-2.
+1329078833: New client connected from 127.0.0.1 as consumer-1.
+1329078833: New client connected from 127.0.0.1 as consumer-3.
+1329078833: New client connected from 127.0.0.1 as consumer-4.
+1329078833: New client connected from 127.0.0.1 as consumer-2.
+1329078840: Saving in-memory database to mosquitto.db.
+1329078851: New connection from 127.0.0.1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New client connected from 127.0.0.1 as producer-1.
+1329078851: New client connected from 127.0.0.1 as consumer-0.
+1329078851: New client connected from 127.0.0.1 as producer-0.
+1329078851: New client connected from 127.0.0.1 as producer-2.
+1329078851: New client connected from 127.0.0.1 as producer-3.
+1329078851: New client connected from 127.0.0.1 as producer-4.
+1329078851: New client connected from 127.0.0.1 as consumer-1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New connection from 127.0.0.1.
+1329078851: New client connected from 127.0.0.1 as consumer-2.
+1329078851: New client connected from 127.0.0.1 as consumer-3.
+1329078851: New client connected from 127.0.0.1 as consumer-4.
+1329078854: Saving in-memory database to mosquitto.db.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New connection from 127.0.0.1.
+1329078869: New client connected from 127.0.0.1 as producer-0.
+1329078869: New client connected from 127.0.0.1 as producer-1.
+1329078869: New client connected from 127.0.0.1 as producer-2.
+1329078869: New client connected from 127.0.0.1 as producer-3.
+1329078869: New client connected from 127.0.0.1 as producer-4.
+1329078869: New client connected from 127.0.0.1 as consumer-0.
+1329078869: New client connected from 127.0.0.1 as consumer-1.
+1329078869: New client connected from 127.0.0.1 as consumer-2.
+1329078869: New client connected from 127.0.0.1 as consumer-3.
+1329078869: New client connected from 127.0.0.1 as consumer-4.
+1329078870: Saving in-memory database to mosquitto.db.
+1329078881: Saving in-memory database to mosquitto.db.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New connection from 127.0.0.1.
+1329078887: New client connected from 127.0.0.1 as producer-7.
+1329078887: New client connected from 127.0.0.1 as consumer-3.
+1329078887: New client connected from 127.0.0.1 as consumer-0.
+1329078887: New client connected from 127.0.0.1 as consumer-6.
+1329078887: New client connected from 127.0.0.1 as producer-9.
+1329078887: New client connected from 127.0.0.1 as consumer-5.
+1329078887: New client connected from 127.0.0.1 as producer-2.
+1329078887: New client connected from 127.0.0.1 as producer-0.
+1329078887: New client connected from 127.0.0.1 as producer-1.
+1329078887: New client connected from 127.0.0.1 as producer-5.
+1329078887: New client connected from 127.0.0.1 as producer-3.
+1329078887: New client connected from 127.0.0.1 as consumer-2.
+1329078887: New client connected from 127.0.0.1 as consumer-4.
+1329078887: New client connected from 127.0.0.1 as producer-8.
+1329078887: New client connected from 127.0.0.1 as producer-6.
+1329078887: New client connected from 127.0.0.1 as consumer-8.
+1329078887: New client connected from 127.0.0.1 as consumer-1.
+1329078887: New client connected from 127.0.0.1 as consumer-9.
+1329078887: New client connected from 127.0.0.1 as consumer-7.
+1329078887: New client connected from 127.0.0.1 as producer-4.
+1329078892: Saving in-memory database to mosquitto.db.
+1329078904: Saving in-memory database to mosquitto.db.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New client connected from 127.0.0.1 as producer-0.
+1329078908: New client connected from 127.0.0.1 as producer-3.
+1329078908: New client connected from 127.0.0.1 as producer-1.
+1329078908: New client connected from 127.0.0.1 as producer-7.
+1329078908: New client connected from 127.0.0.1 as producer-2.
+1329078908: New client connected from 127.0.0.1 as producer-5.
+1329078908: New client connected from 127.0.0.1 as producer-6.
+1329078908: New client connected from 127.0.0.1 as producer-8.
+1329078908: New client connected from 127.0.0.1 as consumer-0.
+1329078908: New client connected from 127.0.0.1 as producer-9.
+1329078908: New client connected from 127.0.0.1 as consumer-1.
+1329078908: New client connected from 127.0.0.1 as consumer-2.
+1329078908: New client connected from 127.0.0.1 as consumer-4.
+1329078908: New client connected from 127.0.0.1 as consumer-3.
+1329078908: New client connected from 127.0.0.1 as producer-4.
+1329078908: New client connected from 127.0.0.1 as consumer-5.
+1329078908: New client connected from 127.0.0.1 as consumer-8.
+1329078908: New client connected from 127.0.0.1 as consumer-7.
+1329078908: New connection from 127.0.0.1.
+1329078908: New connection from 127.0.0.1.
+1329078908: New client connected from 127.0.0.1 as consumer-9.
+1329078908: New client connected from 127.0.0.1 as consumer-6.
+1329078918: Saving in-memory database to mosquitto.db.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New client connected from 127.0.0.1 as producer-1.
+1329078926: New client connected from 127.0.0.1 as consumer-2.
+1329078926: New client connected from 127.0.0.1 as producer-0.
+1329078926: New client connected from 127.0.0.1 as consumer-0.
+1329078926: New client connected from 127.0.0.1 as consumer-4.
+1329078926: New client connected from 127.0.0.1 as producer-9.
+1329078926: New client connected from 127.0.0.1 as consumer-1.
+1329078926: New client connected from 127.0.0.1 as producer-3.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New connection from 127.0.0.1.
+1329078926: New client connected from 127.0.0.1 as producer-5.
+1329078926: New client connected from 127.0.0.1 as consumer-5.
+1329078926: New client connected from 127.0.0.1 as consumer-7.
+1329078926: New client connected from 127.0.0.1 as consumer-9.
+1329078926: New client connected from 127.0.0.1 as consumer-8.
+1329078926: New client connected from 127.0.0.1 as producer-2.
+1329078926: New client connected from 127.0.0.1 as producer-4.
+1329078926: New client connected from 127.0.0.1 as producer-6.
+1329078926: New client connected from 127.0.0.1 as consumer-3.
+1329078926: New connection from 127.0.0.1.
+1329078926: New client connected from 127.0.0.1 as producer-8.
+1329078926: New client connected from 127.0.0.1 as producer-7.
+1329078926: New client connected from 127.0.0.1 as consumer-6.
+1329078929: Saving in-memory database to mosquitto.db.
+1329078940: Saving in-memory database to mosquitto.db.
+1329078944: New connection from 127.0.0.1.
+1329078944: New connection from 127.0.0.1.
+1329078944: New client connected from 127.0.0.1 as consumer-0.
+1329078944: New client connected from 127.0.0.1 as producer-0.
+1329078951: Saving in-memory database to mosquitto.db.
+1329078962: New connection from 127.0.0.1.
+1329078962: New connection from 127.0.0.1.
+1329078962: New client connected from 127.0.0.1 as producer-0.
+1329078962: New client connected from 127.0.0.1 as consumer-0.
+1329078970: Saving in-memory database to mosquitto.db.
+1329078984: New connection from 127.0.0.1.
+1329078984: New connection from 127.0.0.1.
+1329078984: New client connected from 127.0.0.1 as producer-0.
+1329078984: New client connected from 127.0.0.1 as consumer-0.
+1329078995: Saving in-memory database to mosquitto.db.
+1329079011: New connection from 127.0.0.1.
+1329079011: New connection from 127.0.0.1.
+1329079011: New connection from 127.0.0.1.
+1329079011: New connection from 127.0.0.1.
+1329079011: New connection from 127.0.0.1.
+1329079011: New connection from 127.0.0.1.
+1329079011: New connection from 127.0.0.1.
+1329079011: New connection from 127.0.0.1.
+1329079011: New client connected from 127.0.0.1 as producer-3.
+1329079011: New client connected from 127.0.0.1 as producer-2.
+1329079011: New connection from 127.0.0.1.
+1329079011: New connection from 127.0.0.1.
+1329079011: New client connected from 127.0.0.1 as producer-4.
+1329079011: New client connected from 127.0.0.1 as consumer-0.
+1329079011: New client connected from 127.0.0.1 as producer-1.
+1329079011: New client connected from 127.0.0.1 as consumer-1.
+1329079011: New client connected from 127.0.0.1 as producer-0.
+1329079011: New client connected from 127.0.0.1 as consumer-2.
+1329079011: New client connected from 127.0.0.1 as consumer-4.
+1329079011: New client connected from 127.0.0.1 as consumer-3.
+1329079022: Saving in-memory database to mosquitto.db.
+1329079044: New connection from 127.0.0.1.
+1329079044: New connection from 127.0.0.1.
+1329079044: New connection from 127.0.0.1.
+1329079044: New connection from 127.0.0.1.
+1329079044: New connection from 127.0.0.1.
+1329079044: New connection from 127.0.0.1.
+1329079044: New connection from 127.0.0.1.
+1329079044: New client connected from 127.0.0.1 as producer-0.
+1329079044: New client connected from 127.0.0.1 as consumer-0.
+1329079044: New connection from 127.0.0.1.
+1329079044: New connection from 127.0.0.1.
+1329079044: New client connected from 127.0.0.1 as producer-3.
+1329079044: New connection from 127.0.0.1.
+1329079044: New client connected from 127.0.0.1 as producer-1.
+1329079044: New client connected from 127.0.0.1 as producer-2.
+1329079044: New client connected from 127.0.0.1 as producer-4.
+1329079044: New client connected from 127.0.0.1 as consumer-2.
+1329079044: New client connected from 127.0.0.1 as consumer-3.
+1329079044: New client connected from 127.0.0.1 as consumer-4.
+1329079044: New client connected from 127.0.0.1 as consumer-1.
+1329079055: Saving in-memory database to mosquitto.db.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New connection from 127.0.0.1.
+1329079072: New client connected from 127.0.0.1 as producer-1.
+1329079072: New client connected from 127.0.0.1 as producer-3.
+1329079072: New client connected from 127.0.0.1 as producer-2.
+1329079072: New client connected from 127.0.0.1 as consumer-0.
+1329079072: New client connected from 127.0.0.1 as producer-4.
+1329079072: New client connected from 127.0.0.1 as producer-0.
+1329079072: New client connected from 127.0.0.1 as consumer-1.
+1329079072: New client connected from 127.0.0.1 as consumer-4.
+1329079072: New client connected from 127.0.0.1 as consumer-3.
+1329079072: New client connected from 127.0.0.1 as consumer-2.
+1329079083: Saving in-memory database to mosquitto.db.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New connection from 127.0.0.1.
+1329079101: New client connected from 127.0.0.1 as producer-5.
+1329079101: New client connected from 127.0.0.1 as producer-2.
+1329079101: New client connected from 127.0.0.1 as producer-8.
+1329079101: New client connected from 127.0.0.1 as producer-7.
+1329079101: New client connected from 127.0.0.1 as consumer-3.
+1329079101: New client connected from 127.0.0.1 as producer-0.
+1329079101: New client connected from 127.0.0.1 as producer-1.
+1329079101: New client connected from 127.0.0.1 as producer-6.
+1329079101: New client connected from 127.0.0.1 as consumer-1.
+1329079101: New client connected from 127.0.0.1 as consumer-2.
+1329079101: New client connected from 127.0.0.1 as producer-3.
+1329079101: New client connected from 127.0.0.1 as producer-4.
+1329079101: New client connected from 127.0.0.1 as consumer-8.
+1329079101: New client connected from 127.0.0.1 as consumer-7.
+1329079101: New client connected from 127.0.0.1 as consumer-4.
+1329079101: New client connected from 127.0.0.1 as consumer-5.
+1329079101: New connection from 127.0.0.1.
+1329079101: New client connected from 127.0.0.1 as producer-9.
+1329079101: New client connected from 127.0.0.1 as consumer-0.
+1329079101: New client connected from 127.0.0.1 as consumer-6.
+1329079101: New client connected from 127.0.0.1 as consumer-9.
+1329079112: Saving in-memory database to mosquitto.db.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New client connected from 127.0.0.1 as producer-0.
+1329079128: New client connected from 127.0.0.1 as producer-5.
+1329079128: New client connected from 127.0.0.1 as producer-3.
+1329079128: New client connected from 127.0.0.1 as producer-4.
+1329079128: New client connected from 127.0.0.1 as producer-6.
+1329079128: New client connected from 127.0.0.1 as producer-1.
+1329079128: New connection from 127.0.0.1.
+1329079128: New client connected from 127.0.0.1 as producer-7.
+1329079128: New client connected from 127.0.0.1 as producer-8.
+1329079128: New client connected from 127.0.0.1 as producer-2.
+1329079128: New client connected from 127.0.0.1 as consumer-0.
+1329079128: New client connected from 127.0.0.1 as producer-9.
+1329079128: New client connected from 127.0.0.1 as consumer-3.
+1329079128: New client connected from 127.0.0.1 as consumer-2.
+1329079128: New client connected from 127.0.0.1 as consumer-5.
+1329079128: New client connected from 127.0.0.1 as consumer-8.
+1329079128: New client connected from 127.0.0.1 as consumer-4.
+1329079128: New client connected from 127.0.0.1 as consumer-1.
+1329079128: New client connected from 127.0.0.1 as consumer-7.
+1329079128: New client connected from 127.0.0.1 as consumer-6.
+1329079128: New client connected from 127.0.0.1 as consumer-9.
+1329079139: Saving in-memory database to mosquitto.db.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New client connected from 127.0.0.1 as consumer-0.
+1329079155: New client connected from 127.0.0.1 as producer-7.
+1329079155: New client connected from 127.0.0.1 as producer-1.
+1329079155: New client connected from 127.0.0.1 as producer-8.
+1329079155: New client connected from 127.0.0.1 as consumer-1.
+1329079155: New client connected from 127.0.0.1 as producer-9.
+1329079155: New client connected from 127.0.0.1 as producer-6.
+1329079155: New client connected from 127.0.0.1 as producer-5.
+1329079155: New client connected from 127.0.0.1 as producer-2.
+1329079155: New client connected from 127.0.0.1 as producer-4.
+1329079155: New client connected from 127.0.0.1 as producer-3.
+1329079155: New client connected from 127.0.0.1 as producer-0.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New connection from 127.0.0.1.
+1329079155: New client connected from 127.0.0.1 as consumer-4.
+1329079155: New client connected from 127.0.0.1 as consumer-8.
+1329079155: New client connected from 127.0.0.1 as consumer-3.
+1329079155: New client connected from 127.0.0.1 as consumer-9.
+1329079155: New client connected from 127.0.0.1 as consumer-7.
+1329079155: New client connected from 127.0.0.1 as consumer-5.
+1329079155: New client connected from 127.0.0.1 as consumer-2.
+1329079155: New client connected from 127.0.0.1 as consumer-6.
+1329079166: Saving in-memory database to mosquitto.db.
+1329079180: New connection from 127.0.0.1.
+1329079180: New connection from 127.0.0.1.
+1329079180: New client connected from 127.0.0.1 as producer-0.
+1329079180: New client connected from 127.0.0.1 as consumer-0.
+1329079191: Saving in-memory database to mosquitto.db.
+1329079199: New connection from 127.0.0.1.
+1329079199: New client connected from 127.0.0.1 as consumer-0.
+1329079202: New connection from 127.0.0.1.
+1329079202: New connection from 127.0.0.1.
+1329079202: New client connected from 127.0.0.1 as producer-0.
+1329079202: New client connected from 127.0.0.1 as consumer-0.
+1329079203: Saving in-memory database to mosquitto.db.
+1329079214: Saving in-memory database to mosquitto.db.
+1329079220: New connection from 127.0.0.1.
+1329079220: New client connected from 127.0.0.1 as consumer-0.
+1329079223: New connection from 127.0.0.1.
+1329079223: New connection from 127.0.0.1.
+1329079223: New client connected from 127.0.0.1 as producer-0.
+1329079223: New client connected from 127.0.0.1 as consumer-0.
+1329079225: Saving in-memory database to mosquitto.db.
+1329079236: Saving in-memory database to mosquitto.db.
+1329079241: New connection from 127.0.0.1.
+1329079241: New client connected from 127.0.0.1 as consumer-0.
+1329079244: New connection from 127.0.0.1.
+1329079244: New connection from 127.0.0.1.
+1329079244: New connection from 127.0.0.1.
+1329079244: New connection from 127.0.0.1.
+1329079244: New connection from 127.0.0.1.
+1329079244: New connection from 127.0.0.1.
+1329079244: New connection from 127.0.0.1.
+1329079244: New client connected from 127.0.0.1 as producer-4.
+1329079244: New connection from 127.0.0.1.
+1329079244: New client connected from 127.0.0.1 as consumer-0.
+1329079244: New connection from 127.0.0.1.
+1329079244: New client connected from 127.0.0.1 as consumer-4.
+1329079244: New connection from 127.0.0.1.
+1329079244: New client connected from 127.0.0.1 as producer-3.
+1329079244: New client connected from 127.0.0.1 as producer-1.
+1329079244: New client connected from 127.0.0.1 as consumer-2.
+1329079244: New client connected from 127.0.0.1 as consumer-1.
+1329079244: New client connected from 127.0.0.1 as producer-2.
+1329079244: New client connected from 127.0.0.1 as producer-0.
+1329079244: New client connected from 127.0.0.1 as consumer-3.
+1329079247: Saving in-memory database to mosquitto.db.
+1329079258: Saving in-memory database to mosquitto.db.
+1329079262: New connection from 127.0.0.1.
+1329079262: New connection from 127.0.0.1.
+1329079262: New connection from 127.0.0.1.
+1329079262: New connection from 127.0.0.1.
+1329079262: New connection from 127.0.0.1.
+1329079262: New client connected from 127.0.0.1 as consumer-0.
+1329079262: New client connected from 127.0.0.1 as consumer-1.
+1329079262: New client connected from 127.0.0.1 as consumer-2.
+1329079262: New client connected from 127.0.0.1 as consumer-4.
+1329079262: New client connected from 127.0.0.1 as consumer-3.
+1329079265: New connection from 127.0.0.1.
+1329079265: New connection from 127.0.0.1.
+1329079265: New connection from 127.0.0.1.
+1329079265: New connection from 127.0.0.1.
+1329079265: New connection from 127.0.0.1.
+1329079265: New connection from 127.0.0.1.
+1329079265: New connection from 127.0.0.1.
+1329079265: New connection from 127.0.0.1.
+1329079265: New connection from 127.0.0.1.
+1329079265: New client connected from 127.0.0.1 as producer-2.
+1329079265: New client connected from 127.0.0.1 as producer-0.
+1329079265: New client connected from 127.0.0.1 as producer-1.
+1329079265: New client connected from 127.0.0.1 as consumer-1.
+1329079265: New client connected from 127.0.0.1 as consumer-2.
+1329079265: New client connected from 127.0.0.1 as consumer-0.
+1329079265: New client connected from 127.0.0.1 as producer-3.
+1329079265: New client connected from 127.0.0.1 as consumer-3.
+1329079265: New connection from 127.0.0.1.
+1329079265: New client connected from 127.0.0.1 as producer-4.
+1329079265: New client connected from 127.0.0.1 as consumer-4.
+1329079269: Saving in-memory database to mosquitto.db.
+1329079280: Saving in-memory database to mosquitto.db.
+1329079283: New connection from 127.0.0.1.
+1329079283: New connection from 127.0.0.1.
+1329079283: New connection from 127.0.0.1.
+1329079283: New connection from 127.0.0.1.
+1329079283: New connection from 127.0.0.1.
+1329079283: New client connected from 127.0.0.1 as consumer-3.
+1329079283: New client connected from 127.0.0.1 as consumer-2.
+1329079283: New client connected from 127.0.0.1 as consumer-4.
+1329079283: New client connected from 127.0.0.1 as consumer-0.
+1329079283: New client connected from 127.0.0.1 as consumer-1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New client connected from 127.0.0.1 as producer-3.
+1329079286: New client connected from 127.0.0.1 as consumer-1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New connection from 127.0.0.1.
+1329079286: New client connected from 127.0.0.1 as consumer-0.
+1329079286: New client connected from 127.0.0.1 as producer-0.
+1329079286: New client connected from 127.0.0.1 as producer-2.
+1329079286: New client connected from 127.0.0.1 as producer-4.
+1329079286: New client connected from 127.0.0.1 as consumer-2.
+1329079286: New client connected from 127.0.0.1 as producer-1.
+1329079286: New client connected from 127.0.0.1 as consumer-3.
+1329079286: New client connected from 127.0.0.1 as consumer-4.
+1329079291: Saving in-memory database to mosquitto.db.
+1329079302: Saving in-memory database to mosquitto.db.
+1329079304: New connection from 127.0.0.1.
+1329079304: New connection from 127.0.0.1.
+1329079304: New connection from 127.0.0.1.
+1329079304: New connection from 127.0.0.1.
+1329079304: New connection from 127.0.0.1.
+1329079304: New client connected from 127.0.0.1 as consumer-1.
+1329079304: New client connected from 127.0.0.1 as consumer-2.
+1329079304: New client connected from 127.0.0.1 as consumer-3.
+1329079304: New client connected from 127.0.0.1 as consumer-0.
+1329079304: New client connected from 127.0.0.1 as consumer-4.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New client connected from 127.0.0.1 as producer-3.
+1329079307: New client connected from 127.0.0.1 as producer-5.
+1329079307: New client connected from 127.0.0.1 as producer-6.
+1329079307: New client connected from 127.0.0.1 as producer-4.
+1329079307: New client connected from 127.0.0.1 as producer-7.
+1329079307: New client connected from 127.0.0.1 as consumer-0.
+1329079307: New client connected from 127.0.0.1 as consumer-1.
+1329079307: New client connected from 127.0.0.1 as consumer-3.
+1329079307: New client connected from 127.0.0.1 as producer-8.
+1329079307: New client connected from 127.0.0.1 as consumer-2.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New connection from 127.0.0.1.
+1329079307: New client connected from 127.0.0.1 as producer-2.
+1329079307: New client connected from 127.0.0.1 as producer-9.
+1329079307: New client connected from 127.0.0.1 as consumer-4.
+1329079307: New client connected from 127.0.0.1 as consumer-5.
+1329079307: New client connected from 127.0.0.1 as consumer-6.
+1329079307: New client connected from 127.0.0.1 as consumer-7.
+1329079307: New client connected from 127.0.0.1 as consumer-8.
+1329079307: New client connected from 127.0.0.1 as producer-1.
+1329079307: New client connected from 127.0.0.1 as consumer-9.
+1329079307: New client connected from 127.0.0.1 as producer-0.
+1329079313: Saving in-memory database to mosquitto.db.
+1329079324: Saving in-memory database to mosquitto.db.
+1329079325: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New connection from 127.0.0.1.
+1329079326: New client connected from 127.0.0.1 as consumer-0.
+1329079326: New client connected from 127.0.0.1 as consumer-1.
+1329079326: New client connected from 127.0.0.1 as consumer-2.
+1329079326: New client connected from 127.0.0.1 as consumer-3.
+1329079326: New client connected from 127.0.0.1 as consumer-4.
+1329079326: New client connected from 127.0.0.1 as consumer-5.
+1329079326: New client connected from 127.0.0.1 as consumer-6.
+1329079326: New client connected from 127.0.0.1 as consumer-7.
+1329079326: New client connected from 127.0.0.1 as consumer-8.
+1329079326: New client connected from 127.0.0.1 as consumer-9.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New connection from 127.0.0.1.
+1329079328: New client connected from 127.0.0.1 as producer-0.
+1329079328: New client connected from 127.0.0.1 as producer-4.
+1329079328: New connection from 127.0.0.1.
+1329079328: New client connected from 127.0.0.1 as producer-9.
+1329079328: New client connected from 127.0.0.1 as consumer-4.
+1329079328: New client connected from 127.0.0.1 as producer-1.
+1329079328: New client connected from 127.0.0.1 as producer-2.
+1329079328: New client connected from 127.0.0.1 as producer-3.
+1329079328: New client connected from 127.0.0.1 as producer-6.
+1329079328: New client connected from 127.0.0.1 as producer-7.
+1329079328: New client connected from 127.0.0.1 as consumer-0.
+1329079328: New client connected from 127.0.0.1 as producer-8.
+1329079328: New client connected from 127.0.0.1 as consumer-1.
+1329079328: New client connected from 127.0.0.1 as consumer-3.
+1329079328: New client connected from 127.0.0.1 as consumer-5.
+1329079328: New client connected from 127.0.0.1 as consumer-6.
+1329079328: New client connected from 127.0.0.1 as consumer-7.
+1329079328: New client connected from 127.0.0.1 as consumer-9.
+1329079328: New client connected from 127.0.0.1 as consumer-8.
+1329079328: New client connected from 127.0.0.1 as producer-5.
+1329079328: New client connected from 127.0.0.1 as consumer-2.
+1329079335: Saving in-memory database to mosquitto.db.
+1329079346: Saving in-memory database to mosquitto.db.
+1329079346: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New connection from 127.0.0.1.
+1329079347: New client connected from 127.0.0.1 as consumer-2.
+1329079347: New client connected from 127.0.0.1 as consumer-0.
+1329079347: New client connected from 127.0.0.1 as consumer-6.
+1329079347: New client connected from 127.0.0.1 as consumer-4.
+1329079347: New client connected from 127.0.0.1 as consumer-5.
+1329079347: New client connected from 127.0.0.1 as consumer-3.
+1329079347: New client connected from 127.0.0.1 as consumer-1.
+1329079347: New client connected from 127.0.0.1 as consumer-7.
+1329079347: New client connected from 127.0.0.1 as consumer-9.
+1329079347: New client connected from 127.0.0.1 as consumer-8.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079349: New connection from 127.0.0.1.
+1329079350: New client connected from 127.0.0.1 as producer-0.
+1329079350: New connection from 127.0.0.1.
+1329079350: New connection from 127.0.0.1.
+1329079350: New connection from 127.0.0.1.
+1329079350: New connection from 127.0.0.1.
+1329079350: New client connected from 127.0.0.1 as producer-3.
+1329079350: New client connected from 127.0.0.1 as producer-1.
+1329079350: New client connected from 127.0.0.1 as consumer-9.
+1329079350: New client connected from 127.0.0.1 as producer-4.
+1329079350: New client connected from 127.0.0.1 as producer-6.
+1329079350: New connection from 127.0.0.1.
+1329079350: New connection from 127.0.0.1.
+1329079350: New client connected from 127.0.0.1 as consumer-4.
+1329079350: New client connected from 127.0.0.1 as consumer-7.
+1329079350: New client connected from 127.0.0.1 as producer-2.
+1329079350: New client connected from 127.0.0.1 as producer-7.
+1329079350: New client connected from 127.0.0.1 as consumer-1.
+1329079350: New client connected from 127.0.0.1 as consumer-0.
+1329079350: New client connected from 127.0.0.1 as producer-5.
+1329079350: New client connected from 127.0.0.1 as consumer-2.
+1329079350: New client connected from 127.0.0.1 as consumer-3.
+1329079350: New client connected from 127.0.0.1 as consumer-5.
+1329079350: New client connected from 127.0.0.1 as consumer-6.
+1329079350: New client connected from 127.0.0.1 as consumer-8.
+1329079350: New client connected from 127.0.0.1 as producer-8.
+1329079350: New client connected from 127.0.0.1 as producer-9.
+1329079357: Saving in-memory database to mosquitto.db.
+1329079368: Saving in-memory database to mosquitto.db.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New connection from 127.0.0.1.
+1329079368: New client connected from 127.0.0.1 as consumer-6.
+1329079368: New client connected from 127.0.0.1 as consumer-2.
+1329079368: New client connected from 127.0.0.1 as consumer-4.
+1329079368: New client connected from 127.0.0.1 as consumer-3.
+1329079368: New client connected from 127.0.0.1 as consumer-0.
+1329079368: New client connected from 127.0.0.1 as consumer-7.
+1329079368: New client connected from 127.0.0.1 as consumer-1.
+1329079368: New client connected from 127.0.0.1 as consumer-5.
+1329079368: New client connected from 127.0.0.1 as consumer-9.
+1329079368: New client connected from 127.0.0.1 as consumer-8.
+1329079371: New connection from 127.0.0.1.
+1329079371: New connection from 127.0.0.1.
+1329079371: New client connected from 127.0.0.1 as producer-0.
+1329079371: New client connected from 127.0.0.1 as consumer-0.
+1329079379: Saving in-memory database to mosquitto.db.
+1329079389: New connection from 127.0.0.1.
+1329079389: New client connected from 127.0.0.1 as consumer-0.
+1329079392: New connection from 127.0.0.1.
+1329079392: Saving in-memory database to mosquitto.db.
+1329079394: New client connected from 127.0.0.1 as producer-0.
+1329079394: New connection from 127.0.0.1.
+1329079395: New client connected from 127.0.0.1 as consumer-0.
+1329079405: Saving in-memory database to mosquitto.db.
+1329079410: New connection from 127.0.0.1.
+1329079410: New client connected from 127.0.0.1 as consumer-0.
+1329079413: New connection from 127.0.0.1.
+1329079413: New connection from 127.0.0.1.
+1329079413: New client connected from 127.0.0.1 as producer-0.
+1329079413: New client connected from 127.0.0.1 as consumer-0.
+1329079416: Saving in-memory database to mosquitto.db.
+1329079427: Saving in-memory database to mosquitto.db.
+1329079431: New connection from 127.0.0.1.
+1329079431: New client connected from 127.0.0.1 as consumer-0.
+1329079434: New connection from 127.0.0.1.
+1329079434: New connection from 127.0.0.1.
+1329079434: New connection from 127.0.0.1.
+1329079434: New connection from 127.0.0.1.
+1329079434: New connection from 127.0.0.1.
+1329079434: New connection from 127.0.0.1.
+1329079434: New connection from 127.0.0.1.
+1329079434: New connection from 127.0.0.1.
+1329079434: New connection from 127.0.0.1.
+1329079434: New client connected from 127.0.0.1 as producer-2.
+1329079434: New client connected from 127.0.0.1 as producer-3.
+1329079434: New client connected from 127.0.0.1 as producer-1.
+1329079434: New client connected from 127.0.0.1 as producer-4.
+1329079434: New client connected from 127.0.0.1 as consumer-1.
+1329079434: New client connected from 127.0.0.1 as consumer-0.
+1329079434: New connection from 127.0.0.1.
+1329079434: New client connected from 127.0.0.1 as producer-0.
+1329079434: New client connected from 127.0.0.1 as consumer-2.
+1329079434: New client connected from 127.0.0.1 as consumer-4.
+1329079434: New client connected from 127.0.0.1 as consumer-3.
+1329079438: Saving in-memory database to mosquitto.db.
+1329079450: Saving in-memory database to mosquitto.db.
+1329079455: New connection from 127.0.0.1.
+1329079455: New connection from 127.0.0.1.
+1329079455: New connection from 127.0.0.1.
+1329079455: New connection from 127.0.0.1.
+1329079455: New client connected from 127.0.0.1 as consumer-1.
+1329079455: New client connected from 127.0.0.1 as consumer-2.
+1329079455: New client connected from 127.0.0.1 as consumer-3.
+1329079455: New connection from 127.0.0.1.
+1329079455: New client connected from 127.0.0.1 as consumer-0.
+1329079455: New client connected from 127.0.0.1 as consumer-4.
+1329079458: New connection from 127.0.0.1.
+1329079458: New connection from 127.0.0.1.
+1329079458: New connection from 127.0.0.1.
+1329079458: New connection from 127.0.0.1.
+1329079458: New connection from 127.0.0.1.
+1329079458: New connection from 127.0.0.1.
+1329079458: New connection from 127.0.0.1.
+1329079458: New connection from 127.0.0.1.
+1329079458: New client connected from 127.0.0.1 as producer-0.
+1329079458: New connection from 127.0.0.1.
+1329079458: New client connected from 127.0.0.1 as producer-3.
+1329079458: New client connected from 127.0.0.1 as consumer-1.
+1329079458: New client connected from 127.0.0.1 as producer-4.
+1329079458: New client connected from 127.0.0.1 as consumer-2.
+1329079458: New connection from 127.0.0.1.
+1329079458: New client connected from 127.0.0.1 as producer-2.
+1329079458: New client connected from 127.0.0.1 as producer-1.
+1329079458: New client connected from 127.0.0.1 as consumer-0.
+1329079458: New client connected from 127.0.0.1 as consumer-3.
+1329079458: New client connected from 127.0.0.1 as consumer-4.
+1329079465: Saving in-memory database to mosquitto.db.
+1329079476: Saving in-memory database to mosquitto.db.
+1329079476: New connection from 127.0.0.1.
+1329079476: New connection from 127.0.0.1.
+1329079476: New connection from 127.0.0.1.
+1329079476: New connection from 127.0.0.1.
+1329079476: New client connected from 127.0.0.1 as consumer-3.
+1329079476: New client connected from 127.0.0.1 as consumer-1.
+1329079476: New client connected from 127.0.0.1 as consumer-0.
+1329079476: New client connected from 127.0.0.1 as consumer-2.
+1329079476: New connection from 127.0.0.1.
+1329079476: New client connected from 127.0.0.1 as consumer-4.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New connection from 127.0.0.1.
+1329079479: New client connected from 127.0.0.1 as producer-2.
+1329079479: New client connected from 127.0.0.1 as producer-4.
+1329079479: New client connected from 127.0.0.1 as producer-1.
+1329079479: New client connected from 127.0.0.1 as producer-0.
+1329079479: New client connected from 127.0.0.1 as consumer-1.
+1329079479: New client connected from 127.0.0.1 as consumer-4.
+1329079479: New client connected from 127.0.0.1 as consumer-3.
+1329079479: New client connected from 127.0.0.1 as producer-3.
+1329079479: New client connected from 127.0.0.1 as consumer-0.
+1329079479: New client connected from 127.0.0.1 as consumer-2.
+1329079487: Saving in-memory database to mosquitto.db.
+1329079497: New connection from 127.0.0.1.
+1329079497: New connection from 127.0.0.1.
+1329079497: New connection from 127.0.0.1.
+1329079497: New connection from 127.0.0.1.
+1329079497: New connection from 127.0.0.1.
+1329079497: New client connected from 127.0.0.1 as consumer-2.
+1329079497: New client connected from 127.0.0.1 as consumer-1.
+1329079497: New client connected from 127.0.0.1 as consumer-4.
+1329079497: New client connected from 127.0.0.1 as consumer-3.
+1329079497: New client connected from 127.0.0.1 as consumer-0.
+1329079499: Saving in-memory database to mosquitto.db.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New client connected from 127.0.0.1 as producer-2.
+1329079500: New client connected from 127.0.0.1 as producer-4.
+1329079500: New client connected from 127.0.0.1 as producer-5.
+1329079500: New client connected from 127.0.0.1 as producer-6.
+1329079500: New client connected from 127.0.0.1 as producer-8.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New connection from 127.0.0.1.
+1329079500: New client connected from 127.0.0.1 as producer-0.
+1329079500: New client connected from 127.0.0.1 as producer-7.
+1329079500: New client connected from 127.0.0.1 as producer-3.
+1329079500: New client connected from 127.0.0.1 as producer-1.
+1329079500: New client connected from 127.0.0.1 as consumer-3.
+1329079500: New client connected from 127.0.0.1 as producer-9.
+1329079500: New client connected from 127.0.0.1 as consumer-1.
+1329079500: New client connected from 127.0.0.1 as consumer-2.
+1329079500: New client connected from 127.0.0.1 as consumer-4.
+1329079500: New client connected from 127.0.0.1 as consumer-0.
+1329079500: New client connected from 127.0.0.1 as consumer-5.
+1329079500: New client connected from 127.0.0.1 as consumer-8.
+1329079500: New client connected from 127.0.0.1 as consumer-9.
+1329079500: New client connected from 127.0.0.1 as consumer-7.
+1329079500: New client connected from 127.0.0.1 as consumer-6.
+1329079511: Saving in-memory database to mosquitto.db.
+1329079518: New connection from 127.0.0.1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New client connected from 127.0.0.1 as consumer-3.
+1329079518: New client connected from 127.0.0.1 as consumer-0.
+1329079518: New client connected from 127.0.0.1 as consumer-6.
+1329079518: New client connected from 127.0.0.1 as consumer-2.
+1329079518: New client connected from 127.0.0.1 as consumer-5.
+1329079518: New client connected from 127.0.0.1 as consumer-4.
+1329079518: New client connected from 127.0.0.1 as consumer-1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New connection from 127.0.0.1.
+1329079518: New client connected from 127.0.0.1 as consumer-9.
+1329079518: New client connected from 127.0.0.1 as consumer-8.
+1329079518: New client connected from 127.0.0.1 as consumer-7.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New client connected from 127.0.0.1 as consumer-1.
+1329079521: New client connected from 127.0.0.1 as consumer-3.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New client connected from 127.0.0.1 as consumer-4.
+1329079521: New connection from 127.0.0.1.
+1329079521: New connection from 127.0.0.1.
+1329079521: New client connected from 127.0.0.1 as producer-1.
+1329079521: New client connected from 127.0.0.1 as producer-5.
+1329079521: New client connected from 127.0.0.1 as producer-3.
+1329079521: New client connected from 127.0.0.1 as producer-9.
+1329079521: New client connected from 127.0.0.1 as consumer-2.
+1329079521: New client connected from 127.0.0.1 as producer-0.
+1329079521: New client connected from 127.0.0.1 as consumer-0.
+1329079521: New client connected from 127.0.0.1 as consumer-8.
+1329079521: New client connected from 127.0.0.1 as producer-2.
+1329079521: New client connected from 127.0.0.1 as producer-8.
+1329079521: New client connected from 127.0.0.1 as producer-4.
+1329079521: New client connected from 127.0.0.1 as consumer-7.
+1329079521: New connection from 127.0.0.1.
+1329079521: New client connected from 127.0.0.1 as consumer-5.
+1329079521: New client connected from 127.0.0.1 as producer-6.
+1329079521: New client connected from 127.0.0.1 as producer-7.
+1329079521: New client connected from 127.0.0.1 as consumer-6.
+1329079521: New client connected from 127.0.0.1 as consumer-9.
+1329079526: Saving in-memory database to mosquitto.db.
+1329079537: Saving in-memory database to mosquitto.db.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New connection from 127.0.0.1.
+1329079539: New client connected from 127.0.0.1 as consumer-0.
+1329079539: New client connected from 127.0.0.1 as consumer-3.
+1329079539: New client connected from 127.0.0.1 as consumer-2.
+1329079539: New client connected from 127.0.0.1 as consumer-4.
+1329079539: New client connected from 127.0.0.1 as consumer-1.
+1329079539: New client connected from 127.0.0.1 as consumer-5.
+1329079539: New client connected from 127.0.0.1 as consumer-7.
+1329079539: New client connected from 127.0.0.1 as consumer-6.
+1329079539: New client connected from 127.0.0.1 as consumer-8.
+1329079539: New client connected from 127.0.0.1 as consumer-9.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New client connected from 127.0.0.1 as consumer-1.
+1329079542: New client connected from 127.0.0.1 as consumer-4.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New connection from 127.0.0.1.
+1329079542: New client connected from 127.0.0.1 as producer-0.
+1329079542: New client connected from 127.0.0.1 as producer-3.
+1329079542: New client connected from 127.0.0.1 as producer-1.
+1329079542: New client connected from 127.0.0.1 as consumer-3.
+1329079542: New client connected from 127.0.0.1 as producer-9.
+1329079542: New client connected from 127.0.0.1 as consumer-0.
+1329079542: New client connected from 127.0.0.1 as consumer-5.
+1329079542: New client connected from 127.0.0.1 as consumer-8.
+1329079542: New client connected from 127.0.0.1 as consumer-9.
+1329079542: New client connected from 127.0.0.1 as consumer-6.
+1329079542: New client connected from 127.0.0.1 as producer-2.
+1329079542: New client connected from 127.0.0.1 as producer-4.
+1329079542: New client connected from 127.0.0.1 as producer-5.
+1329079542: New client connected from 127.0.0.1 as producer-6.
+1329079542: New client connected from 127.0.0.1 as producer-8.
+1329079542: New client connected from 127.0.0.1 as consumer-2.
+1329079542: New client connected from 127.0.0.1 as producer-7.
+1329079542: New client connected from 127.0.0.1 as consumer-7.
+1329079548: Saving in-memory database to mosquitto.db.
+1329079559: Saving in-memory database to mosquitto.db.
+1329079560: New connection from 127.0.0.1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New client connected from 127.0.0.1 as consumer-5.
+1329079560: New client connected from 127.0.0.1 as consumer-4.
+1329079560: New client connected from 127.0.0.1 as consumer-6.
+1329079560: New client connected from 127.0.0.1 as consumer-3.
+1329079560: New client connected from 127.0.0.1 as consumer-1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New connection from 127.0.0.1.
+1329079560: New client connected from 127.0.0.1 as consumer-7.
+1329079560: New client connected from 127.0.0.1 as consumer-0.
+1329079560: New client connected from 127.0.0.1 as consumer-2.
+1329079560: New client connected from 127.0.0.1 as consumer-9.
+1329079560: New client connected from 127.0.0.1 as consumer-8.
+1329079563: New connection from 127.0.0.1.
+1329079563: New connection from 127.0.0.1.
+1329079563: New client connected from 127.0.0.1 as producer-0.
+1329079563: New client connected from 127.0.0.1 as consumer-0.
+1329079570: Saving in-memory database to mosquitto.db.
+1329079582: New connection from 127.0.0.1.
+1329079582: New client connected from 127.0.0.1 as consumer-0.
+1329079585: New connection from 127.0.0.1.
+1329079585: New connection from 127.0.0.1.
+1329079585: New client connected from 127.0.0.1 as producer-0.
+1329079585: New client connected from 127.0.0.1 as consumer-0.
+1329079589: Saving in-memory database to mosquitto.db.
+1329079603: New connection from 127.0.0.1.
+1329079603: New client connected from 127.0.0.1 as consumer-0.
+1329079606: New connection from 127.0.0.1.
+1329079606: New connection from 127.0.0.1.
+1329079606: New client connected from 127.0.0.1 as consumer-0.
+1329079606: New client connected from 127.0.0.1 as producer-0.
+1329079611: Saving in-memory database to mosquitto.db.
+1329079624: New connection from 127.0.0.1.
+1329079624: New client connected from 127.0.0.1 as consumer-0.
+1329079627: New connection from 127.0.0.1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New client connected from 127.0.0.1 as producer-1.
+1329079627: New client connected from 127.0.0.1 as consumer-2.
+1329079627: New client connected from 127.0.0.1 as producer-4.
+1329079627: New client connected from 127.0.0.1 as producer-3.
+1329079627: New client connected from 127.0.0.1 as producer-2.
+1329079627: New client connected from 127.0.0.1 as producer-0.
+1329079627: New client connected from 127.0.0.1 as consumer-1.
+1329079627: New connection from 127.0.0.1.
+1329079627: New client connected from 127.0.0.1 as consumer-3.
+1329079627: New client connected from 127.0.0.1 as consumer-4.
+1329079627: New client connected from 127.0.0.1 as consumer-0.
+1329079632: Saving in-memory database to mosquitto.db.
+1329079645: New connection from 127.0.0.1.
+1329079645: New connection from 127.0.0.1.
+1329079645: New connection from 127.0.0.1.
+1329079645: New connection from 127.0.0.1.
+1329079645: New client connected from 127.0.0.1 as consumer-2.
+1329079645: New connection from 127.0.0.1.
+1329079645: New client connected from 127.0.0.1 as consumer-0.
+1329079645: New client connected from 127.0.0.1 as consumer-3.
+1329079645: New client connected from 127.0.0.1 as consumer-1.
+1329079645: New client connected from 127.0.0.1 as consumer-4.
+1329079648: New connection from 127.0.0.1.
+1329079648: New connection from 127.0.0.1.
+1329079648: New connection from 127.0.0.1.
+1329079648: New connection from 127.0.0.1.
+1329079648: New connection from 127.0.0.1.
+1329079648: New connection from 127.0.0.1.
+1329079648: New connection from 127.0.0.1.
+1329079648: New client connected from 127.0.0.1 as producer-0.
+1329079648: New connection from 127.0.0.1.
+1329079648: New connection from 127.0.0.1.
+1329079648: New connection from 127.0.0.1.
+1329079648: New client connected from 127.0.0.1 as producer-3.
+1329079648: New client connected from 127.0.0.1 as producer-4.
+1329079648: New client connected from 127.0.0.1 as producer-1.
+1329079648: New client connected from 127.0.0.1 as producer-2.
+1329079648: New client connected from 127.0.0.1 as consumer-2.
+1329079648: New client connected from 127.0.0.1 as consumer-1.
+1329079648: New client connected from 127.0.0.1 as consumer-3.
+1329079648: New client connected from 127.0.0.1 as consumer-4.
+1329079648: New client connected from 127.0.0.1 as consumer-0.
+1329079655: Saving in-memory database to mosquitto.db.
+1329079668: New connection from 127.0.0.1.
+1329079668: New connection from 127.0.0.1.
+1329079668: New connection from 127.0.0.1.
+1329079668: New connection from 127.0.0.1.
+1329079668: New connection from 127.0.0.1.
+1329079668: New client connected from 127.0.0.1 as consumer-0.
+1329079668: New client connected from 127.0.0.1 as consumer-2.
+1329079668: New client connected from 127.0.0.1 as consumer-3.
+1329079668: New client connected from 127.0.0.1 as consumer-1.
+1329079668: New client connected from 127.0.0.1 as consumer-4.
+1329079671: New connection from 127.0.0.1.
+1329079671: New connection from 127.0.0.1.
+1329079671: New connection from 127.0.0.1.
+1329079671: New connection from 127.0.0.1.
+1329079671: New connection from 127.0.0.1.
+1329079671: New connection from 127.0.0.1.
+1329079671: New connection from 127.0.0.1.
+1329079671: New connection from 127.0.0.1.
+1329079671: New connection from 127.0.0.1.
+1329079671: New client connected from 127.0.0.1 as producer-3.
+1329079671: New client connected from 127.0.0.1 as producer-2.
+1329079671: New client connected from 127.0.0.1 as producer-1.
+1329079671: New client connected from 127.0.0.1 as consumer-2.
+1329079671: New client connected from 127.0.0.1 as consumer-0.
+1329079671: New client connected from 127.0.0.1 as consumer-3.
+1329079671: New connection from 127.0.0.1.
+1329079671: New client connected from 127.0.0.1 as producer-0.
+1329079671: New client connected from 127.0.0.1 as producer-4.
+1329079671: New client connected from 127.0.0.1 as consumer-1.
+1329079671: New client connected from 127.0.0.1 as consumer-4.
+1329079679: Saving in-memory database to mosquitto.db.
+1329079691: New connection from 127.0.0.1.
+1329079691: New connection from 127.0.0.1.
+1329079691: New connection from 127.0.0.1.
+1329079691: New client connected from 127.0.0.1 as consumer-0.
+1329079691: New client connected from 127.0.0.1 as consumer-1.
+1329079691: New client connected from 127.0.0.1 as consumer-2.
+1329079691: New connection from 127.0.0.1.
+1329079691: New connection from 127.0.0.1.
+1329079691: New client connected from 127.0.0.1 as consumer-3.
+1329079691: New client connected from 127.0.0.1 as consumer-4.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New connection from 127.0.0.1.
+1329079694: New client connected from 127.0.0.1 as producer-0.
+1329079694: New client connected from 127.0.0.1 as producer-3.
+1329079694: New client connected from 127.0.0.1 as producer-4.
+1329079694: New client connected from 127.0.0.1 as producer-2.
+1329079694: New client connected from 127.0.0.1 as producer-6.
+1329079694: New client connected from 127.0.0.1 as producer-5.
+1329079694: New client connected from 127.0.0.1 as producer-7.
+1329079694: New client connected from 127.0.0.1 as producer-1.
+1329079694: New client connected from 127.0.0.1 as producer-9.
+1329079694: New client connected from 127.0.0.1 as consumer-2.
+1329079694: New client connected from 127.0.0.1 as consumer-3.
+1329079694: New client connected from 127.0.0.1 as consumer-4.
+1329079694: New client connected from 127.0.0.1 as consumer-7.
+1329079694: New client connected from 127.0.0.1 as consumer-6.
+1329079694: New client connected from 127.0.0.1 as consumer-0.
+1329079694: New client connected from 127.0.0.1 as consumer-1.
+1329079694: New client connected from 127.0.0.1 as consumer-5.
+1329079694: New client connected from 127.0.0.1 as producer-8.
+1329079694: New client connected from 127.0.0.1 as consumer-8.
+1329079694: New client connected from 127.0.0.1 as consumer-9.
+1329079702: Saving in-memory database to mosquitto.db.
+1329079713: New connection from 127.0.0.1.
+1329079713: New connection from 127.0.0.1.
+1329079713: New connection from 127.0.0.1.
+1329079713: New connection from 127.0.0.1.
+1329079713: New connection from 127.0.0.1.
+1329079713: New connection from 127.0.0.1.
+1329079713: New connection from 127.0.0.1.
+1329079713: New client connected from 127.0.0.1 as consumer-2.
+1329079713: New connection from 127.0.0.1.
+1329079713: New connection from 127.0.0.1.
+1329079713: New client connected from 127.0.0.1 as consumer-3.
+1329079713: New client connected from 127.0.0.1 as consumer-0.
+1329079713: New client connected from 127.0.0.1 as consumer-6.
+1329079713: New client connected from 127.0.0.1 as consumer-1.
+1329079713: New client connected from 127.0.0.1 as consumer-7.
+1329079713: New connection from 127.0.0.1.
+1329079713: New client connected from 127.0.0.1 as consumer-5.
+1329079713: New client connected from 127.0.0.1 as consumer-8.
+1329079713: New client connected from 127.0.0.1 as consumer-4.
+1329079713: New client connected from 127.0.0.1 as consumer-9.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New client connected from 127.0.0.1 as consumer-1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New connection from 127.0.0.1.
+1329079716: New client connected from 127.0.0.1 as producer-6.
+1329079716: New client connected from 127.0.0.1 as consumer-4.
+1329079716: New client connected from 127.0.0.1 as producer-4.
+1329079716: New client connected from 127.0.0.1 as producer-5.
+1329079716: New client connected from 127.0.0.1 as producer-1.
+1329079716: New client connected from 127.0.0.1 as producer-7.
+1329079716: New client connected from 127.0.0.1 as producer-8.
+1329079716: New client connected from 127.0.0.1 as producer-3.
+1329079716: New client connected from 127.0.0.1 as consumer-0.
+1329079716: New client connected from 127.0.0.1 as producer-9.
+1329079716: New client connected from 127.0.0.1 as consumer-5.
+1329079716: New client connected from 127.0.0.1 as consumer-6.
+1329079716: New client connected from 127.0.0.1 as producer-2.
+1329079716: New client connected from 127.0.0.1 as consumer-3.
+1329079716: New client connected from 127.0.0.1 as consumer-2.
+1329079716: New client connected from 127.0.0.1 as consumer-7.
+1329079716: New client connected from 127.0.0.1 as consumer-9.
+1329079716: New client connected from 127.0.0.1 as consumer-8.
+1329079716: New client connected from 127.0.0.1 as producer-0.
+1329079724: Saving in-memory database to mosquitto.db.
+1329079735: New connection from 127.0.0.1.
+1329079735: New connection from 127.0.0.1.
+1329079735: New connection from 127.0.0.1.
+1329079735: New connection from 127.0.0.1.
+1329079735: New connection from 127.0.0.1.
+1329079735: New connection from 127.0.0.1.
+1329079735: New connection from 127.0.0.1.
+1329079735: New client connected from 127.0.0.1 as consumer-6.
+1329079735: New connection from 127.0.0.1.
+1329079735: New connection from 127.0.0.1.
+1329079735: New connection from 127.0.0.1.
+1329079735: New client connected from 127.0.0.1 as consumer-0.
+1329079735: New client connected from 127.0.0.1 as consumer-2.
+1329079735: New client connected from 127.0.0.1 as consumer-1.
+1329079735: New client connected from 127.0.0.1 as consumer-3.
+1329079735: New client connected from 127.0.0.1 as consumer-4.
+1329079735: New client connected from 127.0.0.1 as consumer-5.
+1329079735: New client connected from 127.0.0.1 as consumer-9.
+1329079735: New client connected from 127.0.0.1 as consumer-8.
+1329079735: New client connected from 127.0.0.1 as consumer-7.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New client connected from 127.0.0.1 as producer-4.
+1329079738: New client connected from 127.0.0.1 as producer-3.
+1329079738: New client connected from 127.0.0.1 as producer-2.
+1329079738: New connection from 127.0.0.1.
+1329079738: New connection from 127.0.0.1.
+1329079738: New client connected from 127.0.0.1 as producer-0.
+1329079738: New client connected from 127.0.0.1 as consumer-3.
+1329079738: New client connected from 127.0.0.1 as consumer-6.
+1329079738: New client connected from 127.0.0.1 as consumer-1.
+1329079738: New client connected from 127.0.0.1 as consumer-4.
+1329079738: New client connected from 127.0.0.1 as producer-1.
+1329079738: New client connected from 127.0.0.1 as producer-7.
+1329079738: New client connected from 127.0.0.1 as consumer-2.
+1329079738: New client connected from 127.0.0.1 as producer-9.
+1329079738: New client connected from 127.0.0.1 as consumer-5.
+1329079738: New client connected from 127.0.0.1 as consumer-7.
+1329079738: New client connected from 127.0.0.1 as producer-8.
+1329079738: New client connected from 127.0.0.1 as producer-6.
+1329079738: New client connected from 127.0.0.1 as producer-5.
+1329079738: New client connected from 127.0.0.1 as consumer-0.
+1329079738: New client connected from 127.0.0.1 as consumer-8.
+1329079738: New client connected from 127.0.0.1 as consumer-9.
+1329079746: Saving in-memory database to mosquitto.db.
+1329079756: New connection from 127.0.0.1.
+1329079756: New connection from 127.0.0.1.
+1329079756: New connection from 127.0.0.1.
+1329079756: New connection from 127.0.0.1.
+1329079756: New connection from 127.0.0.1.
+1329079756: New connection from 127.0.0.1.
+1329079756: New connection from 127.0.0.1.
+1329079756: New connection from 127.0.0.1.
+1329079756: New connection from 127.0.0.1.
+1329079756: New client connected from 127.0.0.1 as consumer-8.
+1329079756: New client connected from 127.0.0.1 as consumer-3.
+1329079756: New client connected from 127.0.0.1 as consumer-4.
+1329079756: New client connected from 127.0.0.1 as consumer-6.
+1329079756: New client connected from 127.0.0.1 as consumer-7.
+1329079756: New client connected from 127.0.0.1 as consumer-1.
+1329079756: New client connected from 127.0.0.1 as consumer-2.
+1329079756: New client connected from 127.0.0.1 as consumer-5.
+1329079756: New connection from 127.0.0.1.
+1329079756: New client connected from 127.0.0.1 as consumer-0.
+1329079756: New client connected from 127.0.0.1 as consumer-9.
+1329079759: New connection from 127.0.0.1.
+1329079759: New connection from 127.0.0.1.
+1329079759: New client connected from 127.0.0.1 as producer-0.
+1329079759: New client connected from 127.0.0.1 as consumer-0.
+1329079767: Saving in-memory database to mosquitto.db.
+1329079777: New connection from 127.0.0.1.
+1329079777: New connection from 127.0.0.1.
+1329079777: New client connected from 127.0.0.1 as producer-0.
+1329079777: New client connected from 127.0.0.1 as consumer-0.
+1329079778: Saving in-memory database to mosquitto.db.
+1329079789: Saving in-memory database to mosquitto.db.
+1329079795: New connection from 127.0.0.1.
+1329079795: New connection from 127.0.0.1.
+1329079795: New client connected from 127.0.0.1 as consumer-0.
+1329079795: New client connected from 127.0.0.1 as producer-0.
+1329079800: Saving in-memory database to mosquitto.db.
+1329079811: Saving in-memory database to mosquitto.db.
+1329079813: New connection from 127.0.0.1.
+1329079813: New connection from 127.0.0.1.
+1329079813: New connection from 127.0.0.1.
+1329079813: New connection from 127.0.0.1.
+1329079813: New connection from 127.0.0.1.
+1329079813: New connection from 127.0.0.1.
+1329079813: New client connected from 127.0.0.1 as producer-0.
+1329079813: New client connected from 127.0.0.1 as producer-2.
+1329079813: New client connected from 127.0.0.1 as producer-4.
+1329079813: New client connected from 127.0.0.1 as producer-3.
+1329079813: New client connected from 127.0.0.1 as producer-1.
+1329079813: New client connected from 127.0.0.1 as consumer-0.
+1329079822: Saving in-memory database to mosquitto.db.
+1329079831: New connection from 127.0.0.1.
+1329079831: New connection from 127.0.0.1.
+1329079831: New connection from 127.0.0.1.
+1329079831: New connection from 127.0.0.1.
+1329079831: New connection from 127.0.0.1.
+1329079831: New connection from 127.0.0.1.
+1329079831: New client connected from 127.0.0.1 as producer-0.
+1329079831: New client connected from 127.0.0.1 as producer-1.
+1329079831: New client connected from 127.0.0.1 as producer-2.
+1329079831: New client connected from 127.0.0.1 as producer-3.
+1329079831: New client connected from 127.0.0.1 as producer-4.
+1329079831: New client connected from 127.0.0.1 as consumer-0.
+1329079834: Saving in-memory database to mosquitto.db.
+1329079846: Saving in-memory database to mosquitto.db.
+1329079849: New connection from 127.0.0.1.
+1329079849: New connection from 127.0.0.1.
+1329079849: New connection from 127.0.0.1.
+1329079849: New connection from 127.0.0.1.
+1329079849: New connection from 127.0.0.1.
+1329079849: New connection from 127.0.0.1.
+1329079849: New client connected from 127.0.0.1 as consumer-0.
+1329079849: New client connected from 127.0.0.1 as producer-2.
+1329079849: New client connected from 127.0.0.1 as producer-4.
+1329079849: New client connected from 127.0.0.1 as producer-3.
+1329079849: New client connected from 127.0.0.1 as producer-1.
+1329079849: New client connected from 127.0.0.1 as producer-0.
+1329079857: Saving in-memory database to mosquitto.db.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New connection from 127.0.0.1.
+1329079867: New client connected from 127.0.0.1 as producer-7.
+1329079867: New client connected from 127.0.0.1 as producer-2.
+1329079867: New client connected from 127.0.0.1 as producer-4.
+1329079867: New client connected from 127.0.0.1 as producer-5.
+1329079867: New client connected from 127.0.0.1 as producer-3.
+1329079867: New client connected from 127.0.0.1 as producer-6.
+1329079867: New client connected from 127.0.0.1 as producer-0.
+1329079867: New client connected from 127.0.0.1 as producer-1.
+1329079867: New client connected from 127.0.0.1 as producer-8.
+1329079867: New client connected from 127.0.0.1 as producer-9.
+1329079867: New client connected from 127.0.0.1 as consumer-0.
+1329079868: Saving in-memory database to mosquitto.db.
+1329079879: Saving in-memory database to mosquitto.db.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New client connected from 127.0.0.1 as producer-0.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New connection from 127.0.0.1.
+1329079885: New client connected from 127.0.0.1 as producer-1.
+1329079885: New client connected from 127.0.0.1 as producer-6.
+1329079885: New client connected from 127.0.0.1 as producer-8.
+1329079885: New client connected from 127.0.0.1 as producer-2.
+1329079885: New client connected from 127.0.0.1 as producer-3.
+1329079885: New client connected from 127.0.0.1 as producer-7.
+1329079885: New client connected from 127.0.0.1 as producer-4.
+1329079885: New client connected from 127.0.0.1 as producer-9.
+1329079885: New client connected from 127.0.0.1 as consumer-0.
+1329079885: New client connected from 127.0.0.1 as producer-5.
+1329079891: Saving in-memory database to mosquitto.db.
+1329079902: Saving in-memory database to mosquitto.db.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New client connected from 127.0.0.1 as producer-5.
+1329079903: New client connected from 127.0.0.1 as producer-1.
+1329079903: New client connected from 127.0.0.1 as producer-3.
+1329079903: New client connected from 127.0.0.1 as producer-4.
+1329079903: New client connected from 127.0.0.1 as producer-0.
+1329079903: New client connected from 127.0.0.1 as producer-2.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New connection from 127.0.0.1.
+1329079903: New client connected from 127.0.0.1 as consumer-0.
+1329079903: New client connected from 127.0.0.1 as producer-8.
+1329079903: New client connected from 127.0.0.1 as producer-7.
+1329079903: New client connected from 127.0.0.1 as producer-6.
+1329079903: New client connected from 127.0.0.1 as producer-9.
+1329079913: Saving in-memory database to mosquitto.db.
+1329079922: New connection from 127.0.0.1.
+1329079922: New connection from 127.0.0.1.
+1329079922: New connection from 127.0.0.1.
+1329079922: New connection from 127.0.0.1.
+1329079922: New connection from 127.0.0.1.
+1329079922: New connection from 127.0.0.1.
+1329079922: New client connected from 127.0.0.1 as consumer-1.
+1329079922: New client connected from 127.0.0.1 as consumer-4.
+1329079922: New client connected from 127.0.0.1 as consumer-2.
+1329079922: New client connected from 127.0.0.1 as consumer-0.
+1329079922: New client connected from 127.0.0.1 as consumer-3.
+1329079922: New client connected from 127.0.0.1 as producer-0.
+1329079924: Saving in-memory database to mosquitto.db.
+1329079935: Saving in-memory database to mosquitto.db.
+1329079940: New connection from 127.0.0.1.
+1329079940: New connection from 127.0.0.1.
+1329079940: New connection from 127.0.0.1.
+1329079940: New connection from 127.0.0.1.
+1329079940: New client connected from 127.0.0.1 as consumer-2.
+1329079940: New client connected from 127.0.0.1 as consumer-1.
+1329079940: New connection from 127.0.0.1.
+1329079940: New connection from 127.0.0.1.
+1329079940: New client connected from 127.0.0.1 as consumer-3.
+1329079940: New client connected from 127.0.0.1 as consumer-0.
+1329079940: New client connected from 127.0.0.1 as consumer-4.
+1329079940: New client connected from 127.0.0.1 as producer-0.
+1329079946: Saving in-memory database to mosquitto.db.
+1329079957: Saving in-memory database to mosquitto.db.
+1329079958: New connection from 127.0.0.1.
+1329079958: New connection from 127.0.0.1.
+1329079958: New connection from 127.0.0.1.
+1329079958: New connection from 127.0.0.1.
+1329079958: New connection from 127.0.0.1.
+1329079958: New connection from 127.0.0.1.
+1329079958: New client connected from 127.0.0.1 as consumer-4.
+1329079958: New client connected from 127.0.0.1 as consumer-2.
+1329079958: New client connected from 127.0.0.1 as consumer-3.
+1329079958: New client connected from 127.0.0.1 as consumer-1.
+1329079958: New client connected from 127.0.0.1 as consumer-0.
+1329079958: New client connected from 127.0.0.1 as producer-0.
+1329079968: Saving in-memory database to mosquitto.db.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New connection from 127.0.0.1.
+1329079976: New client connected from 127.0.0.1 as producer-3.
+1329079976: New client connected from 127.0.0.1 as producer-2.
+1329079976: New client connected from 127.0.0.1 as producer-4.
+1329079976: New client connected from 127.0.0.1 as producer-0.
+1329079976: New client connected from 127.0.0.1 as consumer-1.
+1329079976: New client connected from 127.0.0.1 as consumer-0.
+1329079976: New client connected from 127.0.0.1 as producer-1.
+1329079976: New client connected from 127.0.0.1 as consumer-4.
+1329079976: New client connected from 127.0.0.1 as consumer-3.
+1329079976: New client connected from 127.0.0.1 as consumer-2.
+1329079979: Saving in-memory database to mosquitto.db.
+1329079990: Saving in-memory database to mosquitto.db.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New connection from 127.0.0.1.
+1329079994: New client connected from 127.0.0.1 as producer-2.
+1329079994: New client connected from 127.0.0.1 as producer-4.
+1329079994: New client connected from 127.0.0.1 as producer-3.
+1329079994: New client connected from 127.0.0.1 as producer-1.
+1329079994: New client connected from 127.0.0.1 as consumer-0.
+1329079994: New client connected from 127.0.0.1 as producer-0.
+1329079994: New client connected from 127.0.0.1 as consumer-1.
+1329079994: New client connected from 127.0.0.1 as consumer-2.
+1329079994: New client connected from 127.0.0.1 as consumer-3.
+1329079994: New client connected from 127.0.0.1 as consumer-4.
+1329080001: Saving in-memory database to mosquitto.db.
+1329080012: Saving in-memory database to mosquitto.db.
+1329080012: New connection from 127.0.0.1.
+1329080012: New connection from 127.0.0.1.
+1329080012: New connection from 127.0.0.1.
+1329080012: New connection from 127.0.0.1.
+1329080012: New connection from 127.0.0.1.
+1329080012: New connection from 127.0.0.1.
+1329080012: New connection from 127.0.0.1.
+1329080012: New connection from 127.0.0.1.
+1329080012: New connection from 127.0.0.1.
+1329080012: New client connected from 127.0.0.1 as producer-3.
+1329080012: New connection from 127.0.0.1.
+1329080012: New client connected from 127.0.0.1 as producer-2.
+1329080012: New client connected from 127.0.0.1 as consumer-2.
+1329080012: New client connected from 127.0.0.1 as producer-1.
+1329080012: New client connected from 127.0.0.1 as consumer-1.
+1329080012: New client connected from 127.0.0.1 as consumer-0.
+1329080012: New client connected from 127.0.0.1 as producer-0.
+1329080012: New client connected from 127.0.0.1 as producer-4.
+1329080012: New client connected from 127.0.0.1 as consumer-4.
+1329080012: New client connected from 127.0.0.1 as consumer-3.
+1329080023: Saving in-memory database to mosquitto.db.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New connection from 127.0.0.1.
+1329080030: New client connected from 127.0.0.1 as producer-1.
+1329080030: New client connected from 127.0.0.1 as producer-6.
+1329080030: New client connected from 127.0.0.1 as producer-0.
+1329080030: New client connected from 127.0.0.1 as producer-5.
+1329080030: New client connected from 127.0.0.1 as producer-2.
+1329080030: New client connected from 127.0.0.1 as producer-4.
+1329080030: New client connected from 127.0.0.1 as producer-3.
+1329080030: New client connected from 127.0.0.1 as consumer-3.
+1329080030: New client connected from 127.0.0.1 as producer-7.
+1329080030: New client connected from 127.0.0.1 as producer-9.
+1329080030: New client connected from 127.0.0.1 as consumer-1.
+1329080030: New client connected from 127.0.0.1 as consumer-2.
+1329080030: New client connected from 127.0.0.1 as consumer-0.
+1329080030: New client connected from 127.0.0.1 as producer-8.
+1329080030: New client connected from 127.0.0.1 as consumer-4.
+1329080034: Saving in-memory database to mosquitto.db.
+1329080045: Saving in-memory database to mosquitto.db.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New connection from 127.0.0.1.
+1329080048: New client connected from 127.0.0.1 as producer-0.
+1329080048: New client connected from 127.0.0.1 as producer-1.
+1329080048: New client connected from 127.0.0.1 as producer-2.
+1329080048: New client connected from 127.0.0.1 as producer-3.
+1329080048: New client connected from 127.0.0.1 as producer-5.
+1329080048: New client connected from 127.0.0.1 as producer-6.
+1329080048: New client connected from 127.0.0.1 as producer-4.
+1329080048: New client connected from 127.0.0.1 as producer-7.
+1329080048: New client connected from 127.0.0.1 as producer-8.
+1329080048: New client connected from 127.0.0.1 as consumer-0.
+1329080048: New client connected from 127.0.0.1 as consumer-2.
+1329080048: New client connected from 127.0.0.1 as consumer-3.
+1329080048: New client connected from 127.0.0.1 as consumer-4.
+1329080048: New client connected from 127.0.0.1 as producer-9.
+1329080048: New client connected from 127.0.0.1 as consumer-1.
+1329080056: Saving in-memory database to mosquitto.db.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New connection from 127.0.0.1.
+1329080066: New client connected from 127.0.0.1 as producer-0.
+1329080066: New client connected from 127.0.0.1 as producer-2.
+1329080066: New client connected from 127.0.0.1 as producer-1.
+1329080066: New client connected from 127.0.0.1 as producer-3.
+1329080066: New client connected from 127.0.0.1 as producer-4.
+1329080066: New client connected from 127.0.0.1 as producer-6.
+1329080066: New client connected from 127.0.0.1 as producer-7.
+1329080066: New client connected from 127.0.0.1 as producer-5.
+1329080066: New client connected from 127.0.0.1 as producer-8.
+1329080066: New client connected from 127.0.0.1 as producer-9.
+1329080066: New client connected from 127.0.0.1 as consumer-0.
+1329080066: New client connected from 127.0.0.1 as consumer-1.
+1329080066: New client connected from 127.0.0.1 as consumer-2.
+1329080066: New client connected from 127.0.0.1 as consumer-3.
+1329080066: New client connected from 127.0.0.1 as consumer-4.
+1329080067: Saving in-memory database to mosquitto.db.
+1329080078: Saving in-memory database to mosquitto.db.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New connection from 127.0.0.1.
+1329080084: New client connected from 127.0.0.1 as consumer-2.
+1329080084: New client connected from 127.0.0.1 as consumer-5.
+1329080084: New client connected from 127.0.0.1 as consumer-0.
+1329080084: New client connected from 127.0.0.1 as consumer-6.
+1329080084: New client connected from 127.0.0.1 as consumer-4.
+1329080084: New client connected from 127.0.0.1 as producer-0.
+1329080084: New client connected from 127.0.0.1 as consumer-3.
+1329080084: New client connected from 127.0.0.1 as consumer-1.
+1329080084: New client connected from 127.0.0.1 as consumer-8.
+1329080084: New client connected from 127.0.0.1 as consumer-9.
+1329080084: New client connected from 127.0.0.1 as consumer-7.
+1329080089: Saving in-memory database to mosquitto.db.
+1329080100: Saving in-memory database to mosquitto.db.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New connection from 127.0.0.1.
+1329080102: New client connected from 127.0.0.1 as producer-0.
+1329080102: New client connected from 127.0.0.1 as consumer-1.
+1329080102: New client connected from 127.0.0.1 as consumer-2.
+1329080102: New client connected from 127.0.0.1 as consumer-0.
+1329080102: New client connected from 127.0.0.1 as consumer-3.
+1329080102: New client connected from 127.0.0.1 as consumer-6.
+1329080102: New client connected from 127.0.0.1 as consumer-4.
+1329080102: New client connected from 127.0.0.1 as consumer-5.
+1329080102: New client connected from 127.0.0.1 as consumer-7.
+1329080102: New client connected from 127.0.0.1 as consumer-9.
+1329080102: New client connected from 127.0.0.1 as consumer-8.
+1329080111: Saving in-memory database to mosquitto.db.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New connection from 127.0.0.1.
+1329080120: New client connected from 127.0.0.1 as consumer-0.
+1329080120: New client connected from 127.0.0.1 as producer-0.
+1329080120: New client connected from 127.0.0.1 as consumer-1.
+1329080120: New client connected from 127.0.0.1 as consumer-2.
+1329080120: New client connected from 127.0.0.1 as consumer-3.
+1329080120: New client connected from 127.0.0.1 as consumer-6.
+1329080120: New client connected from 127.0.0.1 as consumer-5.
+1329080120: New client connected from 127.0.0.1 as consumer-4.
+1329080120: New client connected from 127.0.0.1 as consumer-7.
+1329080120: New client connected from 127.0.0.1 as consumer-9.
+1329080120: New client connected from 127.0.0.1 as consumer-8.
+1329080122: Saving in-memory database to mosquitto.db.
+1329080133: Saving in-memory database to mosquitto.db.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New connection from 127.0.0.1.
+1329080138: New client connected from 127.0.0.1 as producer-2.
+1329080138: New client connected from 127.0.0.1 as producer-0.
+1329080138: New client connected from 127.0.0.1 as producer-4.
+1329080138: New client connected from 127.0.0.1 as producer-3.
+1329080138: New client connected from 127.0.0.1 as producer-1.
+1329080138: New client connected from 127.0.0.1 as consumer-0.
+1329080138: New client connected from 127.0.0.1 as consumer-4.
+1329080138: New client connected from 127.0.0.1 as consumer-1.
+1329080138: New client connected from 127.0.0.1 as consumer-3.
+1329080138: New client connected from 127.0.0.1 as consumer-2.
+1329080138: New client connected from 127.0.0.1 as consumer-5.
+1329080138: New client connected from 127.0.0.1 as consumer-6.
+1329080138: New client connected from 127.0.0.1 as consumer-8.
+1329080138: New client connected from 127.0.0.1 as consumer-9.
+1329080138: New client connected from 127.0.0.1 as consumer-7.
+1329080144: Saving in-memory database to mosquitto.db.
+1329080155: Saving in-memory database to mosquitto.db.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New connection from 127.0.0.1.
+1329080156: New client connected from 127.0.0.1 as producer-0.
+1329080156: New client connected from 127.0.0.1 as consumer-2.
+1329080156: New client connected from 127.0.0.1 as producer-2.
+1329080156: New client connected from 127.0.0.1 as consumer-0.
+1329080156: New client connected from 127.0.0.1 as producer-1.
+1329080156: New client connected from 127.0.0.1 as producer-3.
+1329080156: New client connected from 127.0.0.1 as consumer-1.
+1329080156: New client connected from 127.0.0.1 as producer-4.
+1329080156: New client connected from 127.0.0.1 as consumer-3.
+1329080156: New client connected from 127.0.0.1 as consumer-7.
+1329080156: New client connected from 127.0.0.1 as consumer-9.
+1329080156: New client connected from 127.0.0.1 as consumer-8.
+1329080156: New client connected from 127.0.0.1 as consumer-4.
+1329080156: New client connected from 127.0.0.1 as consumer-6.
+1329080156: New client connected from 127.0.0.1 as consumer-5.
+1329080166: Saving in-memory database to mosquitto.db.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New connection from 127.0.0.1.
+1329080174: New client connected from 127.0.0.1 as producer-1.
+1329080174: New client connected from 127.0.0.1 as producer-2.
+1329080174: New client connected from 127.0.0.1 as consumer-0.
+1329080174: New client connected from 127.0.0.1 as producer-3.
+1329080174: New connection from 127.0.0.1.
+1329080174: New client connected from 127.0.0.1 as producer-4.
+1329080174: New client connected from 127.0.0.1 as consumer-4.
+1329080174: New client connected from 127.0.0.1 as consumer-1.
+1329080174: New client connected from 127.0.0.1 as producer-0.
+1329080174: New client connected from 127.0.0.1 as consumer-3.
+1329080174: New client connected from 127.0.0.1 as consumer-2.
+1329080174: New client connected from 127.0.0.1 as consumer-6.
+1329080174: New client connected from 127.0.0.1 as consumer-7.
+1329080174: New client connected from 127.0.0.1 as consumer-8.
+1329080174: New client connected from 127.0.0.1 as consumer-5.
+1329080174: New client connected from 127.0.0.1 as consumer-9.
+1329080177: Saving in-memory database to mosquitto.db.
+1329080188: Saving in-memory database to mosquitto.db.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New client connected from 127.0.0.1 as producer-7.
+1329080192: New client connected from 127.0.0.1 as consumer-5.
+1329080192: New client connected from 127.0.0.1 as consumer-3.
+1329080192: New client connected from 127.0.0.1 as consumer-7.
+1329080192: New client connected from 127.0.0.1 as consumer-4.
+1329080192: New connection from 127.0.0.1.
+1329080192: New connection from 127.0.0.1.
+1329080192: New client connected from 127.0.0.1 as consumer-1.
+1329080192: New client connected from 127.0.0.1 as consumer-6.
+1329080192: New client connected from 127.0.0.1 as producer-3.
+1329080192: New client connected from 127.0.0.1 as producer-0.
+1329080192: New client connected from 127.0.0.1 as producer-4.
+1329080192: New client connected from 127.0.0.1 as producer-2.
+1329080192: New client connected from 127.0.0.1 as producer-1.
+1329080192: New client connected from 127.0.0.1 as consumer-2.
+1329080192: New client connected from 127.0.0.1 as consumer-8.
+1329080192: New client connected from 127.0.0.1 as consumer-9.
+1329080192: New client connected from 127.0.0.1 as consumer-0.
+1329080192: New client connected from 127.0.0.1 as producer-5.
+1329080192: New client connected from 127.0.0.1 as producer-6.
+1329080192: New client connected from 127.0.0.1 as producer-9.
+1329080192: New client connected from 127.0.0.1 as producer-8.
+1329080199: Saving in-memory database to mosquitto.db.
+1329080210: Saving in-memory database to mosquitto.db.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New client connected from 127.0.0.1 as consumer-3.
+1329080210: New client connected from 127.0.0.1 as consumer-5.
+1329080210: New client connected from 127.0.0.1 as consumer-4.
+1329080210: New connection from 127.0.0.1.
+1329080210: New connection from 127.0.0.1.
+1329080210: New client connected from 127.0.0.1 as consumer-2.
+1329080210: New client connected from 127.0.0.1 as producer-4.
+1329080210: New client connected from 127.0.0.1 as producer-5.
+1329080210: New client connected from 127.0.0.1 as producer-2.
+1329080210: New client connected from 127.0.0.1 as consumer-1.
+1329080210: New client connected from 127.0.0.1 as producer-0.
+1329080210: New client connected from 127.0.0.1 as producer-8.
+1329080210: New client connected from 127.0.0.1 as producer-9.
+1329080210: New client connected from 127.0.0.1 as producer-1.
+1329080210: New client connected from 127.0.0.1 as producer-3.
+1329080210: New client connected from 127.0.0.1 as consumer-0.
+1329080210: New client connected from 127.0.0.1 as producer-6.
+1329080210: New client connected from 127.0.0.1 as producer-7.
+1329080210: New client connected from 127.0.0.1 as consumer-8.
+1329080210: New client connected from 127.0.0.1 as consumer-7.
+1329080210: New client connected from 127.0.0.1 as consumer-6.
+1329080210: New client connected from 127.0.0.1 as consumer-9.
+1329080221: Saving in-memory database to mosquitto.db.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New connection from 127.0.0.1.
+1329080228: New client connected from 127.0.0.1 as producer-3.
+1329080228: New client connected from 127.0.0.1 as producer-0.
+1329080228: New client connected from 127.0.0.1 as producer-2.
+1329080228: New client connected from 127.0.0.1 as producer-4.
+1329080228: New client connected from 127.0.0.1 as producer-8.
+1329080228: New client connected from 127.0.0.1 as producer-7.
+1329080228: New client connected from 127.0.0.1 as consumer-1.
+1329080228: New client connected from 127.0.0.1 as consumer-0.
+1329080228: New client connected from 127.0.0.1 as producer-9.
+1329080228: New client connected from 127.0.0.1 as consumer-2.
+1329080228: New client connected from 127.0.0.1 as consumer-4.
+1329080228: New client connected from 127.0.0.1 as consumer-3.
+1329080228: New client connected from 127.0.0.1 as producer-5.
+1329080228: New client connected from 127.0.0.1 as producer-6.
+1329080228: New client connected from 127.0.0.1 as producer-1.
+1329080228: New client connected from 127.0.0.1 as consumer-6.
+1329080228: New client connected from 127.0.0.1 as consumer-7.
+1329080228: New client connected from 127.0.0.1 as consumer-5.
+1329080228: New client connected from 127.0.0.1 as consumer-8.
+1329080228: New client connected from 127.0.0.1 as consumer-9.
+1329080232: Saving in-memory database to mosquitto.db.
+1329080243: Saving in-memory database to mosquitto.db.
+1329080246: New connection from 127.0.0.1.
+1329080246: New connection from 127.0.0.1.
+1329080246: New client connected from 127.0.0.1 as producer-0.
+1329080246: New client connected from 127.0.0.1 as consumer-0.
+1329080254: Saving in-memory database to mosquitto.db.
+1329080264: New connection from 127.0.0.1.
+1329080264: New client connected from 127.0.0.1 as consumer-0.
+1329080266: Saving in-memory database to mosquitto.db.
+1329080267: New connection from 127.0.0.1.
+1329080267: New connection from 127.0.0.1.
+1329080268: New client connected from 127.0.0.1 as consumer-0.
+1329080268: New client connected from 127.0.0.1 as producer-0.
+1329080278: Saving in-memory database to mosquitto.db.
+1329080285: New connection from 127.0.0.1.
+1329080285: New client connected from 127.0.0.1 as consumer-0.
+1329080288: New connection from 127.0.0.1.
+1329080288: New connection from 127.0.0.1.
+1329080288: New client connected from 127.0.0.1 as producer-0.
+1329080288: New client connected from 127.0.0.1 as consumer-0.
+1329080289: Saving in-memory database to mosquitto.db.
+1329080300: Saving in-memory database to mosquitto.db.
+1329080306: New connection from 127.0.0.1.
+1329080306: New client connected from 127.0.0.1 as consumer-0.
+1329080309: New connection from 127.0.0.1.
+1329080309: New connection from 127.0.0.1.
+1329080309: New connection from 127.0.0.1.
+1329080309: New connection from 127.0.0.1.
+1329080309: New connection from 127.0.0.1.
+1329080309: New client connected from 127.0.0.1 as producer-1.
+1329080309: New client connected from 127.0.0.1 as producer-3.
+1329080309: New client connected from 127.0.0.1 as producer-0.
+1329080309: New client connected from 127.0.0.1 as producer-2.
+1329080309: New client connected from 127.0.0.1 as producer-4.
+1329080309: New connection from 127.0.0.1.
+1329080309: New client connected from 127.0.0.1 as consumer-0.
+1329080311: Saving in-memory database to mosquitto.db.
+1329080322: Saving in-memory database to mosquitto.db.
+1329080327: New connection from 127.0.0.1.
+1329080327: New client connected from 127.0.0.1 as consumer-0.
+1329080330: New connection from 127.0.0.1.
+1329080330: New connection from 127.0.0.1.
+1329080330: New connection from 127.0.0.1.
+1329080330: New connection from 127.0.0.1.
+1329080330: New connection from 127.0.0.1.
+1329080330: New connection from 127.0.0.1.
+1329080330: New client connected from 127.0.0.1 as producer-0.
+1329080330: New client connected from 127.0.0.1 as producer-2.
+1329080330: New client connected from 127.0.0.1 as consumer-0.
+1329080330: New client connected from 127.0.0.1 as producer-1.
+1329080330: New client connected from 127.0.0.1 as producer-4.
+1329080330: New client connected from 127.0.0.1 as producer-3.
+1329080334: Saving in-memory database to mosquitto.db.
+1329080345: Saving in-memory database to mosquitto.db.
+1329080348: New connection from 127.0.0.1.
+1329080348: New client connected from 127.0.0.1 as consumer-0.
+1329080351: New connection from 127.0.0.1.
+1329080351: New connection from 127.0.0.1.
+1329080351: New connection from 127.0.0.1.
+1329080351: New connection from 127.0.0.1.
+1329080351: New client connected from 127.0.0.1 as producer-3.
+1329080351: New connection from 127.0.0.1.
+1329080351: New connection from 127.0.0.1.
+1329080351: New client connected from 127.0.0.1 as producer-1.
+1329080351: New client connected from 127.0.0.1 as producer-0.
+1329080351: New client connected from 127.0.0.1 as producer-2.
+1329080351: New client connected from 127.0.0.1 as producer-4.
+1329080351: New client connected from 127.0.0.1 as consumer-0.
+1329080356: Saving in-memory database to mosquitto.db.
+1329080367: Saving in-memory database to mosquitto.db.
+1329080369: New connection from 127.0.0.1.
+1329080369: New client connected from 127.0.0.1 as consumer-0.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New connection from 127.0.0.1.
+1329080372: New client connected from 127.0.0.1 as producer-1.
+1329080372: New client connected from 127.0.0.1 as producer-0.
+1329080372: New client connected from 127.0.0.1 as producer-5.
+1329080372: New client connected from 127.0.0.1 as producer-3.
+1329080372: New client connected from 127.0.0.1 as producer-2.
+1329080372: New client connected from 127.0.0.1 as producer-9.
+1329080372: New client connected from 127.0.0.1 as producer-8.
+1329080372: New client connected from 127.0.0.1 as producer-4.
+1329080372: New client connected from 127.0.0.1 as producer-7.
+1329080372: New client connected from 127.0.0.1 as consumer-0.
+1329080372: New client connected from 127.0.0.1 as producer-6.
+1329080378: Saving in-memory database to mosquitto.db.
+1329080389: Saving in-memory database to mosquitto.db.
+1329080390: New connection from 127.0.0.1.
+1329080391: New client connected from 127.0.0.1 as consumer-0.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New client connected from 127.0.0.1 as producer-6.
+1329080393: New client connected from 127.0.0.1 as producer-7.
+1329080393: New connection from 127.0.0.1.
+1329080393: New connection from 127.0.0.1.
+1329080393: New client connected from 127.0.0.1 as producer-8.
+1329080393: New client connected from 127.0.0.1 as producer-5.
+1329080393: New client connected from 127.0.0.1 as producer-1.
+1329080393: New client connected from 127.0.0.1 as producer-3.
+1329080393: New client connected from 127.0.0.1 as producer-0.
+1329080393: New client connected from 127.0.0.1 as producer-2.
+1329080393: New client connected from 127.0.0.1 as producer-4.
+1329080393: New client connected from 127.0.0.1 as producer-9.
+1329080393: New client connected from 127.0.0.1 as consumer-0.
+1329080401: Saving in-memory database to mosquitto.db.
+1329080411: New connection from 127.0.0.1.
+1329080411: New client connected from 127.0.0.1 as consumer-0.
+1329080413: Saving in-memory database to mosquitto.db.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New connection from 127.0.0.1.
+1329080414: New client connected from 127.0.0.1 as producer-0.
+1329080414: New client connected from 127.0.0.1 as producer-1.
+1329080414: New client connected from 127.0.0.1 as producer-4.
+1329080414: New client connected from 127.0.0.1 as producer-2.
+1329080414: New client connected from 127.0.0.1 as producer-3.
+1329080414: New client connected from 127.0.0.1 as producer-5.
+1329080414: New client connected from 127.0.0.1 as producer-6.
+1329080414: New client connected from 127.0.0.1 as consumer-0.
+1329080414: New client connected from 127.0.0.1 as producer-8.
+1329080414: New client connected from 127.0.0.1 as producer-7.
+1329080414: New client connected from 127.0.0.1 as producer-9.
+1329080425: Saving in-memory database to mosquitto.db.
+1329080432: New connection from 127.0.0.1.
+1329080432: New client connected from 127.0.0.1 as consumer-0.
+1329080435: New connection from 127.0.0.1.
+1329080435: New connection from 127.0.0.1.
+1329080435: New connection from 127.0.0.1.
+1329080435: New connection from 127.0.0.1.
+1329080435: New connection from 127.0.0.1.
+1329080435: New client connected from 127.0.0.1 as consumer-1.
+1329080435: New client connected from 127.0.0.1 as consumer-2.
+1329080435: New client connected from 127.0.0.1 as consumer-3.
+1329080435: New connection from 127.0.0.1.
+1329080435: New client connected from 127.0.0.1 as consumer-0.
+1329080435: New client connected from 127.0.0.1 as consumer-4.
+1329080435: New client connected from 127.0.0.1 as producer-0.
+1329080436: Saving in-memory database to mosquitto.db.
+1329080447: Saving in-memory database to mosquitto.db.
+1329080453: New connection from 127.0.0.1.
+1329080453: New connection from 127.0.0.1.
+1329080453: New connection from 127.0.0.1.
+1329080453: New connection from 127.0.0.1.
+1329080453: New connection from 127.0.0.1.
+1329080453: New client connected from 127.0.0.1 as consumer-0.
+1329080453: New client connected from 127.0.0.1 as consumer-1.
+1329080453: New client connected from 127.0.0.1 as consumer-2.
+1329080453: New client connected from 127.0.0.1 as consumer-3.
+1329080453: New client connected from 127.0.0.1 as consumer-4.
+1329080456: New connection from 127.0.0.1.
+1329080456: New connection from 127.0.0.1.
+1329080456: New connection from 127.0.0.1.
+1329080456: New connection from 127.0.0.1.
+1329080456: New connection from 127.0.0.1.
+1329080456: New connection from 127.0.0.1.
+1329080456: New client connected from 127.0.0.1 as consumer-0.
+1329080456: New client connected from 127.0.0.1 as producer-0.
+1329080456: New client connected from 127.0.0.1 as consumer-2.
+1329080456: New client connected from 127.0.0.1 as consumer-4.
+1329080456: New client connected from 127.0.0.1 as consumer-1.
+1329080456: New client connected from 127.0.0.1 as consumer-3.
+1329080458: Saving in-memory database to mosquitto.db.
+1329080469: Saving in-memory database to mosquitto.db.
+1329080474: New connection from 127.0.0.1.
+1329080474: New connection from 127.0.0.1.
+1329080474: New connection from 127.0.0.1.
+1329080474: New connection from 127.0.0.1.
+1329080474: New connection from 127.0.0.1.
+1329080474: New client connected from 127.0.0.1 as consumer-2.
+1329080474: New client connected from 127.0.0.1 as consumer-0.
+1329080474: New client connected from 127.0.0.1 as consumer-3.
+1329080474: New client connected from 127.0.0.1 as consumer-1.
+1329080474: New client connected from 127.0.0.1 as consumer-4.
+1329080477: New connection from 127.0.0.1.
+1329080477: New connection from 127.0.0.1.
+1329080477: New connection from 127.0.0.1.
+1329080477: New connection from 127.0.0.1.
+1329080477: New client connected from 127.0.0.1 as producer-0.
+1329080477: New connection from 127.0.0.1.
+1329080477: New connection from 127.0.0.1.
+1329080477: New client connected from 127.0.0.1 as consumer-0.
+1329080477: New client connected from 127.0.0.1 as consumer-1.
+1329080477: New client connected from 127.0.0.1 as consumer-2.
+1329080477: New client connected from 127.0.0.1 as consumer-4.
+1329080477: New client connected from 127.0.0.1 as consumer-3.
+1329080480: Saving in-memory database to mosquitto.db.
+1329080491: Saving in-memory database to mosquitto.db.
+1329080495: New connection from 127.0.0.1.
+1329080495: New connection from 127.0.0.1.
+1329080495: New connection from 127.0.0.1.
+1329080495: New connection from 127.0.0.1.
+1329080495: New connection from 127.0.0.1.
+1329080495: New client connected from 127.0.0.1 as consumer-1.
+1329080495: New client connected from 127.0.0.1 as consumer-2.
+1329080495: New client connected from 127.0.0.1 as consumer-3.
+1329080495: New client connected from 127.0.0.1 as consumer-0.
+1329080495: New client connected from 127.0.0.1 as consumer-4.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New connection from 127.0.0.1.
+1329080498: New client connected from 127.0.0.1 as producer-4.
+1329080498: New client connected from 127.0.0.1 as producer-0.
+1329080498: New client connected from 127.0.0.1 as producer-1.
+1329080498: New client connected from 127.0.0.1 as consumer-3.
+1329080498: New client connected from 127.0.0.1 as producer-3.
+1329080498: New client connected from 127.0.0.1 as producer-2.
+1329080498: New client connected from 127.0.0.1 as consumer-0.
+1329080498: New client connected from 127.0.0.1 as consumer-1.
+1329080498: New client connected from 127.0.0.1 as consumer-4.
+1329080498: New client connected from 127.0.0.1 as consumer-2.
+1329080502: Saving in-memory database to mosquitto.db.
+1329080513: Saving in-memory database to mosquitto.db.
+1329080516: New connection from 127.0.0.1.
+1329080516: New connection from 127.0.0.1.
+1329080516: New connection from 127.0.0.1.
+1329080516: New connection from 127.0.0.1.
+1329080516: New connection from 127.0.0.1.
+1329080516: New client connected from 127.0.0.1 as consumer-0.
+1329080516: New client connected from 127.0.0.1 as consumer-1.
+1329080516: New client connected from 127.0.0.1 as consumer-3.
+1329080516: New client connected from 127.0.0.1 as consumer-4.
+1329080516: New client connected from 127.0.0.1 as consumer-2.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New connection from 127.0.0.1.
+1329080519: New client connected from 127.0.0.1 as producer-2.
+1329080519: New client connected from 127.0.0.1 as producer-1.
+1329080519: New client connected from 127.0.0.1 as producer-0.
+1329080519: New client connected from 127.0.0.1 as consumer-1.
+1329080519: New client connected from 127.0.0.1 as producer-3.
+1329080519: New client connected from 127.0.0.1 as consumer-0.
+1329080519: New client connected from 127.0.0.1 as producer-4.
+1329080519: New client connected from 127.0.0.1 as consumer-2.
+1329080519: New client connected from 127.0.0.1 as consumer-3.
+1329080519: New client connected from 127.0.0.1 as consumer-4.
+1329080524: Saving in-memory database to mosquitto.db.
+1329080535: Saving in-memory database to mosquitto.db.
+1329080537: New connection from 127.0.0.1.
+1329080537: New connection from 127.0.0.1.
+1329080537: New connection from 127.0.0.1.
+1329080537: New connection from 127.0.0.1.
+1329080537: New connection from 127.0.0.1.
+1329080537: New client connected from 127.0.0.1 as consumer-2.
+1329080537: New client connected from 127.0.0.1 as consumer-1.
+1329080537: New client connected from 127.0.0.1 as consumer-3.
+1329080537: New client connected from 127.0.0.1 as consumer-4.
+1329080537: New client connected from 127.0.0.1 as consumer-0.
+1329080540: New connection from 127.0.0.1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New client connected from 127.0.0.1 as producer-1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New connection from 127.0.0.1.
+1329080540: New client connected from 127.0.0.1 as consumer-0.
+1329080540: New client connected from 127.0.0.1 as producer-4.
+1329080540: New client connected from 127.0.0.1 as producer-2.
+1329080540: New client connected from 127.0.0.1 as producer-3.
+1329080540: New client connected from 127.0.0.1 as producer-0.
+1329080540: New client connected from 127.0.0.1 as consumer-1.
+1329080540: New client connected from 127.0.0.1 as consumer-2.
+1329080540: New client connected from 127.0.0.1 as consumer-4.
+1329080540: New client connected from 127.0.0.1 as consumer-3.
+1329080546: Saving in-memory database to mosquitto.db.
+1329080557: Saving in-memory database to mosquitto.db.
+1329080558: New connection from 127.0.0.1.
+1329080558: New connection from 127.0.0.1.
+1329080558: New connection from 127.0.0.1.
+1329080558: New connection from 127.0.0.1.
+1329080558: New connection from 127.0.0.1.
+1329080558: New client connected from 127.0.0.1 as consumer-1.
+1329080558: New client connected from 127.0.0.1 as consumer-0.
+1329080558: New client connected from 127.0.0.1 as consumer-2.
+1329080558: New client connected from 127.0.0.1 as consumer-3.
+1329080558: New client connected from 127.0.0.1 as consumer-4.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New client connected from 127.0.0.1 as producer-0.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New connection from 127.0.0.1.
+1329080561: New client connected from 127.0.0.1 as producer-5.
+1329080561: New client connected from 127.0.0.1 as producer-4.
+1329080561: New client connected from 127.0.0.1 as producer-3.
+1329080561: New client connected from 127.0.0.1 as consumer-3.
+1329080561: New client connected from 127.0.0.1 as producer-2.
+1329080561: New client connected from 127.0.0.1 as producer-8.
+1329080561: New client connected from 127.0.0.1 as producer-6.
+1329080561: New client connected from 127.0.0.1 as consumer-0.
+1329080561: New client connected from 127.0.0.1 as producer-7.
+1329080561: New client connected from 127.0.0.1 as producer-9.
+1329080561: New client connected from 127.0.0.1 as consumer-1.
+1329080561: New client connected from 127.0.0.1 as consumer-2.
+1329080561: New client connected from 127.0.0.1 as producer-1.
+1329080561: New client connected from 127.0.0.1 as consumer-4.
+1329080568: Saving in-memory database to mosquitto.db.
+1329080579: Saving in-memory database to mosquitto.db.
+1329080580: New connection from 127.0.0.1.
+1329080580: New connection from 127.0.0.1.
+1329080580: New connection from 127.0.0.1.
+1329080580: New connection from 127.0.0.1.
+1329080580: New connection from 127.0.0.1.
+1329080580: New client connected from 127.0.0.1 as consumer-3.
+1329080580: New client connected from 127.0.0.1 as consumer-0.
+1329080580: New client connected from 127.0.0.1 as consumer-1.
+1329080580: New client connected from 127.0.0.1 as consumer-2.
+1329080580: New client connected from 127.0.0.1 as consumer-4.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New connection from 127.0.0.1.
+1329080583: New client connected from 127.0.0.1 as producer-2.
+1329080583: New client connected from 127.0.0.1 as producer-6.
+1329080583: New client connected from 127.0.0.1 as producer-1.
+1329080583: New client connected from 127.0.0.1 as producer-0.
+1329080583: New client connected from 127.0.0.1 as producer-7.
+1329080583: New client connected from 127.0.0.1 as producer-3.
+1329080583: New client connected from 127.0.0.1 as producer-5.
+1329080583: New client connected from 127.0.0.1 as producer-8.
+1329080583: New client connected from 127.0.0.1 as consumer-4.
+1329080583: New client connected from 127.0.0.1 as consumer-0.
+1329080583: New client connected from 127.0.0.1 as producer-4.
+1329080583: New client connected from 127.0.0.1 as consumer-1.
+1329080583: New client connected from 127.0.0.1 as consumer-2.
+1329080583: New client connected from 127.0.0.1 as producer-9.
+1329080583: New client connected from 127.0.0.1 as consumer-3.
+1329080590: Saving in-memory database to mosquitto.db.
+1329080601: Saving in-memory database to mosquitto.db.
+1329080601: New connection from 127.0.0.1.
+1329080601: New connection from 127.0.0.1.
+1329080601: New connection from 127.0.0.1.
+1329080601: New connection from 127.0.0.1.
+1329080601: New connection from 127.0.0.1.
+1329080601: New client connected from 127.0.0.1 as consumer-1.
+1329080601: New client connected from 127.0.0.1 as consumer-2.
+1329080601: New client connected from 127.0.0.1 as consumer-0.
+1329080601: New client connected from 127.0.0.1 as consumer-3.
+1329080601: New client connected from 127.0.0.1 as consumer-4.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New connection from 127.0.0.1.
+1329080604: New client connected from 127.0.0.1 as producer-6.
+1329080604: New client connected from 127.0.0.1 as producer-8.
+1329080604: New client connected from 127.0.0.1 as consumer-1.
+1329080604: New client connected from 127.0.0.1 as producer-7.
+1329080604: New client connected from 127.0.0.1 as producer-9.
+1329080604: New client connected from 127.0.0.1 as consumer-0.
+1329080604: New connection from 127.0.0.1.
+1329080604: New client connected from 127.0.0.1 as producer-1.
+1329080604: New client connected from 127.0.0.1 as producer-4.
+1329080604: New client connected from 127.0.0.1 as producer-3.
+1329080604: New client connected from 127.0.0.1 as producer-2.
+1329080604: New client connected from 127.0.0.1 as producer-5.
+1329080604: New client connected from 127.0.0.1 as consumer-4.
+1329080604: New client connected from 127.0.0.1 as consumer-2.
+1329080604: New client connected from 127.0.0.1 as consumer-3.
+1329080604: New client connected from 127.0.0.1 as producer-0.
+1329080612: Saving in-memory database to mosquitto.db.
+1329080622: New connection from 127.0.0.1.
+1329080622: New connection from 127.0.0.1.
+1329080622: New connection from 127.0.0.1.
+1329080622: New connection from 127.0.0.1.
+1329080622: New connection from 127.0.0.1.
+1329080622: New client connected from 127.0.0.1 as consumer-0.
+1329080622: New client connected from 127.0.0.1 as consumer-4.
+1329080622: New client connected from 127.0.0.1 as consumer-3.
+1329080622: New client connected from 127.0.0.1 as consumer-2.
+1329080622: New client connected from 127.0.0.1 as consumer-1.
+1329080624: Saving in-memory database to mosquitto.db.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New connection from 127.0.0.1.
+1329080625: New client connected from 127.0.0.1 as consumer-4.
+1329080625: New client connected from 127.0.0.1 as consumer-7.
+1329080625: New client connected from 127.0.0.1 as consumer-6.
+1329080625: New client connected from 127.0.0.1 as consumer-8.
+1329080625: New client connected from 127.0.0.1 as consumer-9.
+1329080625: New client connected from 127.0.0.1 as consumer-3.
+1329080625: New client connected from 127.0.0.1 as consumer-5.
+1329080625: New client connected from 127.0.0.1 as consumer-2.
+1329080625: New client connected from 127.0.0.1 as consumer-1.
+1329080625: New client connected from 127.0.0.1 as producer-0.
+1329080625: New client connected from 127.0.0.1 as consumer-0.
+1329080635: Saving in-memory database to mosquitto.db.
+1329080643: New connection from 127.0.0.1.
+1329080643: New connection from 127.0.0.1.
+1329080643: New connection from 127.0.0.1.
+1329080643: New connection from 127.0.0.1.
+1329080643: New connection from 127.0.0.1.
+1329080643: New connection from 127.0.0.1.
+1329080643: New connection from 127.0.0.1.
+1329080643: New client connected from 127.0.0.1 as consumer-4.
+1329080643: New client connected from 127.0.0.1 as consumer-2.
+1329080643: New client connected from 127.0.0.1 as consumer-5.
+1329080643: New client connected from 127.0.0.1 as consumer-1.
+1329080643: New client connected from 127.0.0.1 as consumer-0.
+1329080643: New client connected from 127.0.0.1 as consumer-3.
+1329080643: New connection from 127.0.0.1.
+1329080643: New connection from 127.0.0.1.
+1329080643: New connection from 127.0.0.1.
+1329080643: New client connected from 127.0.0.1 as consumer-9.
+1329080643: New client connected from 127.0.0.1 as consumer-8.
+1329080643: New client connected from 127.0.0.1 as consumer-7.
+1329080643: New client connected from 127.0.0.1 as consumer-6.
+1329080646: Saving in-memory database to mosquitto.db.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New client connected from 127.0.0.1 as producer-0.
+1329080646: New client connected from 127.0.0.1 as consumer-0.
+1329080646: New client connected from 127.0.0.1 as consumer-1.
+1329080646: New connection from 127.0.0.1.
+1329080646: New client connected from 127.0.0.1 as consumer-3.
+1329080646: New client connected from 127.0.0.1 as consumer-2.
+1329080646: New client connected from 127.0.0.1 as consumer-7.
+1329080646: New client connected from 127.0.0.1 as consumer-4.
+1329080646: New client connected from 127.0.0.1 as consumer-8.
+1329080646: New client connected from 127.0.0.1 as consumer-6.
+1329080646: New client connected from 127.0.0.1 as consumer-5.
+1329080646: New client connected from 127.0.0.1 as consumer-9.
+1329080657: Saving in-memory database to mosquitto.db.
+1329080664: New connection from 127.0.0.1.
+1329080664: New connection from 127.0.0.1.
+1329080664: New connection from 127.0.0.1.
+1329080664: New connection from 127.0.0.1.
+1329080664: New connection from 127.0.0.1.
+1329080664: New connection from 127.0.0.1.
+1329080664: New connection from 127.0.0.1.
+1329080664: New client connected from 127.0.0.1 as consumer-5.
+1329080664: New client connected from 127.0.0.1 as consumer-0.
+1329080664: New client connected from 127.0.0.1 as consumer-4.
+1329080664: New client connected from 127.0.0.1 as consumer-7.
+1329080664: New connection from 127.0.0.1.
+1329080664: New connection from 127.0.0.1.
+1329080664: New connection from 127.0.0.1.
+1329080664: New client connected from 127.0.0.1 as consumer-2.
+1329080664: New client connected from 127.0.0.1 as consumer-6.
+1329080664: New client connected from 127.0.0.1 as consumer-1.
+1329080664: New client connected from 127.0.0.1 as consumer-3.
+1329080664: New client connected from 127.0.0.1 as consumer-9.
+1329080664: New client connected from 127.0.0.1 as consumer-8.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New connection from 127.0.0.1.
+1329080667: New client connected from 127.0.0.1 as producer-0.
+1329080667: New client connected from 127.0.0.1 as consumer-1.
+1329080667: New client connected from 127.0.0.1 as consumer-0.
+1329080667: New client connected from 127.0.0.1 as consumer-6.
+1329080667: New client connected from 127.0.0.1 as consumer-7.
+1329080667: New client connected from 127.0.0.1 as consumer-5.
+1329080667: New connection from 127.0.0.1.
+1329080667: New client connected from 127.0.0.1 as consumer-8.
+1329080667: New client connected from 127.0.0.1 as consumer-9.
+1329080667: New client connected from 127.0.0.1 as consumer-2.
+1329080667: New client connected from 127.0.0.1 as consumer-3.
+1329080667: New client connected from 127.0.0.1 as consumer-4.
+1329080668: Saving in-memory database to mosquitto.db.
+1329080679: Saving in-memory database to mosquitto.db.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New connection from 127.0.0.1.
+1329080685: New client connected from 127.0.0.1 as consumer-3.
+1329080685: New client connected from 127.0.0.1 as consumer-2.
+1329080685: New client connected from 127.0.0.1 as consumer-4.
+1329080685: New client connected from 127.0.0.1 as consumer-7.
+1329080685: New client connected from 127.0.0.1 as consumer-6.
+1329080685: New client connected from 127.0.0.1 as consumer-1.
+1329080685: New client connected from 127.0.0.1 as consumer-5.
+1329080685: New client connected from 127.0.0.1 as consumer-0.
+1329080685: New client connected from 127.0.0.1 as consumer-9.
+1329080685: New client connected from 127.0.0.1 as consumer-8.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New connection from 127.0.0.1.
+1329080688: New client connected from 127.0.0.1 as producer-0.
+1329080688: New client connected from 127.0.0.1 as consumer-0.
+1329080688: New client connected from 127.0.0.1 as consumer-4.
+1329080688: New client connected from 127.0.0.1 as consumer-8.
+1329080688: New client connected from 127.0.0.1 as consumer-9.
+1329080688: New client connected from 127.0.0.1 as producer-2.
+1329080688: New client connected from 127.0.0.1 as producer-1.
+1329080688: New client connected from 127.0.0.1 as producer-3.
+1329080688: New client connected from 127.0.0.1 as consumer-1.
+1329080688: New client connected from 127.0.0.1 as consumer-2.
+1329080688: New client connected from 127.0.0.1 as consumer-5.
+1329080688: New client connected from 127.0.0.1 as producer-4.
+1329080688: New client connected from 127.0.0.1 as consumer-7.
+1329080688: New client connected from 127.0.0.1 as consumer-6.
+1329080688: New client connected from 127.0.0.1 as consumer-3.
+1329080690: Saving in-memory database to mosquitto.db.
+1329080701: Saving in-memory database to mosquitto.db.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New connection from 127.0.0.1.
+1329080706: New client connected from 127.0.0.1 as consumer-0.
+1329080706: New client connected from 127.0.0.1 as consumer-3.
+1329080706: New client connected from 127.0.0.1 as consumer-2.
+1329080706: New client connected from 127.0.0.1 as consumer-1.
+1329080706: New client connected from 127.0.0.1 as consumer-4.
+1329080706: New client connected from 127.0.0.1 as consumer-7.
+1329080706: New client connected from 127.0.0.1 as consumer-6.
+1329080706: New client connected from 127.0.0.1 as consumer-5.
+1329080706: New client connected from 127.0.0.1 as consumer-8.
+1329080706: New client connected from 127.0.0.1 as consumer-9.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New client connected from 127.0.0.1 as consumer-0.
+1329080709: New client connected from 127.0.0.1 as producer-3.
+1329080709: New client connected from 127.0.0.1 as producer-4.
+1329080709: New client connected from 127.0.0.1 as producer-2.
+1329080709: New connection from 127.0.0.1.
+1329080709: New client connected from 127.0.0.1 as producer-1.
+1329080709: New connection from 127.0.0.1.
+1329080709: New client connected from 127.0.0.1 as consumer-1.
+1329080709: New client connected from 127.0.0.1 as producer-0.
+1329080709: New client connected from 127.0.0.1 as consumer-9.
+1329080709: New client connected from 127.0.0.1 as consumer-7.
+1329080709: New client connected from 127.0.0.1 as consumer-2.
+1329080709: New client connected from 127.0.0.1 as consumer-5.
+1329080709: New client connected from 127.0.0.1 as consumer-8.
+1329080709: New client connected from 127.0.0.1 as consumer-3.
+1329080709: New client connected from 127.0.0.1 as consumer-4.
+1329080709: New client connected from 127.0.0.1 as consumer-6.
+1329080712: Saving in-memory database to mosquitto.db.
+1329080723: Saving in-memory database to mosquitto.db.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New connection from 127.0.0.1.
+1329080727: New client connected from 127.0.0.1 as consumer-4.
+1329080727: New client connected from 127.0.0.1 as consumer-2.
+1329080727: New client connected from 127.0.0.1 as consumer-6.
+1329080727: New client connected from 127.0.0.1 as consumer-5.
+1329080727: New client connected from 127.0.0.1 as consumer-1.
+1329080727: New client connected from 127.0.0.1 as consumer-3.
+1329080727: New client connected from 127.0.0.1 as consumer-0.
+1329080727: New client connected from 127.0.0.1 as consumer-7.
+1329080727: New client connected from 127.0.0.1 as consumer-8.
+1329080727: New client connected from 127.0.0.1 as consumer-9.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New client connected from 127.0.0.1 as producer-2.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New connection from 127.0.0.1.
+1329080730: New client connected from 127.0.0.1 as consumer-3.
+1329080730: New client connected from 127.0.0.1 as consumer-0.
+1329080730: New client connected from 127.0.0.1 as consumer-1.
+1329080730: New client connected from 127.0.0.1 as consumer-6.
+1329080730: New client connected from 127.0.0.1 as producer-1.
+1329080730: New client connected from 127.0.0.1 as producer-3.
+1329080730: New client connected from 127.0.0.1 as producer-4.
+1329080730: New client connected from 127.0.0.1 as consumer-2.
+1329080730: New client connected from 127.0.0.1 as consumer-5.
+1329080730: New client connected from 127.0.0.1 as consumer-4.
+1329080730: New client connected from 127.0.0.1 as consumer-8.
+1329080730: New client connected from 127.0.0.1 as consumer-9.
+1329080730: New client connected from 127.0.0.1 as consumer-7.
+1329080730: New client connected from 127.0.0.1 as producer-0.
+1329080734: Saving in-memory database to mosquitto.db.
+1329080745: Saving in-memory database to mosquitto.db.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New connection from 127.0.0.1.
+1329080748: New client connected from 127.0.0.1 as consumer-1.
+1329080748: New client connected from 127.0.0.1 as consumer-4.
+1329080748: New client connected from 127.0.0.1 as consumer-5.
+1329080748: New client connected from 127.0.0.1 as consumer-0.
+1329080748: New client connected from 127.0.0.1 as consumer-3.
+1329080748: New client connected from 127.0.0.1 as consumer-2.
+1329080748: New client connected from 127.0.0.1 as consumer-6.
+1329080748: New client connected from 127.0.0.1 as consumer-9.
+1329080748: New client connected from 127.0.0.1 as consumer-8.
+1329080748: New client connected from 127.0.0.1 as consumer-7.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New client connected from 127.0.0.1 as producer-1.
+1329080751: New client connected from 127.0.0.1 as producer-3.
+1329080751: New client connected from 127.0.0.1 as producer-7.
+1329080751: New client connected from 127.0.0.1 as producer-2.
+1329080751: New client connected from 127.0.0.1 as producer-4.
+1329080751: New client connected from 127.0.0.1 as producer-5.
+1329080751: New client connected from 127.0.0.1 as producer-8.
+1329080751: New client connected from 127.0.0.1 as producer-6.
+1329080751: New client connected from 127.0.0.1 as producer-0.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New connection from 127.0.0.1.
+1329080751: New client connected from 127.0.0.1 as consumer-4.
+1329080751: New client connected from 127.0.0.1 as consumer-2.
+1329080751: New client connected from 127.0.0.1 as consumer-9.
+1329080751: New client connected from 127.0.0.1 as consumer-5.
+1329080751: New client connected from 127.0.0.1 as consumer-6.
+1329080751: New client connected from 127.0.0.1 as consumer-7.
+1329080751: New client connected from 127.0.0.1 as consumer-1.
+1329080751: New client connected from 127.0.0.1 as consumer-0.
+1329080751: New client connected from 127.0.0.1 as producer-9.
+1329080751: New client connected from 127.0.0.1 as consumer-3.
+1329080751: New client connected from 127.0.0.1 as consumer-8.
+1329080756: Saving in-memory database to mosquitto.db.
+1329080767: Saving in-memory database to mosquitto.db.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New connection from 127.0.0.1.
+1329080769: New client connected from 127.0.0.1 as consumer-0.
+1329080769: New client connected from 127.0.0.1 as consumer-1.
+1329080769: New client connected from 127.0.0.1 as consumer-2.
+1329080769: New client connected from 127.0.0.1 as consumer-3.
+1329080769: New client connected from 127.0.0.1 as consumer-4.
+1329080769: New client connected from 127.0.0.1 as consumer-5.
+1329080769: New client connected from 127.0.0.1 as consumer-6.
+1329080769: New client connected from 127.0.0.1 as consumer-7.
+1329080769: New client connected from 127.0.0.1 as consumer-8.
+1329080769: New client connected from 127.0.0.1 as consumer-9.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New connection from 127.0.0.1.
+1329080772: New client connected from 127.0.0.1 as producer-5.
+1329080772: New client connected from 127.0.0.1 as producer-7.
+1329080772: New client connected from 127.0.0.1 as producer-1.
+1329080772: New client connected from 127.0.0.1 as producer-6.
+1329080772: New client connected from 127.0.0.1 as consumer-7.
+1329080772: New client connected from 127.0.0.1 as producer-0.
+1329080772: New client connected from 127.0.0.1 as consumer-9.
+1329080772: New client connected from 127.0.0.1 as producer-4.
+1329080772: New client connected from 127.0.0.1 as consumer-3.
+1329080772: New client connected from 127.0.0.1 as consumer-1.
+1329080772: New client connected from 127.0.0.1 as consumer-2.
+1329080772: New client connected from 127.0.0.1 as consumer-5.
+1329080772: New client connected from 127.0.0.1 as consumer-6.
+1329080772: New client connected from 127.0.0.1 as consumer-8.
+1329080772: New client connected from 127.0.0.1 as producer-8.
+1329080772: New client connected from 127.0.0.1 as producer-9.
+1329080772: New client connected from 127.0.0.1 as producer-3.
+1329080772: New client connected from 127.0.0.1 as consumer-0.
+1329080772: New client connected from 127.0.0.1 as producer-2.
+1329080772: New client connected from 127.0.0.1 as consumer-4.
+1329080778: Saving in-memory database to mosquitto.db.
+1329080789: Saving in-memory database to mosquitto.db.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New connection from 127.0.0.1.
+1329080790: New client connected from 127.0.0.1 as consumer-5.
+1329080790: New client connected from 127.0.0.1 as consumer-1.
+1329080790: New client connected from 127.0.0.1 as consumer-3.
+1329080790: New client connected from 127.0.0.1 as consumer-2.
+1329080790: New client connected from 127.0.0.1 as consumer-6.
+1329080790: New client connected from 127.0.0.1 as consumer-0.
+1329080790: New client connected from 127.0.0.1 as consumer-4.
+1329080790: New client connected from 127.0.0.1 as consumer-7.
+1329080790: New client connected from 127.0.0.1 as consumer-9.
+1329080790: New client connected from 127.0.0.1 as consumer-8.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New client connected from 127.0.0.1 as producer-3.
+1329080793: New client connected from 127.0.0.1 as producer-4.
+1329080793: New client connected from 127.0.0.1 as producer-1.
+1329080793: New client connected from 127.0.0.1 as producer-7.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New connection from 127.0.0.1.
+1329080793: New client connected from 127.0.0.1 as producer-0.
+1329080793: New client connected from 127.0.0.1 as producer-6.
+1329080793: New client connected from 127.0.0.1 as producer-8.
+1329080793: New client connected from 127.0.0.1 as producer-9.
+1329080793: New client connected from 127.0.0.1 as producer-2.
+1329080793: New client connected from 127.0.0.1 as producer-5.
+1329080793: New client connected from 127.0.0.1 as consumer-9.
+1329080793: New client connected from 127.0.0.1 as consumer-6.
+1329080793: New client connected from 127.0.0.1 as consumer-2.
+1329080793: New client connected from 127.0.0.1 as consumer-5.
+1329080793: New client connected from 127.0.0.1 as consumer-7.
+1329080793: New client connected from 127.0.0.1 as consumer-0.
+1329080793: New client connected from 127.0.0.1 as consumer-1.
+1329080793: New client connected from 127.0.0.1 as consumer-3.
+1329080793: New client connected from 127.0.0.1 as consumer-4.
+1329080793: New client connected from 127.0.0.1 as consumer-8.
+1329080800: Saving in-memory database to mosquitto.db.
+1329080811: Saving in-memory database to mosquitto.db.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New connection from 127.0.0.1.
+1329080811: New client connected from 127.0.0.1 as consumer-6.
+1329080811: New client connected from 127.0.0.1 as consumer-3.
+1329080811: New client connected from 127.0.0.1 as consumer-2.
+1329080811: New client connected from 127.0.0.1 as consumer-1.
+1329080811: New client connected from 127.0.0.1 as consumer-0.
+1329080811: New client connected from 127.0.0.1 as consumer-4.
+1329080811: New client connected from 127.0.0.1 as consumer-5.
+1329080811: New client connected from 127.0.0.1 as consumer-8.
+1329080811: New client connected from 127.0.0.1 as consumer-9.
+1329080811: New client connected from 127.0.0.1 as consumer-7.
